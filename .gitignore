@@ -1,0 +1,27 @@
+### Intellij ###
+*.iml
+.idea
+out/
+
+### Eclipse ###
+bin/
+.classpath
+.settings/
+.project
+
+### Netbeans ###
+core
+nbproject/*
+!nbproject/project.properties
+!nbproject/project.xml
+
+### Other ###
+*.class
+*.nxj
+.DS_Store
+*.so
+*.log
+*.out
+*~
+*.swp
+*.lock
