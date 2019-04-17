@@ -1,14 +1,17 @@
 package com.excilys.cdb.controller;
 
-public class Controller {
-	String[] response;
+import com.excilys.cdb.dto.*;
+import java.util.ArrayList;
+
+public class Controller implements ControllerInterface {
+	ArrayList<DTO> response;
 	
 	public Controller() {
 		this.response = null;
 	}
 	
-	public String[] process(String... args) {
-		if (correctArgs(args)) {
+	public ArrayList<DTO> process(String... args) {
+		if (verifyArgs(args)) {
 			
 			return response;
 		} else {
@@ -22,7 +25,7 @@ public class Controller {
 	 * @param args La liste des arguments
 	 * @return Un booléen pour dire si c'est bon ou pas
 	 */
-	private boolean correctArgs(String[] args) {
+	private boolean verifyArgs(String[] args) {
 		if (args.length <= 0 || args.length > 5) {
 			return false;
 		}
