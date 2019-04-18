@@ -2,7 +2,7 @@ package com.excilys.cdb.model;
 
 import java.sql.Timestamp;
 
-public class ModelComputer {
+public class ModelComputer extends Model {
 	private int id;
 	private String name;
 	private Timestamp di;
@@ -10,11 +10,17 @@ public class ModelComputer {
 	private String manufacturer;
 	
 	public ModelComputer(int id, String name, Timestamp di, Timestamp dd, String manufacturer) {
-		this.id = id;
-		this.name = name;
-		this.di = di;
-		this.dd = dd;
-		this.manufacturer = manufacturer;
+		this.setId(id);
+		this.setName(name);
+		this.setDi(di);
+		this.setDd(dd);
+		this.setManufacturer(manufacturer);
+	}
+	
+	@Override
+	public String toString() {
+		return ("[id = " + id + ", nom de la machine = " + name + ", di = " + di
+				+ ", dd = " + dd + ", nom de l'entreprise = " + manufacturer + "]");
 	}
 
 	// Getters
@@ -35,6 +41,10 @@ public class ModelComputer {
 		return dd;
 	}
 
+	public String getManufacturer() {
+		return manufacturer;
+	}
+
 	// Setters
 	
 	public void setId(int id) {
@@ -49,10 +59,6 @@ public class ModelComputer {
 		this.di = di;
 	}
 
-	public String getManufacturer() {
-		return manufacturer;
-	}
-
 	public void setDd(Timestamp dd) {
 		this.dd = dd;
 	}
@@ -60,6 +66,4 @@ public class ModelComputer {
 	public void setManufacturer(String manufacturer) {
 		this.manufacturer = manufacturer;
 	}
-	
-	
 }

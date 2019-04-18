@@ -9,6 +9,6 @@ public class Main {
 		ui.init();
 		//ui.start();
 		DAOComputer test = new DAOComputer();
-		test.test();
+		test.requestList();
 	}
 }

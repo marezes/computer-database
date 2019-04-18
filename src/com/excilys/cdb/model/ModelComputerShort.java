@@ -1,19 +1,19 @@
 package com.excilys.cdb.model;
 
-public class ModelCompany extends Model {
+public class ModelComputerShort extends Model{
 	private int id;
 	private String name;
 	
-	public ModelCompany(int id, String name) {
+	public ModelComputerShort(int id, String name) {
 		this.setId(id);
 		this.setName(name);
 	}
 	
 	@Override
 	public String toString() {
-		return ("[id = " + id + ", nom de l'entreprise = " + name + "]");
+		return ("[id = " + id + ", nom de la machine = " + name + "]");
 	}
-	
+
 	// Getters
 	
 	public int getId() {

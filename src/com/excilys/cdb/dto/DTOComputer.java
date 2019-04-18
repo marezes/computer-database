@@ -16,11 +16,11 @@ public class DTOComputer extends DTO {
 	}
 	
 	public DTOComputer(String id, String name, String di, String dd, String manufacturer) {
-		this.id = id;
-		this.name = name;
-		this.di = di;
-		this.dd = dd;
-		this.manufacturer = manufacturer;
+		this.setId(id);
+		this.setName(name);
+		this.setDi(di);
+		this.setDd(dd);
+		this.setManufacturer(manufacturer);
 	}
 
 	// Getters

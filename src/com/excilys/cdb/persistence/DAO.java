@@ -36,6 +36,9 @@ public abstract class DAO implements PersistenceInterface {
         password = properties.getProperty("PASSWORD");
 	}
 	
+	/**
+	 * Méthode qui se connecte à la base de donnée.
+	 */
 	public void connect() {
 		try {
 			connexion = DriverManager.getConnection(url, user, password);
@@ -44,6 +47,9 @@ public abstract class DAO implements PersistenceInterface {
 		}
 	}
 	
+	/**
+	 * Méthode qui se déconnecte de la base de donnée.
+	 */
 	public void disconnect() {
 		try {
 			connexion.close();

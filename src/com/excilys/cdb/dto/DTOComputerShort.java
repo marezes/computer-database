@@ -1,17 +1,22 @@
 package com.excilys.cdb.dto;
 
-public class DTOCompany extends DTO {
-	private String id; 		// un id
-	private String name; 	// Nom de l'entreprise
+public class DTOComputerShort {
+	private String id; // un id
+	private String name; // Nom de l'entreprise
 	
-	public DTOCompany(String id, String name) {
+	public DTOComputerShort() {
+		this.setId(null);
+		this.setName(null);
+	}
+	
+	public DTOComputerShort(String id, String name) {
 		this.setId(id);
 		this.setName(name);
 	}
 	
 	@Override
 	public String toString() {
-		return ("[id = " + id + ", nom de l'entreprise = " + name + "]");
+		return ("[id = " + id + ", nom de la machine = " + name + "]");
 	}
 
 	// Getters
