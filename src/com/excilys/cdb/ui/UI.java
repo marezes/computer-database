@@ -136,48 +136,6 @@ public class UI implements UIInterface {
 		System.out.println("**************************************************");
 	}
 	
-//	/**
-//	 * Méthode qui affiche le message final ou d'erreur.
-//	 * (A changer par la création d'exceptions personnalisées.)
-//	 */
-//	private void responseToPrint() {
-//		switch(response[0]) {
-//		case "-1": // message d'erreur
-//			System.out.println(response[1]);
-//			break;
-//		case "0":
-//			System.out.println("  id  |  name");
-//			for (int i = 1; i < response.length; i++) {
-//				System.out.println(response[i]);
-//			}
-//			break;
-//		case "1":
-//			System.out.println("  id  |  name");
-//			for (int i = 1; i < response.length; i++) {
-//				System.out.println(response[i]);
-//			}
-//			break;
-//		case "2":
-//			System.out.println("  id  |  name  |  di  |  dd  |  manufacturer");
-//			for (int i = 1; i < response.length; i++) {
-//				System.out.println(response[i]);
-//			}
-//			break;
-//		case "3":
-//			System.out.println("Machine " + name + " créée.");
-//			break;
-//		case "4":
-//			System.out.println("Machine " + name + " mise à jour.");
-//			break;
-//		case "5":
-//			System.out.println("Machine " + name + " supprimé.");
-//			break;
-//		default:
-//			System.out.println("On ne devrait pas arriver dans le default");
-//			break;
-//		}
-//	}
-	
 	/**
 	 * Méthode qui demande les informations pour créer une nouvalle machine.
 	 */
@@ -191,28 +149,4 @@ public class UI implements UIInterface {
 		System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
 		manufacturer = sc.nextLine();
 	}
-	
-//	private void updateComputer() {
-//		System.out.println("Si vous ne voulez pas changer une entré, tapez sur la touche entrée");
-//		System.out.print("Changer le nom de la machine [" + response[1] + "] ? ");
-//		name = sc.nextLine();
-//		if (name.equals("")) {
-//			name = response[1];
-//		}
-//		System.out.print("Changer le di de la machine [" + response[2] + "] ? ");
-//		di = sc.nextLine();
-//		if (di.equals("")) {
-//			di = response[2];
-//		}
-//		System.out.print("Changer le dd de la machine [" + response[3] + "] ? ");
-//		dd = sc.nextLine();
-//		if (dd.equals("")) {
-//			dd = response[3];
-//		}
-//		System.out.print("Changer le manufacturer de la machine [" + response[4] + "] ? ");
-//		manufacturer = sc.nextLine();
-//		if (manufacturer.equals("")) {
-//			manufacturer = response[4];
-//		}
-//	}
 }
