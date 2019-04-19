@@ -2,9 +2,7 @@ package com.excilys.cdb.mapper;
 
 import java.sql.Timestamp;
 
-import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
-import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 
 public class MapperComputer implements MapperInterface {
