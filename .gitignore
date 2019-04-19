@@ -5,6 +5,7 @@ out/
 
 ### Eclipse ###
 bin/
+src/META-INFO/*.properties
 .classpath
 .settings/
 .project
@@ -24,4 +25,3 @@ nbproject/*
 *~
 *.swp
 *.lock
-*.properties
