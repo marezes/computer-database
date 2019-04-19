@@ -147,6 +147,11 @@ public class DAOComputer extends DAO {
 		}
 	}
 
+	/**
+	 * Méthode qui supprime une ligne de la base de donnée.
+	 * @param id Un entier qui représente l'id
+	 * @return Un booléen true si réussi et non sinon
+	 */
 	public boolean requestDelete(int id) {
 		Statement statement = null;
 		int statut = -1;
