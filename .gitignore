@@ -17,7 +17,6 @@ nbproject/*
 
 ### Other ###
 *.class
-*.nxj
 .DS_Store
 *.so
 *.log
@@ -25,3 +24,4 @@ nbproject/*
 *~
 *.swp
 *.lock
+*.properties
