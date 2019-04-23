@@ -5,7 +5,6 @@ out/
 
 ### Eclipse ###
 bin/
-src/META-INFO/*.properties
 *.properties
 .classpath
 .settings/
