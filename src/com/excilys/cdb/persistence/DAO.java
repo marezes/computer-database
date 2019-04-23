@@ -24,7 +24,7 @@ public abstract class DAO {
 		// Activation des properties
 		Properties properties = new Properties();
         try {
-			properties.load(new FileInputStream("src/META-INFO/properties.properties"));
+			properties.load(new FileInputStream("src/META-INF/properties.properties"));
 		} catch (IOException e) {
 			System.err.println("Appel de properties n'a pas fonctionné");
 			System.exit(1);
