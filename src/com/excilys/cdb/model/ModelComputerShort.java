@@ -1,6 +1,6 @@
 package com.excilys.cdb.model;
 
-public class ModelComputerShort extends Model{
+public class ModelComputerShort {
 	private int id;
 	private String name;
 	

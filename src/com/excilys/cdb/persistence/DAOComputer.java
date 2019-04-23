@@ -6,7 +6,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import com.excilys.cdb.model.Model;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
@@ -15,10 +14,10 @@ public class DAOComputer extends DAO {
 		super();
 	}
 
-	public ArrayList<Model> requestList() {
+	public ArrayList<ModelComputerShort> requestList() {
 		Statement statement = null;
 		ResultSet resultat = null;
-		ArrayList<Model> model = new ArrayList<Model>();
+		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
 
 		connect();
 
@@ -51,10 +50,10 @@ public class DAOComputer extends DAO {
 		return model;
 	}
 
-	public ArrayList<Model> requestById(int id) {
+	public ArrayList<ModelComputer> requestById(int id) {
 		Statement statement = null;
 		ResultSet resultat = null;
-		ArrayList<Model> model = new ArrayList<Model>();
+		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
 		connect();
 

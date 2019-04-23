@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public abstract class DAO implements PersistenceInterface {
+public abstract class DAO {
 	private String url;
 	private String user;
 	private String password;

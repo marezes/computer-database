@@ -3,14 +3,14 @@ package com.excilys.cdb.controller;
 import com.excilys.cdb.dto.*;
 import java.util.ArrayList;
 
-public class Controller implements ControllerInterface {
-	ArrayList<DTO> response;
+public class Controller {
+	ArrayList<DTOCompany> response;
 	
 	public Controller() {
 		this.response = null;
 	}
 	
-	public ArrayList<DTO> process(String... args) {
+	public ArrayList<DTOCompany> process(String... args) {
 		if (verifyArgs(args)) {
 			
 			return response;

@@ -1,6 +1,6 @@
 package com.excilys.cdb.model;
 
-public class ModelCompany extends Model {
+public class ModelCompany {
 	private int id;
 	private String name;
 	
@@ -33,4 +33,6 @@ public class ModelCompany extends Model {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 }

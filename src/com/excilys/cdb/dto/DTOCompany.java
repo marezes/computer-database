@@ -1,6 +1,6 @@
 package com.excilys.cdb.dto;
 
-public class DTOCompany extends DTO {
+public class DTOCompany {
 	private String id; 		// un id
 	private String name; 	// Nom de l'entreprise
 	

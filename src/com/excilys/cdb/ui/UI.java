@@ -6,7 +6,7 @@ import com.excilys.cdb.dto.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class UI implements UIInterface {
+public class UI {
 	private Controller controller;
 	private String request;			// La demande de l'utilisateur
 	private String id;				// un id
@@ -14,7 +14,7 @@ public class UI implements UIInterface {
 	private String di;				// date introduced
 	private String dd;				// date discontinued
 	private String manufacturer;	// le fabricant
-	private ArrayList<DTO> response;		// La réponse reçu
+	private ArrayList<DTOComputer> response;		// La réponse reçu
 	private boolean stop;			// Booléen pour l'arrêt de la boucle principale
 	private Scanner sc;				// Le scanner pour récupérer ce que l'utilisateur écrit (à changer)
 	
@@ -48,7 +48,7 @@ public class UI implements UIInterface {
 			request = sc.nextLine();
 			switch(request) {
 			case "0": // list computer
-				response = controller.process(request);
+				//response = controller.process(request);
 				System.out.println("  id  |  name");
 				for (int i = 0; i < response.size(); i++) {
 					dtocomputer = (DTOComputer) response.get(i);
@@ -60,11 +60,11 @@ public class UI implements UIInterface {
 				response = null;
 				break;
 			case "1": // list company
-				response = controller.process(request);
+				//response = controller.process(request);
 				System.out.println("  id  |  name");
 				for (int i = 0; i < response.size(); i++) {
-					dtocompany = (DTOCompany) response.get(i);
-					System.out.println(dtocompany.getId() + " " + dtocompany.getName());
+					//dtocompany = (DTOCompany) response.get(i);
+					//System.out.println(dtocompany.getId() + " " + dtocompany.getName());
 				}
 				if (response.size() == 0) {
 					System.out.println("Pas de machine.");
@@ -74,7 +74,7 @@ public class UI implements UIInterface {
 			case "2": // show computer details
 				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
 				id = sc.nextLine();
-				response = controller.process(request, id);
+				//response = controller.process(request, id);
 				System.out.println("  id  |  name  |  di  |  dd  |  manufacturer");
 				dtocomputer = (DTOComputer) response.get(0);
 				System.out.println(dtocomputer.getId() + " " + dtocomputer.getName() + " "
@@ -87,25 +87,25 @@ public class UI implements UIInterface {
 				break;
 			case "3": // create new computer
 				createNewComputer();
-				response = controller.process(request, name, di, dd, manufacturer);
+				//response = controller.process(request, name, di, dd, manufacturer);
 				//responseToPrint();
 				break;
 			case "4": // update computer
 				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
 				id = sc.nextLine();
-				response = controller.process(request, id);
+				//response = controller.process(request, id);
 				if (response.get(0).equals("-1")) {
 					//responseToPrint();
 				} else {
 					//updateComputer();
-					response = controller.process(request, name, di, dd, manufacturer);
+					//response = controller.process(request, name, di, dd, manufacturer);
 					//responseToPrint();
 				}
 				break;
 			case "5": // delete computer
 				System.out.print("Donnez l'id de la machine que vous voulez supprimer : ");
 				id = sc.nextLine();
-				response = controller.process(request, id);
+				//response = controller.process(request, id);
 				//responseToPrint();
 				break;
 			case "6": // quit program

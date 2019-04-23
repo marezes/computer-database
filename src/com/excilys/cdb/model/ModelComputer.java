@@ -2,7 +2,7 @@ package com.excilys.cdb.model;
 
 import java.sql.Timestamp;
 
-public class ModelComputer extends Model {
+public class ModelComputer {
 	private int id;
 	private String name;
 	private Timestamp di;

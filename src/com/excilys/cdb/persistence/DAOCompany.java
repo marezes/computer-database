@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.excilys.cdb.model.Model;
 import com.excilys.cdb.model.ModelCompany;
 
 public class DAOCompany extends DAO {
@@ -13,10 +12,10 @@ public class DAOCompany extends DAO {
 		super();
 	}
 
-	public ArrayList<Model> requestList() {
+	public ArrayList<ModelCompany> requestList() {
 		Statement statement = null;
 		ResultSet resultat = null;
-		ArrayList<Model> model = new ArrayList<Model>();
+		ArrayList<ModelCompany> model = new ArrayList<ModelCompany>();
 		
 		connect();
 		

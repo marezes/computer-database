@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.model.ModelComputer;
 
-public class MapperComputer implements MapperInterface {
+public class MapperComputer {
     public MapperComputer() {
     }
 
