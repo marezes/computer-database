@@ -1,115 +1,146 @@
 package com.excilys.cdb.persistence;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
-public class DAOComputer extends DAO {
-	public DAOComputer() {
+public class DAOComputer {
+	private static final DAOComputer INSTANCE = new DAOComputer();
+
+	private String url;
+	private String user;
+	private String password;
+	
+	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
+	
+	private DAOComputer() {
 		super();
+
+		/* Chargement du driver JDBC pour MySQL */
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.err.println("Erreur dans le chargement du Driver JDBC");
+		}
+
+		// Activation des properties
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream("src/META-INF/properties.properties"));
+		} catch (IOException e) {
+			System.err.println("Appel de properties n'a pas fonctionné");
+			System.exit(1);
+		}
+
+		// Récupérations des éléments dans properties
+		url = properties.getProperty("URL");
+		user = properties.getProperty("USER");
+		password = properties.getProperty("PASSWORD");
 	}
+	
+	public static DAOComputer getInstance(){
+		return INSTANCE;
+    }
 
 	public ArrayList<ModelComputerShort> requestList() {
-		Statement statement = null;
-		ResultSet resultat = null;
 		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
 
-		connect();
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
-		/* Création de l'objet gérant les requêtes */
-		try {
-			statement = getConnexion().createStatement();
-		} catch (SQLException e) {
-			System.err.println("Création du statement raté.");
-		}
-
-		/* Exécution d'une requête de lecture */
-		try {
-			resultat = statement.executeQuery("SELECT id, name FROM computer");
-		} catch (SQLException e) {
-			System.err.println("Récupération de la requête raté.");
-		}
-
-		try {
-			while (resultat.next()) {
-				int id = resultat.getInt("id");
-				String nameComputer = resultat.getString("name");
-				model.add(new ModelComputerShort(id, nameComputer));
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+	
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery(SELECT_COMPUTER_LIST)) {
+					while (resultat.next()) {
+						int id = resultat.getInt("id");
+						String nameComputer = resultat.getString("name");
+						model.add(new ModelComputerShort(id, nameComputer));
+					}
+				} catch (SQLException e) {
+					System.err.println("Récupération de la requête raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
 			}
 		} catch (SQLException e) {
-			System.err.println("while raté.");
+			System.err.println("Problème dans la connexion à la base SQL");
 		}
-
-		disconnect();
 
 		return model;
 	}
 
 	public ArrayList<ModelComputer> requestById(int id) {
-		Statement statement = null;
 		ResultSet resultat = null;
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
-		connect();
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
-		/* Création de l'objet gérant les requêtes */
-		try {
-			statement = getConnexion().createStatement();
-		} catch (SQLException e) {
-			System.err.println("Création du statement raté.");
-		}
-
-		/* Exécution d'une requête de lecture */
-		try {
-			resultat = statement.executeQuery("SELECT * FROM computer "
-					+ "LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = " + id + ";");
-		} catch (SQLException e) {
-			System.err.println("Récupération de la requête raté.");
-		}
-
-		try {
-			while (resultat.next()) {
-				String nameComputer = resultat.getString("name");
-				Timestamp di = resultat.getTimestamp("introduced");
-				Timestamp dd = resultat.getTimestamp("discontinued");
-				String company = resultat.getString("company.name");
-				model.add(new ModelComputer(id, nameComputer, di, dd, company));
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+	
+				/* Exécution d'une requête de lecture */
+				try {
+					resultat = statement.executeQuery("SELECT * FROM computer "
+							+ "LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = " + id + ";");
+				} catch (SQLException e) {
+					System.err.println("Récupération de la requête raté.");
+				}
+		
+				try {
+					while (resultat.next()) {
+						String nameComputer = resultat.getString("name");
+						Timestamp di = resultat.getTimestamp("introduced");
+						Timestamp dd = resultat.getTimestamp("discontinued");
+						String company = resultat.getString("company.name");
+						model.add(new ModelComputer(id, nameComputer, di, dd, company));
+					}
+				} catch (SQLException e) {
+					System.err.println("while raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
 			}
 		} catch (SQLException e) {
-			System.err.println("while raté.");
+			System.err.println("Problème dans la connexion à la base SQL");
 		}
 
-		disconnect();
 		return model;
 	}
 
 	public boolean requestCreate(ModelComputer model) {
-		Statement statement = null;
 		int statut = -1;
 
-		connect();
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
-		/* Création de l'objet gérant les requêtes */
-		try {
-			statement = getConnexion().createStatement();
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+	
+				/* Exécution d'une requête d'écriture */
+				try {
+					statut = statement.executeUpdate(
+							"INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES " + "(" + model.getName()
+									+ ", " + model.getDi() + ", " + model.getDd() + ", " + model.getManufacturer() + ");");
+				} catch (SQLException e) {
+					System.err.println("Exécution de la requête create raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
+			}
 		} catch (SQLException e) {
-			System.err.println("Création du statement raté.");
+			System.err.println("Problème dans la connexion à la base SQL");
 		}
-
-		/* Exécution d'une requête d'écriture */
-		try {
-			statut = statement.executeUpdate(
-					"INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES " + "(" + model.getName()
-							+ ", " + model.getDi() + ", " + model.getDd() + ", " + model.getManufacturer() + ");");
-		} catch (SQLException e) {
-			System.err.println("Exécution de la requête create raté.");
-		}
-		disconnect();
+		
 		if (statut == 0) { // échec
 			return false;
 		} else { // statut == 1 donc réussi
@@ -118,27 +149,28 @@ public class DAOComputer extends DAO {
 	}
 
 	public boolean requestUpdate(ModelComputer model) {
-		Statement statement = null;
 		int statut = -1;
 
-		connect();
-
-		/* Création de l'objet gérant les requêtes */
-		try {
-			statement = getConnexion().createStatement();
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+	
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+	
+				/* Exécution d'une requête d'écriture */
+				try {
+					statut = statement.executeUpdate("UPDATE computer SET nom = " + model.getName() + ", introduced "
+							+ model.getDi() + ", discontinued = " + model.getDd() + ", company_id = " + model.getManufacturer()
+							+ " WHERE id = " + model.getId() + ";");
+				} catch (SQLException e) {
+					System.err.println("Exécution de la requête update raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
+			}
 		} catch (SQLException e) {
-			System.err.println("Création du statement raté.");
+			System.err.println("Problème dans la connexion à la base SQL");
 		}
 
-		/* Exécution d'une requête d'écriture */
-		try {
-			statut = statement.executeUpdate("UPDATE computer SET nom = " + model.getName() + ", introduced "
-					+ model.getDi() + ", discontinued = " + model.getDd() + ", company_id = " + model.getManufacturer()
-					+ " WHERE id = " + model.getId() + ";");
-		} catch (SQLException e) {
-			System.err.println("Exécution de la requête update raté.");
-		}
-		disconnect();
 		if (statut == 0) { // échec
 			return false;
 		} else { // statut == 1 donc réussi
@@ -152,25 +184,26 @@ public class DAOComputer extends DAO {
 	 * @return Un booléen true si réussi et non sinon
 	 */
 	public boolean requestDelete(int id) {
-		Statement statement = null;
 		int statut = -1;
 
-		connect();
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
-		/* Création de l'objet gérant les requêtes */
-		try {
-			statement = getConnexion().createStatement();
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+	
+				/* Exécution d'une requête d'écriture */
+				try {
+					statut = statement.executeUpdate("DELETE FROM computer WHERE id = " + id + ";");
+				} catch (SQLException e) {
+					System.err.println("Exécution de la requête delete raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
+			}
 		} catch (SQLException e) {
-			System.err.println("Création du statement raté.");
+			System.err.println("Problème dans la connexion à la base SQL");
 		}
 
-		/* Exécution d'une requête d'écriture */
-		try {
-			statut = statement.executeUpdate("DELETE FROM computer WHERE id = " + id + ";");
-		} catch (SQLException e) {
-			System.err.println("Exécution de la requête delete raté.");
-		}
-		disconnect();
 		if (statut == 0) { // échec
 			return false;
 		} else { // statut == 1 donc réussi
