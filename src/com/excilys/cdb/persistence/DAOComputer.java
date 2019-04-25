@@ -24,6 +24,7 @@ public class DAOComputer {
 	
 	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
+	private String INSERT_MODEL = "INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	
 	private DAOComputer() {
 		super();
@@ -121,13 +122,15 @@ public class DAOComputer {
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
-			try (Statement statement = connexion.createStatement()) {
-	
+			try (PreparedStatement statement = connexion.prepareStatement(INSERT_MODEL)) {
+				
+				statement.setString(1, model.getName());
+				statement.setTimestamp(2, model.getDi());
+				statement.setTimestamp(3, model.getDd());
+				statement.setString(4, model.getManufacturer());
 				/* Exécution d'une requête d'écriture */
 				try {
-					statut = statement.executeUpdate(
-							"INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES " + "(" + model.getName()
-									+ ", " + model.getDi() + ", " + model.getDd() + ", " + model.getManufacturer() + ");");
+					statut = statement.executeUpdate();
 				} catch (SQLException e) {
 					System.err.println("Exécution de la requête create raté.");
 				}
