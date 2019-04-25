@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,6 +23,7 @@ public class DAOComputer {
 	private String password;
 	
 	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
+	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	
 	private DAOComputer() {
 		super();
@@ -81,23 +83,18 @@ public class DAOComputer {
 	}
 
 	public ArrayList<ModelComputer> requestById(int id) {
-		ResultSet resultat = null;
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
-			try (Statement statement = connexion.createStatement()) {
-	
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_BY_ID)) {
+				
+				statement.setInt(1, id);
+				
 				/* Exécution d'une requête de lecture */
-				try {
-					resultat = statement.executeQuery("SELECT * FROM computer "
-							+ "LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = " + id + ";");
-				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
-				}
-		
-				try {
+				try (ResultSet resultat = statement.executeQuery()) {
+					
 					while (resultat.next()) {
 						String nameComputer = resultat.getString("name");
 						Timestamp di = resultat.getTimestamp("introduced");
@@ -106,10 +103,10 @@ public class DAOComputer {
 						model.add(new ModelComputer(id, nameComputer, di, dd, company));
 					}
 				} catch (SQLException e) {
-					System.err.println("while raté.");
+					System.err.println("Récupération de la requête raté.");
 				}
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				System.err.println("Création du prepared statement raté.");
 			}
 		} catch (SQLException e) {
 			System.err.println("Problème dans la connexion à la base SQL");
