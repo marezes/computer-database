@@ -28,9 +28,6 @@ public class DAOComputer {
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
 	
-	/**
-	 * Méthode privé qui initialise l'objet DAOComputer en temps que singleton.S
-	 */
 	private DAOComputer() {
 		/* Chargement du driver JDBC pour MySQL */
 		try {

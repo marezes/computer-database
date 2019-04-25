@@ -22,9 +22,6 @@ public class DAOCompany {
 	
 	private String SELECT = "SELECT * FROM company;";
 
-	/**
-	 * Méthode privé qui initialise l'objet DAOCompany en temps que singleton.S
-	 */
 	private DAOCompany() {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
