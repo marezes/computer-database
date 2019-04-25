@@ -29,8 +29,6 @@ public class DAOComputer {
 	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
 	
 	private DAOComputer() {
-		super();
-
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

@@ -23,8 +23,6 @@ public class DAOCompany {
 	private String SELECT = "SELECT * FROM company;";
 
 	private DAOCompany() {
-		super();
-		
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
