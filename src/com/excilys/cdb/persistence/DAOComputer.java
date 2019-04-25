@@ -24,7 +24,8 @@ public class DAOComputer {
 	
 	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
-	private String INSERT_MODEL = "INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private String INSERT_COMPUTER = "INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	
 	private DAOComputer() {
 		super();
@@ -122,12 +123,13 @@ public class DAOComputer {
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
-			try (PreparedStatement statement = connexion.prepareStatement(INSERT_MODEL)) {
+			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
 				
 				statement.setString(1, model.getName());
 				statement.setTimestamp(2, model.getDi());
 				statement.setTimestamp(3, model.getDd());
 				statement.setString(4, model.getManufacturer());
+				
 				/* Exécution d'une requête d'écriture */
 				try {
 					statut = statement.executeUpdate();
@@ -154,13 +156,17 @@ public class DAOComputer {
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 	
 			/* Création de l'objet gérant les requêtes */
-			try (Statement statement = connexion.createStatement()) {
+			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
 	
+				statement.setString(1, model.getName());
+				statement.setTimestamp(2, model.getDi());
+				statement.setTimestamp(3, model.getDd());
+				statement.setString(4, model.getManufacturer());
+				statement.setInt(5, model.getId());
+				
 				/* Exécution d'une requête d'écriture */
 				try {
-					statut = statement.executeUpdate("UPDATE computer SET nom = " + model.getName() + ", introduced "
-							+ model.getDi() + ", discontinued = " + model.getDd() + ", company_id = " + model.getManufacturer()
-							+ " WHERE id = " + model.getId() + ";");
+					statut = statement.executeUpdate();
 				} catch (SQLException e) {
 					System.err.println("Exécution de la requête update raté.");
 				}
