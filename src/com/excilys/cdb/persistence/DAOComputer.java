@@ -26,6 +26,7 @@ public class DAOComputer {
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	private String INSERT_COMPUTER = "INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
 	
 	private DAOComputer() {
 		super();
@@ -195,11 +196,13 @@ public class DAOComputer {
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
-			try (Statement statement = connexion.createStatement()) {
+			try (PreparedStatement statement = connexion.prepareStatement(DELETE_COMPUTER)) {
 	
+				statement.setInt(1, id);
+				
 				/* Exécution d'une requête d'écriture */
 				try {
-					statut = statement.executeUpdate("DELETE FROM computer WHERE id = " + id + ";");
+					statut = statement.executeUpdate();
 				} catch (SQLException e) {
 					System.err.println("Exécution de la requête delete raté.");
 				}
