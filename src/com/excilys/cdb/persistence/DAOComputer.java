@@ -144,8 +144,8 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
 				
 				statement.setString(1, model.getName());
-				statement.setTimestamp(2, model.getDi());
-				statement.setTimestamp(3, model.getDd());
+				//statement.setTimestamp(2, model.getDi());
+				//statement.setTimestamp(3, model.getDd());
 				statement.setString(4, model.getManufacturer());
 				
 				/* Exécution d'une requête d'écriture */

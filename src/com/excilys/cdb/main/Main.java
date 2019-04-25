@@ -8,7 +8,7 @@ public class Main {
 		UI ui = new UI();
 		ui.init();
 		//ui.start();
-		DAOComputer test = new DAOComputer();
+		DAOComputer test = DAOComputer.getInstance();
 		test.requestList();
 	}
 }
