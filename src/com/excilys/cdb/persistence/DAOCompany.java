@@ -22,6 +22,9 @@ public class DAOCompany {
 	
 	private String SELECT = "SELECT * FROM company;";
 
+	/**
+	 * Méthode privé qui initialise l'objet DAOCompany en temps que singleton.S
+	 */
 	private DAOCompany() {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
@@ -45,10 +48,18 @@ public class DAOCompany {
 		password = properties.getProperty("PASSWORD");
 	}
 
+	/**
+	 * Méthode qui renvoie l'objet singleton DAOCompany.
+	 * @return Un objet de type DAOCompany
+	 */
 	public static DAOCompany getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * Méthode qui récupère la liste des entreprises dans la base de donnée et la retourne.
+	 * @return Une ArrayList de ModelCompany
+	 */
 	public ArrayList<ModelCompany> requestList() {
 		ArrayList<ModelCompany> model = new ArrayList<ModelCompany>();
 		
@@ -71,7 +82,7 @@ public class DAOCompany {
 			} catch (SQLException e) {
 				System.err.println("Création du statement raté.");
 			}
-			
+
 		} catch (SQLException e) {
 			System.err.println("Problème dans la connexion à la base SQL");
 		}

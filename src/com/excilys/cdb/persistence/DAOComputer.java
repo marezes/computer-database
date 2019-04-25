@@ -28,6 +28,9 @@ public class DAOComputer {
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
 	
+	/**
+	 * Méthode privé qui initialise l'objet DAOComputer en temps que singleton.S
+	 */
 	private DAOComputer() {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
@@ -51,10 +54,19 @@ public class DAOComputer {
 		password = properties.getProperty("PASSWORD");
 	}
 	
+	/**
+	 * Méthode qui renvoie l'objet singleton DAOComputer.
+	 * @return Un objet de type DAOComputer
+	 */
 	public static DAOComputer getInstance(){
 		return INSTANCE;
     }
 
+	/**
+	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans 
+	 * la base de donné et la retourne.
+	 * @return Une ArrayList de ModelComputerShort
+	 */
 	public ArrayList<ModelComputerShort> requestList() {
 		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
 
@@ -83,8 +95,13 @@ public class DAOComputer {
 		return model;
 	}
 
-	public ArrayList<ModelComputer> requestById(int id) {
-		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
+	/**
+	 * Méthode qui récupère le détail d'une machine.
+	 * @param id - Un entier qui représente l'id
+	 * @return Un objet de type ModelComputer
+	 */
+	public ModelComputer requestById(int id) {
+		ModelComputer model = null;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
@@ -96,13 +113,13 @@ public class DAOComputer {
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
 					
-					while (resultat.next()) {
-						String nameComputer = resultat.getString("name");
-						Timestamp di = resultat.getTimestamp("introduced");
-						Timestamp dd = resultat.getTimestamp("discontinued");
-						String company = resultat.getString("company.name");
-						model.add(new ModelComputer(id, nameComputer, di, dd, company));
-					}
+					resultat.next();
+					String nameComputer = resultat.getString("name");
+					Timestamp di = resultat.getTimestamp("introduced");
+					Timestamp dd = resultat.getTimestamp("discontinued");
+					String company = resultat.getString("company.name");
+					model = new ModelComputer(id, nameComputer, di, dd, company);
+					
 				} catch (SQLException e) {
 					System.err.println("Récupération de la requête raté.");
 				}
@@ -116,6 +133,11 @@ public class DAOComputer {
 		return model;
 	}
 
+	/**
+	 * Méthode qui créer une nouvelle machine dans la base de donnée.
+	 * @param model - Un objet de type ModelComputer
+	 * @return Un booléen true si la requête a réussi, et false sinon
+	 */
 	public boolean requestCreate(ModelComputer model) {
 		int statut = -1;
 
@@ -149,6 +171,11 @@ public class DAOComputer {
 		}
 	}
 
+	/**
+	 * Méthode qui met à jour les information d'une machine dans la base de donnée. 
+	 * @param model - Un objet de type ModelComputer
+	 * @return Un booléen true si la requête a réussi, et false sinon
+	 */
 	public boolean requestUpdate(ModelComputer model) {
 		int statut = -1;
 
@@ -184,9 +211,9 @@ public class DAOComputer {
 	}
 
 	/**
-	 * Méthode qui supprime une ligne de la base de donnée.
+	 * Méthode qui supprime une machine de la base de donnée selon un identifiant.
 	 * @param id Un entier qui représente l'id
-	 * @return Un booléen true si réussi et non sinon
+	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
 	public boolean requestDelete(int id) {
 		int statut = -1;
