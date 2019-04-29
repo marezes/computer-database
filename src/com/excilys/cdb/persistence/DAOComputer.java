@@ -76,8 +76,8 @@ public class DAOComputer {
 				try (ResultSet resultat = statement.executeQuery(SELECT_COMPUTER_LIST)) {
 					while (resultat.next()) {
 						int id = resultat.getInt("id");
-						String nameComputer = resultat.getString("name");
-						model.add(new ModelComputerShort(id, nameComputer));
+						String name = resultat.getString("name");
+						model.add(new ModelComputerShort(id, name));
 					}
 				} catch (SQLException e) {
 					System.err.println("Récupération de la requête raté.");
@@ -111,11 +111,11 @@ public class DAOComputer {
 				try (ResultSet resultat = statement.executeQuery()) {
 					
 					resultat.next();
-					String nameComputer = resultat.getString("name");
-					Timestamp di = resultat.getTimestamp("introduced");
-					Timestamp dd = resultat.getTimestamp("discontinued");
-					String company = resultat.getString("company.name");
-					model = new ModelComputer(id, nameComputer, di, dd, company);
+					String name = resultat.getString("name");
+					Timestamp introduced = resultat.getTimestamp("introduced");
+					Timestamp discontinued = resultat.getTimestamp("discontinued");
+					String manufacturer = resultat.getString("company.name");
+					model = new ModelComputer(id, name, introduced, discontinued, manufacturer);
 					
 				} catch (SQLException e) {
 					System.err.println("Récupération de la requête raté.");
@@ -144,8 +144,8 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
 				
 				statement.setString(1, model.getName());
-				//statement.setTimestamp(2, model.getDi());
-				//statement.setTimestamp(3, model.getDd());
+				statement.setTimestamp(2, model.getIntroduced());
+				statement.setTimestamp(3, model.getDiscontinued());
 				statement.setString(4, model.getManufacturer());
 				
 				/* Exécution d'une requête d'écriture */
@@ -182,8 +182,8 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
 	
 				statement.setString(1, model.getName());
-				statement.setTimestamp(2, model.getDi());
-				statement.setTimestamp(3, model.getDd());
+				statement.setTimestamp(2, model.getIntroduced());
+				statement.setTimestamp(3, model.getDiscontinued());
 				statement.setString(4, model.getManufacturer());
 				statement.setInt(5, model.getId());
 				
