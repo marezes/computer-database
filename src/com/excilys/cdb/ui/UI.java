@@ -1,7 +1,7 @@
 package com.excilys.cdb.ui;
 
 import com.excilys.cdb.controller.*;
-import com.excilys.cdb.dto.*;
+import com.excilys.cdb.enumeration.MagicNumber;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,10 +11,10 @@ public class UI {
 	private String request;			// La demande de l'utilisateur
 	private String id;				// un id
 	private String name;			// Nom de l'ordinateur
-	private String di;				// date introduced
-	private String dd;				// date discontinued
+	private String introduced;				// date introduced
+	private String discontinued;				// date discontinued
 	private String manufacturer;	// le fabricant
-	private ArrayList<DTOComputer> response;		// La réponse reçu
+	private ArrayList<String> response;		// La réponse reçu
 	private boolean stop;			// Booléen pour l'arrêt de la boucle principale
 	private Scanner sc;				// Le scanner pour récupérer ce que l'utilisateur écrit (à changer)
 	
@@ -24,14 +24,7 @@ public class UI {
 	public UI() {
 		stop = false;
 		sc = new Scanner(System.in); // (à changer)
-	}
-	
-	/**
-	 * Méthode qui sert d'initalisation à tout l'arbre.
-	 * Donc, ici précisément, on créer le controleur.
-	 */
-	public void init() {
-		this.controller = new Controller();
+		this.controller = Controller.getInstance();
 	}
 	
 	/**
@@ -39,85 +32,90 @@ public class UI {
 	 */
 	public void start() {
 		System.out.println("Bonjour et bienvenue sur votre espace utilisateur");
-		DTOComputer dtocomputer = null;
-		DTOCompany dtocompany = null;
 		
 		while(!stop) {
 			menu();
 			System.out.print("Que voulez-vous faire : ");
 			request = sc.nextLine();
-			switch(request) {
-			case "0": // list computer
-				//response = controller.process(request);
-				System.out.println("  id  |  name");
-				for (int i = 0; i < response.size(); i++) {
-					dtocomputer = (DTOComputer) response.get(i);
-					System.out.println(dtocomputer.getId() + " " + dtocomputer.getName());
-				}
-				if (response.size() == 0) {
-					System.out.println("Pas de machine.");
-				}
-				response = null;
-				break;
-			case "1": // list company
-				//response = controller.process(request);
-				System.out.println("  id  |  name");
-				for (int i = 0; i < response.size(); i++) {
-					//dtocompany = (DTOCompany) response.get(i);
-					//System.out.println(dtocompany.getId() + " " + dtocompany.getName());
-				}
-				if (response.size() == 0) {
-					System.out.println("Pas de machine.");
-				}
-				response = null;
-				break;
-			case "2": // show computer details
-				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
-				id = sc.nextLine();
-				//response = controller.process(request, id);
-				System.out.println("  id  |  name  |  di  |  dd  |  manufacturer");
-				dtocomputer = (DTOComputer) response.get(0);
-				System.out.println(dtocomputer.getId() + " " + dtocomputer.getName() + " "
-						+ dtocomputer.getDi() + " " + dtocomputer.getDd() + " "
-						+ dtocomputer.getManufacturer());
-				if (response.size() == 0) {
-					System.out.println("Pas de machine.");
-				}
-				response = null;
-				break;
-			case "3": // create new computer
-				createNewComputer();
-				//response = controller.process(request, name, di, dd, manufacturer);
-				//responseToPrint();
-				break;
-			case "4": // update computer
-				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
-				id = sc.nextLine();
-				//response = controller.process(request, id);
-				if (response.get(0).equals("-1")) {
-					//responseToPrint();
+			switch(MagicNumber.getEnum(request)) {
+			case LIST_COMPUTER:
+				response = controller.process(request);
+				
+				if (response.size() > 0) {
+					System.out.println("*************** Liste des machines ***************");
+					for (String computer : response) {
+						System.out.println(computer);
+					}
+					System.out.println("**************************************************\n");
 				} else {
-					//updateComputer();
-					//response = controller.process(request, name, di, dd, manufacturer);
-					//responseToPrint();
+					System.out.println("Pas de machine.");
 				}
+				response = null;
 				break;
-			case "5": // delete computer
+			case LIST_COMPANY:
+				response = controller.process(request);
+				
+				if (response.size() > 0) {
+					System.out.println("************** Liste des entreprises *************");
+					for (String company : response) {
+						System.out.println(company);
+					}
+					System.out.println("**************************************************\n");
+				} else {
+					System.out.println("Pas d'entreprise.");
+				}
+				response = null;
+				break;
+			case SHOW_COMPUTER_DETAILS:
+				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
+				id = sc.nextLine();
+				
+				response = controller.process(request, id);
+				
+				if (response.size() > 0) {
+					System.out.println("********************* Détail *********************");
+					String computer = response.get(0);
+					System.out.println(computer);
+					System.out.println("**************************************************\n");
+				} else {
+					System.out.println("Pas de machine avec l'identifiant " + id + ".");
+				}
+				response = null;
+				break;
+			case CREATE_COMPUTER:
+				createNewComputer();
+				response = controller.process(request, name, introduced, discontinued, manufacturer);
+				// TODO: afficher la machine créée
+				break;
+			case UPDATE_COMPUTER:
+//				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
+//				id = sc.nextLine();
+//				//response = controller.process(request, id);
+//				if (response.get(0).equals("-1")) {
+//					//responseToPrint();
+//				} else {
+//					//updateComputer();
+//					//response = controller.process(request, name, di, dd, manufacturer);
+//					//responseToPrint();
+//				}
+				break;
+			case DELETE_COMPUTER:
 				System.out.print("Donnez l'id de la machine que vous voulez supprimer : ");
 				id = sc.nextLine();
-				//response = controller.process(request, id);
-				//responseToPrint();
+				response = controller.process(request, id);
+				// TODO: afficher la machine supprimée
 				break;
-			case "6": // quit program
+			case EXIT_PROGRAM:
 				stop = true;
 				break;
-			default:
+			case UNKNOWN:
 				System.out.println("Argument " + request + " inconnu");
 				System.out.println("Recommencez");
 				break;
 			}
 		}
 		sc.close();
+		System.out.println("Session terminée.");
 	}
 	
 	/**
@@ -137,16 +135,16 @@ public class UI {
 	}
 	
 	/**
-	 * Méthode qui demande les informations pour créer une nouvalle machine.
+	 * Méthode qui demande les informations pour créer une nouvelle machine.
 	 */
 	private void createNewComputer() {
 		System.out.print("Donnez le nom de la machine que vous voulez créer : ");
 		name = sc.nextLine();
-		System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
-		di = sc.nextLine();
-		System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
-		dd = sc.nextLine();
-		System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
+		System.out.print("Donnez la date de création de la machine : ");
+		introduced = sc.nextLine();
+		System.out.print("Donnez la date de fin de production de la machine : ");
+		discontinued = sc.nextLine();
+		System.out.print("Donnez l'id de l'entreprise qui produit cette machine : ");
 		manufacturer = sc.nextLine();
 	}
 }
