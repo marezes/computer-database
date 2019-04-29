@@ -132,10 +132,10 @@ public class DAOComputer {
 
 	/**
 	 * Méthode qui créer une nouvelle machine dans la base de donnée.
-	 * @param model - Un objet de type ModelComputer
+	 * @param modelComputer - Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
-	public boolean requestCreate(ModelComputer model) {
+	public boolean requestCreate(ModelComputer modelComputer) {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -143,10 +143,10 @@ public class DAOComputer {
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
 				
-				statement.setString(1, model.getName());
-				statement.setTimestamp(2, model.getIntroduced());
-				statement.setTimestamp(3, model.getDiscontinued());
-				statement.setString(4, model.getManufacturer());
+				statement.setString(1, modelComputer.getName());
+				statement.setTimestamp(2, modelComputer.getIntroduced());
+				statement.setTimestamp(3, modelComputer.getDiscontinued());
+				statement.setString(4, modelComputer.getManufacturer());
 				
 				/* Exécution d'une requête d'écriture */
 				try {
@@ -173,7 +173,7 @@ public class DAOComputer {
 	 * @param model - Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
-	public boolean requestUpdate(ModelComputer model) {
+	public boolean requestUpdate(ModelComputer modelComputer) {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -181,11 +181,11 @@ public class DAOComputer {
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
 	
-				statement.setString(1, model.getName());
-				statement.setTimestamp(2, model.getIntroduced());
-				statement.setTimestamp(3, model.getDiscontinued());
-				statement.setString(4, model.getManufacturer());
-				statement.setInt(5, model.getId());
+				statement.setString(1, modelComputer.getName());
+				statement.setTimestamp(2, modelComputer.getIntroduced());
+				statement.setTimestamp(3, modelComputer.getDiscontinued());
+				statement.setString(4, modelComputer.getManufacturer());
+				statement.setInt(5, modelComputer.getId());
 				
 				/* Exécution d'une requête d'écriture */
 				try {
