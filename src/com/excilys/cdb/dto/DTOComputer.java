@@ -17,8 +17,8 @@ public class DTOComputer {
 
 	@Override
 	public String toString() {
-		return "DTOComputer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
-				+ discontinued + ", manufacturer=" + manufacturer + "]";
+		return "id = " + id + ", name = " + name + ", introduced = " + introduced + ", discontinued = "
+				+ discontinued + ", manufacturer = " + manufacturer;
 	}
 
 	@Override

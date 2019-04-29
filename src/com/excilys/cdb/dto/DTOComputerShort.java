@@ -16,7 +16,7 @@ public class DTOComputerShort {
 	
 	@Override
 	public String toString() {
-		return "DTOComputerShort [id=" + id + ", name=" + name + "]";
+		return "id = " + id + ", name = " + name;
 	}
 
 	@Override
