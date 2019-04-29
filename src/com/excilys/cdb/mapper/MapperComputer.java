@@ -46,8 +46,18 @@ public class MapperComputer {
 		
 		String id = String.valueOf(modelComputer.getId());
 		String name = modelComputer.getName();
-		String introduced = (modelComputer.getIntroduced()).toString();
-		String discontinued = (modelComputer.getDiscontinued()).toString();
+		String introduced;
+		String discontinued;
+		if (modelComputer.getIntroduced() != null) {
+			introduced = (modelComputer.getIntroduced()).toString();
+		} else {
+			introduced = null;
+		}
+		if (modelComputer.getDiscontinued() != null) {
+			discontinued = (modelComputer.getDiscontinued()).toString();
+		} else {
+			discontinued = null;
+		}
 		String manufacturer = (modelComputer.getManufacturer()).toString();
 		
 		return (new DTOComputer(id, name, introduced, discontinued, manufacturer));

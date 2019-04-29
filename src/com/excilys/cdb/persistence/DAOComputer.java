@@ -135,7 +135,7 @@ public class DAOComputer {
 	 * @param modelComputer - Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
-	public boolean requestCreate(ModelComputer modelComputer) {
+	public ModelComputer requestCreate(ModelComputer modelComputer) {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -162,9 +162,9 @@ public class DAOComputer {
 		}
 		
 		if (statut == 0) { // échec
-			return false;
+			return null; // à remplacer par une exception
 		} else { // statut == 1 donc réussi
-			return true;
+			return modelComputer;
 		}
 	}
 
@@ -173,7 +173,7 @@ public class DAOComputer {
 	 * @param model - Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
-	public boolean requestUpdate(ModelComputer modelComputer) {
+	public ModelComputer requestUpdate(ModelComputer modelComputer) {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -201,9 +201,9 @@ public class DAOComputer {
 		}
 
 		if (statut == 0) { // échec
-			return false;
+			return null; // à remplacer par une exception
 		} else { // statut == 1 donc réussi
-			return true;
+			return modelComputer;
 		}
 	}
 
