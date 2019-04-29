@@ -3,10 +3,8 @@ package com.excilys.cdb.mapper;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.dto.DTOComputerShort;
-import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
@@ -55,18 +53,15 @@ public class MapperComputer {
 		return (new DTOComputer(id, name, introduced, discontinued, manufacturer));
 	}
 
-    public DTOComputer modelToDTO(ModelComputer modelComputer) {
-        return null; /*(new DTOComputer(String.valueOf(modelComputer.getId()),
-                modelComputer.getName(), modelComputer.getDi().toString(),
-                modelComputer.getDd().toString(), modelComputer.getManufacturer()));*/
-    }
-
-    public ModelComputer dtoToModel(DTOComputer dtoComputer) {
+    public ModelComputer dtoComputerToModelComputer(DTOComputer dtoComputer) {
+		/* Partie avec une classe de validator qui devrait renvoyer une exception
+		 * si c'est pas bon mais qui va envoyer en attendant null */
+    	
         int id = -1;
         String name;
-        Timestamp di = null;
-        Timestamp dd = null;
-        String company;
+        Timestamp introduced = null;
+        Timestamp discontinued = null;
+        String manufacturer;
 
         try {
             id = Integer.parseInt(dtoComputer.getId());
@@ -77,19 +72,19 @@ public class MapperComputer {
         name = dtoComputer.getName();
 
         try {
-            //di = Timestamp.valueOf(dtoComputer.getDi());
+            introduced = Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
             System.err.println("Pas de Timestamp di");
         }
 
         try {
-            //Timestamp.valueOf(dtoComputer.getDd());
+            discontinued = Timestamp.valueOf(dtoComputer.getDiscontinued());
         } catch (IllegalArgumentException iae) {
             System.err.println("Pas de Timestamp dd");
         }
 
-        company = dtoComputer.getManufacturer();
+        manufacturer = dtoComputer.getManufacturer();
 
-        return (new ModelComputer(id, name, di, dd, company));
+        return (new ModelComputer(id, name, introduced, discontinued, manufacturer));
     }
 }
