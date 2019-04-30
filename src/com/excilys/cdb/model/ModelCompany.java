@@ -1,10 +1,10 @@
 package com.excilys.cdb.model;
 
 public class ModelCompany {
-	private int id;
+	private Integer id;
 	private String name;
 	
-	public ModelCompany(int id, String name) {
+	public ModelCompany(Integer id, String name) {
 		this.setId(id);
 		this.setName(name);
 	}
@@ -18,7 +18,7 @@ public class ModelCompany {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -32,7 +32,10 @@ public class ModelCompany {
 		if (getClass() != obj.getClass())
 			return false;
 		ModelCompany other = (ModelCompany) obj;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -44,7 +47,7 @@ public class ModelCompany {
 	
 	// Getters
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -54,7 +57,7 @@ public class ModelCompany {
 
 	// Setters
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

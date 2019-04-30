@@ -24,7 +24,13 @@ public class Controller {
 	public ArrayList<String> process(String... args) {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
+		
 		ArrayList<String> response = new ArrayList<String>();
+		String id;
+		String name;
+		String introduced;
+		String discontinued;
+		String companyId;
 		
 		switch(MagicNumber.getEnum(args[0])) {
 		case LIST_COMPUTER:
@@ -40,35 +46,34 @@ public class Controller {
 				.forEach(str -> response.add(str));
 			break;
 		case SHOW_COMPUTER_DETAILS:
-			String id = args[1];
+			id = args[1];
 			DTOComputer dtoComputer = serviceComputer.requestComputerDetails(id);
 			response.add(dtoComputer.toString());
 			break;
 		case CREATE_COMPUTER:
 			if (args[1].equals("")) {
-				break; // à changer
+				break; // à changer par une exception
 			}
-			String name = args[1];
-			String introduced = (args[2].equals("")?null:args[2]);
-			String discontinued = (args[3].equals("")?null:args[3]);
-			String manufacturer = (args[4].equals("")?null:args[4]);
-			DTOComputer dtoComputerToCreate = new DTOComputer("0", name, introduced, discontinued, manufacturer);
-			serviceComputer.requestCreate(dtoComputerToCreate);
-			// TODO: ajouter la partie de renvoie de résultat pour confirmer la création
+			name = args[1];
+			introduced = (args[2].equals("")?null:args[2]);
+			discontinued = (args[3].equals("")?null:args[3]);
+			companyId = (args[4].equals("")?null:args[4]);
+			DTOComputer dtoComputerToCreate = new DTOComputer(null, name, introduced, discontinued, new DTOCompany(companyId, null));
+			response.add((serviceComputer.requestCreate(dtoComputerToCreate)).toString());
 			break;
 		case UPDATE_COMPUTER:
 			name = args[1];
 			introduced = args[2];
 			discontinued = args[3];
-			manufacturer = args[4];
-			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, manufacturer);
+			companyId = args[4];
+			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, new DTOCompany(companyId, null));
 			serviceComputer.requestUpdate(dtoComputerToUpdate);
 			// TODO: ajouter la partie de renvoie de résultat pour confirmer la mise à jours
 			break;
 		case DELETE_COMPUTER:
 			id = args[1];
-			serviceComputer.requestDelete(id);
-			// TODO: ajouter la partie de renvoie de résultat pour confirmer la suppression
+			DTOComputer dtoComputerDeleted = serviceComputer.requestDelete(id);
+			response.add(dtoComputerDeleted.toString());
 			break;
 		case EXIT_PROGRAM: break;
 		case UNKNOWN: break;

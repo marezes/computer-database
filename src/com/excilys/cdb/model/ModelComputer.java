@@ -3,24 +3,24 @@ package com.excilys.cdb.model;
 import java.sql.Timestamp;
 
 public class ModelComputer {
-	private int id;
+	private Integer id;
 	private String name;
 	private Timestamp introduced;
 	private Timestamp discontinued;
-	private String manufacturer;
+	private ModelCompany modelCompany;
 	
-	public ModelComputer(int id, String name, Timestamp introduced, Timestamp discontinued, String manufacturer) {
+	public ModelComputer(Integer id, String name, Timestamp introduced, Timestamp discontinued, ModelCompany modelCompany) {
 		this.setId(id);
 		this.setName(name);
 		this.setIntroduced(introduced);
 		this.setDiscontinued(discontinued);
-		this.setManufacturer(manufacturer);
+		this.modelCompany = modelCompany;
 	}
 	
 	@Override
 	public String toString() {
 		return "ModelComputer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
-				+ discontinued + ", manufacturer=" + manufacturer + "]";
+				+ discontinued + ", modelCompany=" + modelCompany.toString() + "]";
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ModelComputer {
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
-		result = prime * result + ((manufacturer == null) ? 0 : manufacturer.hashCode());
+		result = prime * result + ((modelCompany == null) ? 0 : modelCompany.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -56,10 +56,10 @@ public class ModelComputer {
 				return false;
 		} else if (!introduced.equals(other.introduced))
 			return false;
-		if (manufacturer == null) {
-			if (other.manufacturer != null)
+		if (modelCompany == null) {
+			if (other.modelCompany != null)
 				return false;
-		} else if (!manufacturer.equals(other.manufacturer))
+		} else if (!modelCompany.equals(other.modelCompany))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -71,7 +71,7 @@ public class ModelComputer {
 
 	// Getters
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -87,13 +87,13 @@ public class ModelComputer {
 		return discontinued;
 	}
 
-	public String getManufacturer() {
-		return manufacturer;
+	public ModelCompany getModelCompany() {
+		return modelCompany;
 	}
 
 	// Setters
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -109,7 +109,7 @@ public class ModelComputer {
 		this.discontinued = discontinued;
 	}
 
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
+	public void setModelCompany(ModelCompany modelCompany) {
+		this.modelCompany = modelCompany;
 	}
 }

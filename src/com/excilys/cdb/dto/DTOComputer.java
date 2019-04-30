@@ -5,20 +5,20 @@ public class DTOComputer {
 	private String name; // Nom de l'ordinateur
 	private String introduced; // date introduced
 	private String discontinued; // date discontinued
-	private String manufacturer; // le fabricant
+	private DTOCompany dtoCompany; // informations de l'entreprise
 	
-	public DTOComputer(String id, String name, String introduced, String discontinued, String manufacturer) {
+	public DTOComputer(String id, String name, String introduced, String discontinued, DTOCompany dtoCompany) {
 		this.setId(id);
 		this.setName(name);
 		this.setIntroduced(introduced);
 		this.setDiscontinued(discontinued);
-		this.setManufacturer(manufacturer);
+		this.dtoCompany = dtoCompany;
 	}
 
 	@Override
 	public String toString() {
 		return "id = " + id + ", name = " + name + ", introduced = " + introduced + ", discontinued = "
-				+ discontinued + ", manufacturer = " + manufacturer;
+				+ discontinued + ", dtoCompany [" + dtoCompany.toString() + "]";
 	}
 
 	@Override
@@ -26,9 +26,9 @@ public class DTOComputer {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
+		result = prime * result + ((dtoCompany == null) ? 0 : dtoCompany.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
-		result = prime * result + ((manufacturer == null) ? 0 : manufacturer.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -47,6 +47,11 @@ public class DTOComputer {
 				return false;
 		} else if (!discontinued.equals(other.discontinued))
 			return false;
+		if (dtoCompany == null) {
+			if (other.dtoCompany != null)
+				return false;
+		} else if (!dtoCompany.equals(other.dtoCompany))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -56,11 +61,6 @@ public class DTOComputer {
 			if (other.introduced != null)
 				return false;
 		} else if (!introduced.equals(other.introduced))
-			return false;
-		if (manufacturer == null) {
-			if (other.manufacturer != null)
-				return false;
-		} else if (!manufacturer.equals(other.manufacturer))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -88,8 +88,8 @@ public class DTOComputer {
 		return discontinued;
 	}
 
-	public String getManufacturer() {
-		return manufacturer;
+	public DTOCompany getDtoCompany() {
+		return dtoCompany;
 	}
 
 	// Setters
@@ -110,7 +110,7 @@ public class DTOComputer {
 		this.discontinued = discontinued;
 	}
 
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
+	public void setDtoCompany(DTOCompany dtoCompany) {
+		this.dtoCompany = dtoCompany;
 	}
 }

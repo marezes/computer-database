@@ -1,10 +1,10 @@
 package com.excilys.cdb.model;
 
 public class ModelComputerShort {
-	private int id;
+	private Integer id;
 	private String name;
 	
-	public ModelComputerShort(int id, String name) {
+	public ModelComputerShort(Integer id, String name) {
 		this.setId(id);
 		this.setName(name);
 	}
@@ -44,7 +44,7 @@ public class ModelComputerShort {
 
 	// Getters
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -54,7 +54,7 @@ public class ModelComputerShort {
 
 	// Setters
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

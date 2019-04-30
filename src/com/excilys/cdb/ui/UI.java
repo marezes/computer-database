@@ -73,7 +73,7 @@ public class UI {
 				response = controller.process(request, id);
 				
 				if (response.size() > 0) {
-					System.out.println("********************* Détail *********************");
+					System.out.println("\n********************* Détail *********************");
 					String computer = response.get(0);
 					System.out.println(computer);
 					System.out.println("**************************************************\n");
@@ -85,6 +85,14 @@ public class UI {
 			case CREATE_COMPUTER:
 				createNewComputer();
 				response = controller.process(request, name, introduced, discontinued, manufacturer);
+				if (response.size() > 0) {
+					System.out.println("\n************ Requête créée avec succès ***********");
+					String rowCreated = response.get(0);
+					System.out.println(rowCreated);
+					System.out.println("**************************************************\n");
+				} else {
+					System.out.println("Pas de machine avec l'identifiant " + id + ".");
+				}
 				// TODO: afficher la machine créée
 				break;
 			case UPDATE_COMPUTER:
@@ -103,6 +111,14 @@ public class UI {
 				System.out.print("Donnez l'id de la machine que vous voulez supprimer : ");
 				id = sc.nextLine();
 				response = controller.process(request, id);
+				if (response.size() > 0) {
+					System.out.println("\n********** Requête supprimé avec succès **********");
+					String rowDeleted = response.get(0);
+					System.out.println(rowDeleted);
+					System.out.println("**************************************************\n");
+				} else {
+					System.out.println("Pas de machine avec l'identifiant " + id + ".");
+				}
 				// TODO: afficher la machine supprimée
 				break;
 			case EXIT_PROGRAM:
@@ -140,6 +156,10 @@ public class UI {
 	private void createNewComputer() {
 		System.out.print("Donnez le nom de la machine que vous voulez créer : ");
 		name = sc.nextLine();
+		while (name.equals("")) {
+			System.out.print("Veuillez donner un nom à la machine que vous voulez créer : ");
+			name = sc.nextLine();
+		}
 		System.out.print("Donnez la date de création de la machine : ");
 		introduced = sc.nextLine();
 		System.out.print("Donnez la date de fin de production de la machine : ");

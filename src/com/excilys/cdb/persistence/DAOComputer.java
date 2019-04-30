@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
@@ -24,9 +25,10 @@ public class DAOComputer {
 	
 	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
-	private String INSERT_COMPUTER = "INSERT INTO computer (nom, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
+	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID()";
 	
 	private DAOComputer() {
 		/* Chargement du driver JDBC pour MySQL */
@@ -114,8 +116,9 @@ public class DAOComputer {
 					String name = resultat.getString("name");
 					Timestamp introduced = resultat.getTimestamp("introduced");
 					Timestamp discontinued = resultat.getTimestamp("discontinued");
-					String manufacturer = resultat.getString("company.name");
-					model = new ModelComputer(id, name, introduced, discontinued, manufacturer);
+					Integer companyId = resultat.getInt("company_id") == 0 ? null: resultat.getInt("company_id");
+					String companyName = resultat.getString("company.name");
+					model = new ModelComputer(id, name, introduced, discontinued, new ModelCompany(companyId, companyName));
 					
 				} catch (SQLException e) {
 					System.err.println("Récupération de la requête raté.");
@@ -144,15 +147,34 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
 				
 				statement.setString(1, modelComputer.getName());
-				statement.setTimestamp(2, modelComputer.getIntroduced());
-				statement.setTimestamp(3, modelComputer.getDiscontinued());
-				statement.setString(4, modelComputer.getManufacturer());
+				if (modelComputer.getIntroduced() == null) {
+					statement.setNull(2, java.sql.Types.TIMESTAMP);
+				} else {
+					statement.setTimestamp(2, modelComputer.getIntroduced());
+				}
+				if (modelComputer.getDiscontinued() == null) {
+					statement.setNull(3, java.sql.Types.TIMESTAMP);
+				} else {
+					statement.setTimestamp(3, modelComputer.getDiscontinued());
+				}
+				if (modelComputer.getModelCompany().getId() == -1) {
+					statement.setNull(4, java.sql.Types.INTEGER);
+				} else {
+					statement.setInt(4, modelComputer.getModelCompany().getId());
+				}
 				
 				/* Exécution d'une requête d'écriture */
 				try {
 					statut = statement.executeUpdate();
 				} catch (SQLException e) {
 					System.err.println("Exécution de la requête create raté.");
+				}
+				
+				try (ResultSet resultat = statement.executeQuery(SELECT_LAST_ID_ELEMENT_INSERTED)) {
+					resultat.next();
+					modelComputer.setId(resultat.getInt(1));
+				} catch (SQLException e) {
+					System.err.println("Récupération de la requête raté.");
 				}
 			} catch (SQLException e) {
 				System.err.println("Création du statement raté.");
@@ -182,9 +204,21 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
 	
 				statement.setString(1, modelComputer.getName());
-				statement.setTimestamp(2, modelComputer.getIntroduced());
-				statement.setTimestamp(3, modelComputer.getDiscontinued());
-				statement.setString(4, modelComputer.getManufacturer());
+				if (modelComputer.getIntroduced() == null) {
+					statement.setNull(2, java.sql.Types.TIMESTAMP);
+				} else {
+					statement.setTimestamp(2, modelComputer.getIntroduced());
+				}
+				if (modelComputer.getDiscontinued() == null) {
+					statement.setNull(3, java.sql.Types.TIMESTAMP);
+				} else {
+					statement.setTimestamp(3, modelComputer.getDiscontinued());
+				}
+				if (modelComputer.getModelCompany().getId() == -1) {
+					statement.setNull(4, java.sql.Types.INTEGER);
+				} else {
+					statement.setInt(4, modelComputer.getModelCompany().getId());
+				}
 				statement.setInt(5, modelComputer.getId());
 				
 				/* Exécution d'une requête d'écriture */
@@ -212,8 +246,13 @@ public class DAOComputer {
 	 * @param id Un entier qui représente l'id
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 */
-	public boolean requestDelete(int id) {
+	public ModelComputer requestDelete(int id) {
 		int statut = -1;
+		ModelComputer modelComputerDeleted = requestById(id);
+		
+		if (modelComputerDeleted == null) {
+			return null; // il faut une exception
+		}
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
@@ -223,22 +262,15 @@ public class DAOComputer {
 				statement.setInt(1, id);
 				
 				/* Exécution d'une requête d'écriture */
-				try {
-					statut = statement.executeUpdate();
-				} catch (SQLException e) {
-					System.err.println("Exécution de la requête delete raté.");
-				}
+				statut = statement.executeUpdate();
+				return (statut == 1) ? modelComputerDeleted : null;
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				System.err.println("Delete raté."+e.getStackTrace());
+				throw e;
 			}
 		} catch (SQLException e) {
 			System.err.println("Problème dans la connexion à la base SQL");
-		}
-
-		if (statut == 0) { // échec
-			return false;
-		} else { // statut == 1 donc réussi
-			return true;
+			return null;
 		}
 	}
 }

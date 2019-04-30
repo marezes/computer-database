@@ -48,23 +48,23 @@ public class ServiceComputer {
 		return mapperComputer.modelComputerToDTOComputer(daoComputer.requestById(idComputer));
 	}
 	
-	public boolean requestCreate(DTOComputer dtoComputer) {
+	public DTOComputer requestCreate(DTOComputer dtoComputer) {
 		ModelComputer modelComputer = mapperComputer.dtoComputerToModelComputer(dtoComputer);
-		return daoComputer.requestCreate(modelComputer);
+		return mapperComputer.modelComputerToDTOComputer(daoComputer.requestCreate(modelComputer));
 	}
 	
-	public boolean requestUpdate(DTOComputer dtoComputer) {
+	public DTOComputer requestUpdate(DTOComputer dtoComputer) {
 		ModelComputer modelComputer = mapperComputer.dtoComputerToModelComputer(dtoComputer);
-		return daoComputer.requestUpdate(modelComputer);
+		return mapperComputer.modelComputerToDTOComputer(daoComputer.requestUpdate(modelComputer));
 	}
 	
-	public boolean requestDelete(String id) {
+	public DTOComputer requestDelete(String id) {
 		int idComputer = -1;
 		try {
 			idComputer = Integer.parseInt(id);
 		} catch (NumberFormatException nfe) {
 			System.err.println("Problème au serviceComputer, pas un integer");
 		}
-		return daoComputer.requestDelete(idComputer);
+		return mapperComputer.modelComputerToDTOComputer(daoComputer.requestDelete(idComputer));
 	}
 }

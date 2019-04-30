@@ -3,8 +3,10 @@ package com.excilys.cdb.mapper;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.dto.DTOComputerShort;
+import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
@@ -48,6 +50,7 @@ public class MapperComputer {
 		String name = modelComputer.getName();
 		String introduced;
 		String discontinued;
+		
 		if (modelComputer.getIntroduced() != null) {
 			introduced = (modelComputer.getIntroduced()).toString();
 		} else {
@@ -58,43 +61,49 @@ public class MapperComputer {
 		} else {
 			discontinued = null;
 		}
-		String manufacturer = (modelComputer.getManufacturer()).toString();
+		String companyId = String.valueOf(modelComputer.getModelCompany().getId());
+		String companyName;
+		if (modelComputer.getModelCompany().getName() != null) {
+			companyName = (modelComputer.getModelCompany().getName()).toString();
+		} else {
+			companyName = null;
+		}
 		
-		return (new DTOComputer(id, name, introduced, discontinued, manufacturer));
+		return (new DTOComputer(id, name, introduced, discontinued, new DTOCompany(companyId, companyName)));
 	}
 
     public ModelComputer dtoComputerToModelComputer(DTOComputer dtoComputer) {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
     	
-        int id = -1;
         String name;
         Timestamp introduced = null;
         Timestamp discontinued = null;
-        String manufacturer;
-
-        try {
-            id = Integer.parseInt(dtoComputer.getId());
-        } catch (NumberFormatException nfe) {
-            System.err.println("Pas un integer pour id");
-        }
+        Integer companyId = null;
+        String companyName;
 
         name = dtoComputer.getName();
 
         try {
             introduced = Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
-            System.err.println("Pas de Timestamp di");
+            System.err.println("Pas de Timestamp introduced");
         }
 
         try {
             discontinued = Timestamp.valueOf(dtoComputer.getDiscontinued());
         } catch (IllegalArgumentException iae) {
-            System.err.println("Pas de Timestamp dd");
+            System.err.println("Pas de Timestamp discontinued");
+        }
+        
+        try {
+            companyId = Integer.parseInt(dtoComputer.getDtoCompany().getId());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Pas un integer pour companyId");
         }
 
-        manufacturer = dtoComputer.getManufacturer();
+        companyName = dtoComputer.getDtoCompany().getName();
 
-        return (new ModelComputer(id, name, introduced, discontinued, manufacturer));
+        return (new ModelComputer(null, name, introduced, discontinued, new ModelCompany(companyId, companyName)));
     }
 }
