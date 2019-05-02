@@ -34,6 +34,23 @@ public class ServiceComputer {
 		return mapperComputer.modelComputerShortListToDTOComputerShortList(daoComputer.requestList());
 	}
 	
+	public ArrayList<DTOComputerShort> requestListLimit(String pageNumber, String numberOfElement) {
+		int pageNumberList = -1;
+		int numberOfElementList = -1;
+		try {
+			pageNumberList = Integer.parseInt(pageNumber);
+		} catch (NumberFormatException e) {
+			System.err.println("pageNumber n'est pas un entier");
+		}
+		try {
+			numberOfElementList = Integer.parseInt(numberOfElement);
+		} catch (NumberFormatException e) {
+			System.err.println("pageNumber n'est pas un entier");
+		}
+		
+		return mapperComputer.modelComputerShortListToDTOComputerShortList(daoComputer.requestListLimit(pageNumberList, numberOfElementList));
+	}
+	
 	/**
 	 * Méthode qui récupère le détail d'une machine par son id.
 	 * @return Un objet de type DTOComputer

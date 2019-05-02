@@ -34,7 +34,9 @@ public class Controller {
 		
 		switch(MagicNumber.getEnum(args[0])) {
 		case LIST_COMPUTER:
-			ArrayList<DTOComputerShort> resultDtoComputerShort = serviceComputer.requestList();
+			String pageNumber = args[1];
+			String numberOfElement = args[2];
+			ArrayList<DTOComputerShort> resultDtoComputerShort = serviceComputer.requestListLimit(pageNumber, numberOfElement);
 			resultDtoComputerShort.stream()
 				.map(object -> object.toString())
 				.forEach(str -> response.add(str));

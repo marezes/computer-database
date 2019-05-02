@@ -17,6 +17,8 @@ public class UI {
 	private ArrayList<String> response;		// La réponse reçu
 	private boolean stop;			// Booléen pour l'arrêt de la boucle principale
 	private Scanner sc;				// Le scanner pour récupérer ce que l'utilisateur écrit (à changer)
+	private String pageNumber;		// Le numéro de la page à afficher
+	private String numberOfElement;	// Le nombre d'éléments à afficher par page
 	
 	/**
 	 * Constructeur sans argument.
@@ -39,7 +41,12 @@ public class UI {
 			request = sc.nextLine();
 			switch(MagicNumber.getEnum(request)) {
 			case LIST_COMPUTER:
-				response = controller.process(request);
+				System.out.print("Quelle page voulez-vous afficher : ");
+				pageNumber = sc.nextLine();
+				System.out.print("Combien d'éléments voulez-vous afficher : ");
+				numberOfElement = sc.nextLine();
+				
+				response = controller.process(request, pageNumber, numberOfElement);
 				
 				if (response.size() > 0) {
 					System.out.println("*************** Liste des machines ***************");

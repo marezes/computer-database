@@ -24,6 +24,7 @@ public class DAOComputer {
 	private String password;
 	
 	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
+	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -76,6 +77,42 @@ public class DAOComputer {
 	
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery(SELECT_COMPUTER_LIST)) {
+					while (resultat.next()) {
+						int id = resultat.getInt("id");
+						String name = resultat.getString("name");
+						model.add(new ModelComputerShort(id, name));
+					}
+				} catch (SQLException e) {
+					System.err.println("Récupération de la requête raté.");
+				}
+			} catch (SQLException e) {
+				System.err.println("Création du statement raté.");
+			}
+		} catch (SQLException e) {
+			System.err.println("Problème dans la connexion à la base SQL");
+		}
+
+		return model;
+	}
+	
+	/**
+	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans 
+	 * la base de donné et la retourne.
+	 * @return Une ArrayList de ModelComputerShort
+	 */
+	public ArrayList<ModelComputerShort> requestListLimit(int pageNumber, int numberOfElement) {
+		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
+
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_LIST_LIMIT)) {
+	
+				statement.setInt(1, ((pageNumber - 1) * numberOfElement));
+				statement.setInt(2, numberOfElement);
+				
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery()) {
 					while (resultat.next()) {
 						int id = resultat.getInt("id");
 						String name = resultat.getString("name");
