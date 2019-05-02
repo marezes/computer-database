@@ -14,7 +14,7 @@ import com.excilys.cdb.model.ModelCompany;
 
 public class DAOCompany {
 	
-	private static final DAOCompany INSTANCE = new DAOCompany();
+	private static DAOCompany INSTANCE = null;
 	
 	private String url;
 	private String user;
@@ -22,12 +22,13 @@ public class DAOCompany {
 	
 	private String SELECT = "SELECT * FROM company;";
 
-	private DAOCompany() {
+	private DAOCompany() throws Exception {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			System.err.println("Erreur dans le chargement du Driver JDBC");
+			// System.err.println("Erreur dans le chargement du Driver JDBC");
+			throw e;
 		}
 
 		/* Activation des properties */
@@ -35,8 +36,8 @@ public class DAOCompany {
 		try {
 			properties.load(new FileInputStream("src/META-INF/properties.properties"));
 		} catch (IOException e) {
-			System.err.println("Appel de properties n'a pas fonctionné");
-			System.exit(1);
+			//System.err.println("Appel de properties n'a pas fonctionné");
+			throw e;
 		}
 
 		/* Récupérations des éléments dans properties */
@@ -48,16 +49,21 @@ public class DAOCompany {
 	/**
 	 * Méthode qui renvoie l'objet singleton DAOCompany.
 	 * @return Un objet de type DAOCompany
+	 * @throws Exception 
 	 */
-	public static DAOCompany getInstance() {
+	public static DAOCompany getInstance() throws Exception {
+		if (INSTANCE == null) {
+			INSTANCE = new DAOCompany();
+		}
 		return INSTANCE;
 	}
 
 	/**
 	 * Méthode qui récupère la liste des entreprises dans la base de donnée et la retourne.
 	 * @return Une ArrayList de ModelCompany
+	 * @throws SQLException 
 	 */
-	public ArrayList<ModelCompany> requestList() {
+	public ArrayList<ModelCompany> requestList() throws SQLException {
 		ArrayList<ModelCompany> model = new ArrayList<ModelCompany>();
 		
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -73,15 +79,18 @@ public class DAOCompany {
 						model.add(new ModelCompany(id, name));
 					}
 				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
 				}
 				
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				// System.err.println("Création du statement raté.");
+				throw e;
 			}
 
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
 
 		return model;

@@ -11,7 +11,7 @@ import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
 public class MapperComputer {
-	private static final MapperComputer INSTANCE = new MapperComputer();
+	private static MapperComputer INSTANCE = null;
 	
     private MapperComputer() {
     }
@@ -21,6 +21,9 @@ public class MapperComputer {
 	 * @return Un objet de type MapperComputer
 	 */
 	public static MapperComputer getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new MapperComputer();
+		}
 		return INSTANCE;
 	}
 	
@@ -85,21 +88,24 @@ public class MapperComputer {
         name = dtoComputer.getName();
 
         try {
-            introduced = Timestamp.valueOf(dtoComputer.getIntroduced());
+            introduced = (dtoComputer.getIntroduced().equals("null")) ? null : Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
-            System.err.println("Pas de Timestamp introduced");
+            // System.err.println("Pas de Timestamp introduced");
+            throw iae;
         }
 
         try {
-            discontinued = Timestamp.valueOf(dtoComputer.getDiscontinued());
+            discontinued = (dtoComputer.getDiscontinued().equals("null")) ? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
         } catch (IllegalArgumentException iae) {
-            System.err.println("Pas de Timestamp discontinued");
+            // System.err.println("Pas de Timestamp discontinued");
+            throw iae;
         }
         
         try {
             companyId = Integer.parseInt(dtoComputer.getDtoCompany().getId());
         } catch (NumberFormatException nfe) {
-            System.err.println("Pas un integer pour companyId");
+            // System.err.println("Pas un integer pour companyId");
+            throw nfe;
         }
 
         companyName = dtoComputer.getDtoCompany().getName();

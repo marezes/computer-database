@@ -100,7 +100,6 @@ public class UI {
 				} else {
 					System.out.println("Pas de machine avec l'identifiant " + id + ".");
 				}
-				// TODO: afficher la machine créée
 				break;
 			case UPDATE_COMPUTER:
 //				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
@@ -126,7 +125,6 @@ public class UI {
 				} else {
 					System.out.println("Pas de machine avec l'identifiant " + id + ".");
 				}
-				// TODO: afficher la machine supprimée
 				break;
 			case EXIT_PROGRAM:
 				stop = true;

@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -17,26 +16,26 @@ import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
 public class DAOComputer {
-	private static final DAOComputer INSTANCE = new DAOComputer();
+	private static DAOComputer INSTANCE = null;
 
 	private String url;
 	private String user;
 	private String password;
-	
-	private String SELECT_COMPUTER_LIST = "SELECT id, name FROM computer";
+
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	private String DELETE_COMPUTER =  "DELETE FROM computer WHERE id = ?";
+	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?";
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID()";
-	
-	private DAOComputer() {
+
+	private DAOComputer() throws Exception {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			System.err.println("Erreur dans le chargement du Driver JDBC");
+			// System.err.println("Erreur dans le chargement du Driver JDBC");
+			throw e;
 		}
 
 		// Activation des properties
@@ -44,8 +43,8 @@ public class DAOComputer {
 		try {
 			properties.load(new FileInputStream("src/META-INF/properties.properties"));
 		} catch (IOException e) {
-			System.err.println("Appel de properties n'a pas fonctionné");
-			System.exit(1);
+			// System.err.println("Appel de properties n'a pas fonctionné");
+			throw e;
 		}
 
 		// Récupérations des éléments dans properties
@@ -53,64 +52,40 @@ public class DAOComputer {
 		user = properties.getProperty("USER");
 		password = properties.getProperty("PASSWORD");
 	}
-	
+
 	/**
 	 * Méthode qui renvoie l'objet singleton DAOComputer.
+	 * 
 	 * @return Un objet de type DAOComputer
+	 * @throws Exception
 	 */
-	public static DAOComputer getInstance(){
-		return INSTANCE;
-    }
-
-	/**
-	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans 
-	 * la base de donné et la retourne.
-	 * @return Une ArrayList de ModelComputerShort
-	 */
-	public ArrayList<ModelComputerShort> requestList() {
-		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
-
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
-
-			/* Création de l'objet gérant les requêtes */
-			try (Statement statement = connexion.createStatement()) {
-	
-				/* Exécution d'une requête de lecture */
-				try (ResultSet resultat = statement.executeQuery(SELECT_COMPUTER_LIST)) {
-					while (resultat.next()) {
-						int id = resultat.getInt("id");
-						String name = resultat.getString("name");
-						model.add(new ModelComputerShort(id, name));
-					}
-				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
-				}
-			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
-			}
-		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+	public static DAOComputer getInstance() throws Exception {
+		if (INSTANCE == null) {
+			INSTANCE = new DAOComputer();
 		}
-
-		return model;
+		return INSTANCE;
 	}
-	
+
 	/**
-	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans 
-	 * la base de donné et la retourne.
+	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans la
+	 * base de donné et la retourne.
+	 * 
+	 * @param pageNumber      Un entier représentant le numéro de la page à afficher
+	 * @param numberOfElement Un entier représantant le nombre d'éléments à afficher par page
 	 * @return Une ArrayList de ModelComputerShort
+	 * @throws Exception
 	 */
-	public ArrayList<ModelComputerShort> requestListLimit(int pageNumber, int numberOfElement) {
+	public ArrayList<ModelComputerShort> requestListLimit(int pageNumber, int numberOfElement) throws Exception {
 		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_LIST_LIMIT)) {
-	
+
 				statement.setInt(1, ((pageNumber - 1) * numberOfElement));
 				statement.setInt(2, numberOfElement);
-				
+
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
 					while (resultat.next()) {
@@ -119,13 +94,16 @@ public class DAOComputer {
 						model.add(new ModelComputerShort(id, name));
 					}
 				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
 				}
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				// System.err.println("Création du statement raté.");
+				throw e;
 			}
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
 
 		return model;
@@ -133,38 +111,44 @@ public class DAOComputer {
 
 	/**
 	 * Méthode qui récupère le détail d'une machine.
+	 * 
 	 * @param id - Un entier qui représente l'id
 	 * @return Un objet de type ModelComputer
+	 * @throws Exception
 	 */
-	public ModelComputer requestById(int id) {
+	public ModelComputer requestById(int id) throws Exception {
 		ModelComputer model = null;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_BY_ID)) {
-				
+
 				statement.setInt(1, id);
-				
+
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
-					
+
 					resultat.next();
 					String name = resultat.getString("name");
 					Timestamp introduced = resultat.getTimestamp("introduced");
 					Timestamp discontinued = resultat.getTimestamp("discontinued");
-					Integer companyId = resultat.getInt("company_id") == 0 ? null: resultat.getInt("company_id");
+					Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
 					String companyName = resultat.getString("company.name");
-					model = new ModelComputer(id, name, introduced, discontinued, new ModelCompany(companyId, companyName));
-					
+					model = new ModelComputer(id, name, introduced, discontinued,
+							new ModelCompany(companyId, companyName));
+
 				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
 				}
 			} catch (SQLException e) {
-				System.err.println("Création du prepared statement raté.");
+				// System.err.println("Création du prepared statement raté.");
+				throw e;
 			}
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
 
 		return model;
@@ -172,17 +156,19 @@ public class DAOComputer {
 
 	/**
 	 * Méthode qui créer une nouvelle machine dans la base de donnée.
+	 * 
 	 * @param modelComputer - Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
+	 * @throws Exception
 	 */
-	public ModelComputer requestCreate(ModelComputer modelComputer) {
+	public ModelComputer requestCreate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
-				
+
 				statement.setString(1, modelComputer.getName());
 				if (modelComputer.getIntroduced() == null) {
 					statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -199,47 +185,48 @@ public class DAOComputer {
 				} else {
 					statement.setInt(4, modelComputer.getModelCompany().getId());
 				}
-				
+
 				/* Exécution d'une requête d'écriture */
 				try {
 					statut = statement.executeUpdate();
 				} catch (SQLException e) {
-					System.err.println("Exécution de la requête create raté.");
+					// System.err.println("Exécution de la requête create raté.");
+					throw e;
 				}
-				
+
 				try (ResultSet resultat = statement.executeQuery(SELECT_LAST_ID_ELEMENT_INSERTED)) {
 					resultat.next();
 					modelComputer.setId(resultat.getInt(1));
 				} catch (SQLException e) {
-					System.err.println("Récupération de la requête raté.");
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
 				}
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				// System.err.println("Création du statement raté.");
+				throw e;
 			}
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
-		
-		if (statut == 0) { // échec
-			return null; // à remplacer par une exception
-		} else { // statut == 1 donc réussi
-			return modelComputer;
-		}
+		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
 	}
 
 	/**
-	 * Méthode qui met à jour les information d'une machine dans la base de donnée. 
-	 * @param model - Un objet de type ModelComputer
+	 * Méthode qui met à jour les information d'une machine dans la base de donnée.
+	 * 
+	 * @param model Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon
+	 * @throws Exception
 	 */
-	public ModelComputer requestUpdate(ModelComputer modelComputer) {
+	public ModelComputer requestUpdate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
-	
+
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
-	
+
 				statement.setString(1, modelComputer.getName());
 				if (modelComputer.getIntroduced() == null) {
 					statement.setNull(2, java.sql.Types.TIMESTAMP);
@@ -257,36 +244,36 @@ public class DAOComputer {
 					statement.setInt(4, modelComputer.getModelCompany().getId());
 				}
 				statement.setInt(5, modelComputer.getId());
-				
+
 				/* Exécution d'une requête d'écriture */
 				try {
 					statut = statement.executeUpdate();
 				} catch (SQLException e) {
-					System.err.println("Exécution de la requête update raté.");
+					// System.err.println("Exécution de la requête update raté.");
+					throw e;
 				}
 			} catch (SQLException e) {
-				System.err.println("Création du statement raté.");
+				// System.err.println("Création du statement raté.");
+				throw e;
 			}
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
-
-		if (statut == 0) { // échec
-			return null; // à remplacer par une exception
-		} else { // statut == 1 donc réussi
-			return modelComputer;
-		}
+		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
 	}
 
 	/**
 	 * Méthode qui supprime une machine de la base de donnée selon un identifiant.
+	 * 
 	 * @param id Un entier qui représente l'id
 	 * @return Un booléen true si la requête a réussi, et false sinon
+	 * @throws Exception
 	 */
-	public ModelComputer requestDelete(int id) {
+	public ModelComputer requestDelete(int id) throws Exception {
 		int statut = -1;
 		ModelComputer modelComputerDeleted = requestById(id);
-		
+
 		if (modelComputerDeleted == null) {
 			return null; // il faut une exception
 		}
@@ -295,19 +282,20 @@ public class DAOComputer {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(DELETE_COMPUTER)) {
-	
+
 				statement.setInt(1, id);
-				
+
 				/* Exécution d'une requête d'écriture */
 				statut = statement.executeUpdate();
-				return (statut == 1) ? modelComputerDeleted : null;
 			} catch (SQLException e) {
-				System.err.println("Delete raté."+e.getStackTrace());
+				// System.err.println("Delete raté."+e.getStackTrace());
 				throw e;
 			}
 		} catch (SQLException e) {
-			System.err.println("Problème dans la connexion à la base SQL");
-			return null;
+			// System.err.println("Problème dans la connexion à la base SQL");
+			throw e;
 		}
+
+		return (statut == 1) ? modelComputerDeleted : null; // une exception à la place de null;
 	}
 }

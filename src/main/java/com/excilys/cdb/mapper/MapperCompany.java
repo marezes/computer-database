@@ -6,7 +6,7 @@ import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.model.ModelCompany;
 
 public class MapperCompany {
-	private static final MapperCompany INSTANCE = new MapperCompany();
+	private static MapperCompany INSTANCE = null;
 	
 	private MapperCompany() {
 	}
@@ -16,6 +16,9 @@ public class MapperCompany {
 	 * @return Un objet de type MapperCompany
 	 */
 	public static MapperCompany getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new MapperCompany();
+		}
 		return INSTANCE;
 	}
 	

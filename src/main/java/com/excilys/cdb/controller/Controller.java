@@ -13,8 +13,12 @@ public class Controller {
 	private ServiceComputer serviceComputer;
 	
 	private Controller() {
-		this.serviceCompany = ServiceCompany.getInstance();
-		this.serviceComputer = ServiceComputer.getInstance();
+		try {
+			this.serviceCompany = ServiceCompany.getInstance();
+			this.serviceComputer = ServiceComputer.getInstance();
+		} catch (Exception e) {
+			printErrors(e);
+		}
 	}
 
 	public static Controller getInstance() {
@@ -36,20 +40,35 @@ public class Controller {
 		case LIST_COMPUTER:
 			String pageNumber = args[1];
 			String numberOfElement = args[2];
-			ArrayList<DTOComputerShort> resultDtoComputerShort = serviceComputer.requestListLimit(pageNumber, numberOfElement);
+			ArrayList<DTOComputerShort> resultDtoComputerShort = null;
+			try {
+				resultDtoComputerShort = serviceComputer.requestListLimit(pageNumber, numberOfElement);
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			resultDtoComputerShort.stream()
 				.map(object -> object.toString())
 				.forEach(str -> response.add(str));
 			break;
 		case LIST_COMPANY:
-			ArrayList<DTOCompany> resultDtoCompany = serviceCompany.requestList();
+			ArrayList<DTOCompany> resultDtoCompany = null;
+			try {
+				resultDtoCompany = serviceCompany.requestList();
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			resultDtoCompany.stream()
 				.map(object -> object.toString())
 				.forEach(str -> response.add(str));
 			break;
 		case SHOW_COMPUTER_DETAILS:
 			id = args[1];
-			DTOComputer dtoComputer = serviceComputer.requestComputerDetails(id);
+			DTOComputer dtoComputer = null;
+			try {
+				dtoComputer = serviceComputer.requestComputerDetails(id);
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			response.add(dtoComputer.toString());
 			break;
 		case CREATE_COMPUTER:
@@ -61,7 +80,11 @@ public class Controller {
 			discontinued = (args[3].equals("")?null:args[3]);
 			companyId = (args[4].equals("")?null:args[4]);
 			DTOComputer dtoComputerToCreate = new DTOComputer(null, name, introduced, discontinued, new DTOCompany(companyId, null));
-			response.add((serviceComputer.requestCreate(dtoComputerToCreate)).toString());
+			try {
+				response.add((serviceComputer.requestCreate(dtoComputerToCreate)).toString());
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			break;
 		case UPDATE_COMPUTER:
 			name = args[1];
@@ -69,12 +92,21 @@ public class Controller {
 			discontinued = args[3];
 			companyId = args[4];
 			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, new DTOCompany(companyId, null));
-			serviceComputer.requestUpdate(dtoComputerToUpdate);
+			try {
+				serviceComputer.requestUpdate(dtoComputerToUpdate);
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			// TODO: ajouter la partie de renvoie de résultat pour confirmer la mise à jours
 			break;
 		case DELETE_COMPUTER:
 			id = args[1];
-			DTOComputer dtoComputerDeleted = serviceComputer.requestDelete(id);
+			DTOComputer dtoComputerDeleted = null;
+			try {
+				dtoComputerDeleted = serviceComputer.requestDelete(id);
+			} catch (Exception e) {
+				printErrors(e);
+			}
 			response.add(dtoComputerDeleted.toString());
 			break;
 		case EXIT_PROGRAM: break;
@@ -83,28 +115,8 @@ public class Controller {
 		
 		return response;
 	}
-	
-//	/**
-//	 * Méthode qui vérifie que l'argument n'est pas vide, ai le bon nombre, et qu'il
-//	 * n'y ait pas de String vide.
-//	 * @param args La liste des arguments
-//	 * @return Un booléen pour dire si c'est bon ou pas
-//	 */
-//	private boolean verifyArgs(String[] args) {
-//		if (args.length <= 0 || args.length > 5) {
-//			return false;
-//		}
-//		if (args[0].length() == 0) {
-//			return false;
-//		} else {
-//			for (int i = 1; i < args.length; i++) {
-//				if (args[i] == null) {
-//					continue;
-//				} else if (args[i].length() == 0) {
-//					return false;
-//				}
-//			}
-//		}
-//		return true;
-//	}
+
+	public void printErrors(Exception e) {
+		System.out.println(e.getMessage());
+	}
 }
