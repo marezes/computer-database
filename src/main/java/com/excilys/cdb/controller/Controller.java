@@ -79,7 +79,7 @@ public class Controller {
 			introduced = (args[2].equals("")?null:args[2]);
 			discontinued = (args[3].equals("")?null:args[3]);
 			companyId = (args[4].equals("")?null:args[4]);
-			DTOComputer dtoComputerToCreate = new DTOComputer(null, name, introduced, discontinued, new DTOCompany(companyId, null));
+			DTOComputer dtoComputerToCreate = new DTOComputer(null, name, introduced, discontinued, companyId, null);
 			try {
 				response.add((serviceComputer.requestCreate(dtoComputerToCreate)).toString());
 			} catch (Exception e) {
@@ -91,7 +91,7 @@ public class Controller {
 			introduced = args[2];
 			discontinued = args[3];
 			companyId = args[4];
-			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, new DTOCompany(companyId, null));
+			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, companyId, null);
 			try {
 				serviceComputer.requestUpdate(dtoComputerToUpdate);
 			} catch (Exception e) {

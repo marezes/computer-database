@@ -5,8 +5,8 @@ public class DTOCompany {
 	private String name; 	// Nom de l'entreprise
 	
 	public DTOCompany(String id, String name) {
-		this.setId(id);
-		this.setName(name);
+		this.id = id;
+		this.name = name;
 	}
 	
 	@Override

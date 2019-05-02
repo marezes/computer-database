@@ -3,7 +3,6 @@ package com.excilys.cdb.mapper;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.dto.DTOComputerShort;
 import com.excilys.cdb.model.ModelCompany;
@@ -72,7 +71,7 @@ public class MapperComputer {
 			companyName = null;
 		}
 		
-		return (new DTOComputer(id, name, introduced, discontinued, new DTOCompany(companyId, companyName)));
+		return (new DTOComputer(id, name, introduced, discontinued, companyId, companyName));
 	}
 
     public ModelComputer dtoComputerToModelComputer(DTOComputer dtoComputer) {
@@ -102,13 +101,13 @@ public class MapperComputer {
         }
         
         try {
-            companyId = Integer.parseInt(dtoComputer.getDtoCompany().getId());
+            companyId = Integer.parseInt(dtoComputer.getCompanyId());
         } catch (NumberFormatException nfe) {
             // System.err.println("Pas un integer pour companyId");
             throw nfe;
         }
 
-        companyName = dtoComputer.getDtoCompany().getName();
+        companyName = dtoComputer.getCompanyName();
 
         return (new ModelComputer(null, name, introduced, discontinued, new ModelCompany(companyId, companyName)));
     }
