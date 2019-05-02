@@ -213,7 +213,7 @@ public class DAOComputer {
 	}
 
 	/**
-	 * Méthode qui met à jour les information d'une machine dans la base de donnée.
+	 * Méthode qui met à jour les informations d'une machine dans la base de donnée.
 	 * 
 	 * @param model Un objet de type ModelComputer
 	 * @return Un booléen true si la requête a réussi, et false sinon

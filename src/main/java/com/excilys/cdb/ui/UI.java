@@ -102,9 +102,9 @@ public class UI {
 				}
 				break;
 			case UPDATE_COMPUTER:
-//				System.out.print("Donnez l'id de la machine que vous voulez afficher : ");
-//				id = sc.nextLine();
-//				//response = controller.process(request, id);
+				System.out.print("Donnez l'id de la machine que vous voulez modifier : ");
+				id = sc.nextLine();
+				response = controller.process(MagicNumber.SHOW_COMPUTER_DETAILS.toString(), id);
 //				if (response.get(0).equals("-1")) {
 //					//responseToPrint();
 //				} else {

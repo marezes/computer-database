@@ -93,11 +93,10 @@ public class Controller {
 			companyId = args[4];
 			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, companyId, null);
 			try {
-				serviceComputer.requestUpdate(dtoComputerToUpdate);
+				response.add(serviceComputer.requestUpdate(dtoComputerToUpdate).toString());
 			} catch (Exception e) {
 				printErrors(e);
 			}
-			// TODO: ajouter la partie de renvoie de résultat pour confirmer la mise à jours
 			break;
 		case DELETE_COMPUTER:
 			id = args[1];
