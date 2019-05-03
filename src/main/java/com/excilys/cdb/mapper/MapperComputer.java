@@ -87,6 +87,7 @@ public class MapperComputer {
         name = dtoComputer.getName();
 
         try {
+        	//if (!dtoComputer.getIntroduced().equals("")) {
             introduced = (dtoComputer.getIntroduced().equals("null")) ? null : Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
             // System.err.println("Pas de Timestamp introduced");

@@ -8,17 +8,20 @@ import java.util.Scanner;
 
 public class UI {
 	private Controller controller;
-	private String request;			// La demande de l'utilisateur
-	private String id;				// un id
-	private String name;			// Nom de l'ordinateur
-	private String introduced;				// date introduced
-	private String discontinued;				// date discontinued
-	private String manufacturer;	// le fabricant
-	private ArrayList<String> response;		// La réponse reçu
-	private boolean stop;			// Booléen pour l'arrêt de la boucle principale
-	private Scanner sc;				// Le scanner pour récupérer ce que l'utilisateur écrit (à changer)
-	private String pageNumber;		// Le numéro de la page à afficher
-	private String numberOfElement;	// Le nombre d'éléments à afficher par page
+	private ArrayList<String> response;	// La réponse reçu
+	
+	private String request;				// La demande de l'utilisateur
+	private String id;					// un id
+	private String name;				// Nom de l'ordinateur
+	private String introduced;			// date introduced
+	private String discontinued;		// date discontinued
+	private String company;				// le fabricant
+	
+	private String pageNumber;			// Le numéro de la page à afficher
+	private String numberOfElement;		// Le nombre d'éléments à afficher par page
+	
+	private boolean stop;				// Booléen pour l'arrêt de la boucle principale
+	private Scanner sc;					// Le scanner pour récupérer ce que l'utilisateur écrit (à changer)
 	
 	/**
 	 * Constructeur sans argument.
@@ -79,7 +82,7 @@ public class UI {
 				
 				response = controller.process(request, id);
 				
-				if (response.size() > 0) {
+				if (response.size() == 1) {
 					System.out.println("\n********************* Détail *********************");
 					String computer = response.get(0);
 					System.out.println(computer);
@@ -91,27 +94,35 @@ public class UI {
 				break;
 			case CREATE_COMPUTER:
 				createNewComputer();
-				response = controller.process(request, name, introduced, discontinued, manufacturer);
+				response = controller.process(request, name, introduced, discontinued, company);
 				if (response.size() > 0) {
 					System.out.println("\n************ Requête créée avec succès ***********");
 					String rowCreated = response.get(0);
 					System.out.println(rowCreated);
 					System.out.println("**************************************************\n");
 				} else {
-					System.out.println("Pas de machine avec l'identifiant " + id + ".");
+					System.out.println("La machine " + name + " n'a pas pu être créée.");
 				}
 				break;
 			case UPDATE_COMPUTER:
 				System.out.print("Donnez l'id de la machine que vous voulez modifier : ");
 				id = sc.nextLine();
-				response = controller.process(MagicNumber.SHOW_COMPUTER_DETAILS.toString(), id);
-//				if (response.get(0).equals("-1")) {
-//					//responseToPrint();
-//				} else {
-//					//updateComputer();
-//					//response = controller.process(request, name, di, dd, manufacturer);
-//					//responseToPrint();
-//				}
+				response = controller.process((MagicNumber.SHOW_COMPUTER_DETAILS).toString(), id);
+				if (response.size() != 1) {
+					System.out.println("L'identifiant " + id + " n'existe pas.");
+					break;
+				}
+
+				elementToUpdate(response.remove(0));
+				response = controller.process(request, id, name, introduced, discontinued, company);
+				if (response.size() > 0) {
+					System.out.println("\n********* Requête mise à jour avec succès ********");
+					String rowUpdated = response.get(0);
+					System.out.println(rowUpdated);
+					System.out.println("**************************************************\n");
+				} else {
+					System.out.println("Pas de machine avec l'identifiant " + id + ".");
+				}
 				break;
 			case DELETE_COMPUTER:
 				System.out.print("Donnez l'id de la machine que vous voulez supprimer : ");
@@ -159,6 +170,7 @@ public class UI {
 	 * Méthode qui demande les informations pour créer une nouvelle machine.
 	 */
 	private void createNewComputer() {
+		String time = "";
 		System.out.print("Donnez le nom de la machine que vous voulez créer : ");
 		name = sc.nextLine();
 		while (name.equals("")) {
@@ -167,9 +179,52 @@ public class UI {
 		}
 		System.out.print("Donnez la date de création de la machine : ");
 		introduced = sc.nextLine();
+		System.out.print("Donnez l'heure de création de la machine : ");
+		time = sc.nextLine();
+		if (!time.equals("")) {
+			introduced += (" " + time);
+		}
 		System.out.print("Donnez la date de fin de production de la machine : ");
 		discontinued = sc.nextLine();
+		System.out.print("Donnez l'heure de fin de production de la machine : ");
+		time = sc.nextLine();
+		if (!time.equals("")) {
+			discontinued += (" " + time);
+		}
+		// TODO: tester si les jours et heures sont correct
+		// TODO: tester si discontinued > introduced
 		System.out.print("Donnez l'id de l'entreprise qui produit cette machine : ");
-		manufacturer = sc.nextLine();
+		company = sc.nextLine();
+	}
+	
+	/**
+	 * Méthode qui demande les informations pour mettre à jour une machine.
+	 */
+	private void elementToUpdate(String element) {
+		String time = "";
+		System.out.println("\n*************** Requête a changer ****************");
+		System.out.println(element);
+		System.out.println("**************************************************");
+		System.out.println("\nLorsque vous désirez pas changer l'argument, taper sur [entrer] sans rien mettre");
+		System.out.print("Quel nom voulez-vous donner : ");
+		name = sc.nextLine();
+		System.out.print("Quel est la date de création de la machine (YYYY-MM-DD) : ");
+		introduced = sc.nextLine();
+		System.out.print("Quel est l'heure de création de la machine (HH:MM:SS) : ");
+		time = sc.nextLine();
+		if (!time.equals("")) {
+			introduced += (" " + time);
+		}
+		System.out.print("Quel est la date de fin de production de la machine (YYYY-MM-DD) : ");
+		discontinued = sc.nextLine();
+		System.out.print("Quel est l'heure de fin de production de la machine (HH:MM:SS) : ");
+		time = sc.nextLine();
+		if (!time.equals("")) {
+			discontinued += (" " + time);
+		}
+		// TODO: tester si les jours et heures sont correct
+		// TODO: tester si discontinued > introduced
+		System.out.print("Quel est l'id de l'entreprise qui produit cette machine : ");
+		company = sc.nextLine();
 	}
 }

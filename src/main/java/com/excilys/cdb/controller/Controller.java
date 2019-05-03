@@ -87,11 +87,12 @@ public class Controller {
 			}
 			break;
 		case UPDATE_COMPUTER:
-			name = args[1];
-			introduced = args[2];
-			discontinued = args[3];
-			companyId = args[4];
-			DTOComputer dtoComputerToUpdate = new DTOComputer("0", name, introduced, discontinued, companyId, null);
+			id = args[1];
+			name = args[2];
+			introduced = args[3];
+			discontinued = args[4];
+			companyId = args[5];
+			DTOComputer dtoComputerToUpdate = new DTOComputer(id, name, introduced, discontinued, companyId, null);
 			try {
 				response.add(serviceComputer.requestUpdate(dtoComputerToUpdate).toString());
 			} catch (Exception e) {

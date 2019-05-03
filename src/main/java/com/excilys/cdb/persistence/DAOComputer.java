@@ -221,6 +221,14 @@ public class DAOComputer {
 	 */
 	public ModelComputer requestUpdate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
+		
+		ModelComputer modelComputerToUpdate = requestById(modelComputer.getId());
+
+		if (modelComputerToUpdate == null) {
+			return null; // il faut une exception
+		}
+		
+		
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
@@ -228,6 +236,7 @@ public class DAOComputer {
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
 
 				statement.setString(1, modelComputer.getName());
+				
 				if (modelComputer.getIntroduced() == null) {
 					statement.setNull(2, java.sql.Types.TIMESTAMP);
 				} else {
@@ -272,6 +281,7 @@ public class DAOComputer {
 	 */
 	public ModelComputer requestDelete(int id) throws Exception {
 		int statut = -1;
+		
 		ModelComputer modelComputerDeleted = requestById(id);
 
 		if (modelComputerDeleted == null) {
