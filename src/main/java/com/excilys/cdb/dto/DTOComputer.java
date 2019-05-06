@@ -19,8 +19,11 @@ public class DTOComputer {
 
 	@Override
 	public String toString() {
-		return "id = " + id + ", name = " + name + ", introduced = " + introduced + ", discontinued = "
-				+ discontinued + ", dtoCompany [ id = " + companyId + ", name = " + companyName + "]";
+		return "id = " + id + ", name = " + name 
+				+ ", introduced = " + (introduced == null ? "vide" : introduced) 
+				+ ", discontinued = " + (discontinued == null ? "vide" : discontinued)
+				+ ", Company [ id = " + (companyId == null ? "vide" : companyId) 
+				+ ", name = " + (companyName == null ? "vide" : companyName) + "]";
 	}
 
 	@Override

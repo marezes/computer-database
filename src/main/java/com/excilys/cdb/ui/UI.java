@@ -170,6 +170,8 @@ public class UI {
 	 * Méthode qui demande les informations pour créer une nouvelle machine.
 	 */
 	private void createNewComputer() {
+		System.out.println("\nLorsque vous ne désirez pas mettre d'argument, taper sur [entrer] sans rien mettre"
+				+ "Cependant le nom est obligatoire");
 		String time = "";
 		System.out.print("Donnez le nom de la machine que vous voulez créer : ");
 		name = sc.nextLine();
@@ -177,16 +179,16 @@ public class UI {
 			System.out.print("Veuillez donner un nom à la machine que vous voulez créer : ");
 			name = sc.nextLine();
 		}
-		System.out.print("Donnez la date de création de la machine : ");
+		System.out.print("Donnez la date de création de la machine (AAA-MM-JJ) : ");
 		introduced = sc.nextLine();
-		System.out.print("Donnez l'heure de création de la machine : ");
+		System.out.print("Donnez l'heure de création de la machine (HH:MM:SS) : ");
 		time = sc.nextLine();
 		if (!time.equals("")) {
 			introduced += (" " + time);
 		}
-		System.out.print("Donnez la date de fin de production de la machine : ");
+		System.out.print("Donnez la date de fin de production de la machine (AAA-MM-JJ) : ");
 		discontinued = sc.nextLine();
-		System.out.print("Donnez l'heure de fin de production de la machine : ");
+		System.out.print("Donnez l'heure de fin de production de la machine (HH:MM:SS) : ");
 		time = sc.nextLine();
 		if (!time.equals("")) {
 			discontinued += (" " + time);
@@ -205,17 +207,19 @@ public class UI {
 		System.out.println("\n*************** Requête a changer ****************");
 		System.out.println(element);
 		System.out.println("**************************************************");
-		System.out.println("\nLorsque vous désirez pas changer l'argument, taper sur [entrer] sans rien mettre");
+		System.out.println("Lorsque vous ne désirez pas changer l'argument, taper sur [entrer] sans rien mettre\n"
+				+ "Si vous voulez vider l'argument, tapez \"vider\" sans guillemet puis sur [entrer]"
+				+ "Attention: si vous taper vider sur le nom, cela changera le nom de la machine existant par le mot \"vider\"");
 		System.out.print("Quel nom voulez-vous donner : ");
 		name = sc.nextLine();
-		System.out.print("Quel est la date de création de la machine (YYYY-MM-DD) : ");
+		System.out.print("Quel est la date de création de la machine (AAA-MM-JJ) : ");
 		introduced = sc.nextLine();
 		System.out.print("Quel est l'heure de création de la machine (HH:MM:SS) : ");
 		time = sc.nextLine();
 		if (!time.equals("")) {
 			introduced += (" " + time);
 		}
-		System.out.print("Quel est la date de fin de production de la machine (YYYY-MM-DD) : ");
+		System.out.print("Quel est la date de fin de production de la machine (AAA-MM-JJ) : ");
 		discontinued = sc.nextLine();
 		System.out.print("Quel est l'heure de fin de production de la machine (HH:MM:SS) : ");
 		time = sc.nextLine();

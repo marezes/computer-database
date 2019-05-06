@@ -79,6 +79,32 @@ public class ServiceComputer {
 	}
 	
 	public DTOComputer requestUpdate(DTOComputer dtoComputer) throws Exception {
+		DTOComputer dtoComputerAlreadyInDatabase = requestComputerDetails(dtoComputer.getId()); // exception si pas d'élément existant
+		
+		if (dtoComputer.getIntroduced().equals("")) {
+			dtoComputer.setName(dtoComputerAlreadyInDatabase.getName());
+		}
+		
+		if (dtoComputer.getIntroduced().equals("vider")) {
+			dtoComputer.setIntroduced("");
+		} else if (dtoComputer.getIntroduced().equals("")) {
+			dtoComputer.setIntroduced(dtoComputerAlreadyInDatabase.getIntroduced());
+		}
+		
+		if (dtoComputer.getDiscontinued().equals("vider")) {
+			dtoComputer.setDiscontinued("");
+		} else if (dtoComputer.getDiscontinued().equals("")) {
+			dtoComputer.setDiscontinued(dtoComputerAlreadyInDatabase.getDiscontinued());
+		}
+		
+		if (dtoComputer.getCompanyId().equals("vider")) {
+			dtoComputer.setCompanyId("");
+			dtoComputer.setCompanyName("");
+		} else if (dtoComputer.getCompanyId().equals("")) {
+			dtoComputer.setCompanyId(dtoComputerAlreadyInDatabase.getCompanyId());
+			dtoComputer.setCompanyName(dtoComputerAlreadyInDatabase.getCompanyName());
+		}
+		
 		ModelComputer modelComputer = mapperComputer.dtoComputerToModelComputer(dtoComputer);
 		return mapperComputer.modelComputerToDTOComputer(daoComputer.requestUpdate(modelComputer));
 	}

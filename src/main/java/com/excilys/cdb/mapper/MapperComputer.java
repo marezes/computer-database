@@ -47,29 +47,17 @@ public class MapperComputer {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
 		
-		
 		String id = String.valueOf(modelComputer.getId());
-		String name = modelComputer.getName();
-		String introduced;
-		String discontinued;
 		
-		if (modelComputer.getIntroduced() != null) {
-			introduced = (modelComputer.getIntroduced()).toString();
-		} else {
-			introduced = null;
-		}
-		if (modelComputer.getDiscontinued() != null) {
-			discontinued = (modelComputer.getDiscontinued()).toString();
-		} else {
-			discontinued = null;
-		}
+		String name = modelComputer.getName();
+		
+		String introduced =  (modelComputer.getIntroduced() == null) ? null : (modelComputer.getIntroduced()).toString();
+		
+		String discontinued = (modelComputer.getDiscontinued() == null) ? null : (modelComputer.getDiscontinued()).toString();
+		
 		String companyId = String.valueOf(modelComputer.getModelCompany().getId());
-		String companyName;
-		if (modelComputer.getModelCompany().getName() != null) {
-			companyName = (modelComputer.getModelCompany().getName()).toString();
-		} else {
-			companyName = null;
-		}
+		
+		String companyName = (modelComputer.getModelCompany().getName() == null) ? null : (modelComputer.getModelCompany().getName()).toString();
 		
 		return (new DTOComputer(id, name, introduced, discontinued, companyId, companyName));
 	}
@@ -78,24 +66,29 @@ public class MapperComputer {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
     	
+    	Integer id = null;
         String name;
         Timestamp introduced = null;
         Timestamp discontinued = null;
         Integer companyId = null;
         String companyName;
 
+        try {
+        	id = Integer.parseInt(dtoComputer.getId());
+        } catch (NumberFormatException nfe) {
+        	throw nfe;
+        }
         name = dtoComputer.getName();
 
         try {
-        	//if (!dtoComputer.getIntroduced().equals("")) {
-            introduced = (dtoComputer.getIntroduced().equals("null")) ? null : Timestamp.valueOf(dtoComputer.getIntroduced());
+            introduced = (dtoComputer.getIntroduced().equals("")) ? null : Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
             // System.err.println("Pas de Timestamp introduced");
             throw iae;
         }
 
         try {
-            discontinued = (dtoComputer.getDiscontinued().equals("null")) ? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
+            discontinued = (dtoComputer.getDiscontinued().equals("")) ? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
         } catch (IllegalArgumentException iae) {
             // System.err.println("Pas de Timestamp discontinued");
             throw iae;
@@ -110,6 +103,6 @@ public class MapperComputer {
 
         companyName = dtoComputer.getCompanyName();
 
-        return (new ModelComputer(null, name, introduced, discontinued, new ModelCompany(companyId, companyName)));
+        return (new ModelComputer(id, name, introduced, discontinued, new ModelCompany(companyId, companyName)));
     }
 }

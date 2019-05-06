@@ -25,7 +25,7 @@ public class DAOComputer {
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
-	private String UPDATE_COMPUTER = "UPDATE computer SET nom = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?";
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID()";
 
@@ -180,7 +180,7 @@ public class DAOComputer {
 				} else {
 					statement.setTimestamp(3, modelComputer.getDiscontinued());
 				}
-				if (modelComputer.getModelCompany().getId() == -1) {
+				if (modelComputer.getModelCompany().getId() == null) {
 					statement.setNull(4, java.sql.Types.INTEGER);
 				} else {
 					statement.setInt(4, modelComputer.getModelCompany().getId());
@@ -209,6 +209,8 @@ public class DAOComputer {
 			// System.err.println("Problème dans la connexion à la base SQL");
 			throw e;
 		}
+		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
+		(modelComputer.getModelCompany()).setName(companyNameMissing);
 		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
 	}
 
@@ -221,14 +223,6 @@ public class DAOComputer {
 	 */
 	public ModelComputer requestUpdate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
-		
-		ModelComputer modelComputerToUpdate = requestById(modelComputer.getId());
-
-		if (modelComputerToUpdate == null) {
-			return null; // il faut une exception
-		}
-		
-		
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
 
@@ -242,16 +236,19 @@ public class DAOComputer {
 				} else {
 					statement.setTimestamp(2, modelComputer.getIntroduced());
 				}
+				
 				if (modelComputer.getDiscontinued() == null) {
 					statement.setNull(3, java.sql.Types.TIMESTAMP);
 				} else {
 					statement.setTimestamp(3, modelComputer.getDiscontinued());
 				}
-				if (modelComputer.getModelCompany().getId() == -1) {
+				
+				if (modelComputer.getModelCompany().getId() == null) {
 					statement.setNull(4, java.sql.Types.INTEGER);
 				} else {
 					statement.setInt(4, modelComputer.getModelCompany().getId());
 				}
+
 				statement.setInt(5, modelComputer.getId());
 
 				/* Exécution d'une requête d'écriture */
@@ -269,6 +266,8 @@ public class DAOComputer {
 			// System.err.println("Problème dans la connexion à la base SQL");
 			throw e;
 		}
+		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
+		(modelComputer.getModelCompany()).setName(companyNameMissing);
 		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
 	}
 
