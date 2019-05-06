@@ -55,7 +55,7 @@ public class MapperComputer {
 		
 		String discontinued = (modelComputer.getDiscontinued() == null) ? null : (modelComputer.getDiscontinued()).toString();
 		
-		String companyId = String.valueOf(modelComputer.getModelCompany().getId());
+		String companyId = (modelComputer.getModelCompany().getId()) == null ? null : (modelComputer.getModelCompany().getId()).toString();
 		
 		String companyName = (modelComputer.getModelCompany().getName() == null) ? null : (modelComputer.getModelCompany().getName()).toString();
 		
