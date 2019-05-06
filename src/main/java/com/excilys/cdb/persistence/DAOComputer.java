@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.excilys.cdb.exception.JDBCClassNotFoundException;
+import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
 import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
@@ -29,22 +31,20 @@ public class DAOComputer {
 	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?";
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID()";
 
-	private DAOComputer() throws Exception {
+	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Drivers");
 		} catch (ClassNotFoundException e) {
-			// System.err.println("Erreur dans le chargement du Driver JDBC");
-			throw e;
+			throw new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
 		}
 
 		// Activation des properties
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream("src/META-INF/properties.properties"));
+			properties.load(new FileInputStream("src/META-INF/config.properties"));
 		} catch (IOException e) {
-			// System.err.println("Appel de properties n'a pas fonctionné");
-			throw e;
+			throw new PropertiesFileLoadFailedException("config.properties");
 		}
 
 		// Récupérations des éléments dans properties
