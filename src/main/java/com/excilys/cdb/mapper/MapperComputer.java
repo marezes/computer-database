@@ -51,13 +51,21 @@ public class MapperComputer {
 		
 		String name = modelComputer.getName();
 		
-		String introduced =  (modelComputer.getIntroduced() == null) ? null : (modelComputer.getIntroduced()).toString();
+		String introduced =  
+				(modelComputer.getIntroduced() == null) 
+				? null : (modelComputer.getIntroduced()).toString();
 		
-		String discontinued = (modelComputer.getDiscontinued() == null) ? null : (modelComputer.getDiscontinued()).toString();
+		String discontinued = 
+				(modelComputer.getDiscontinued() == null) 
+				? null : (modelComputer.getDiscontinued()).toString();
 		
-		String companyId = (modelComputer.getModelCompany().getId()) == null ? null : (modelComputer.getModelCompany().getId()).toString();
+		String companyId = 
+				(modelComputer.getModelCompany().getId()) == null 
+				? null : (modelComputer.getModelCompany().getId()).toString();
 		
-		String companyName = (modelComputer.getModelCompany().getName() == null) ? null : (modelComputer.getModelCompany().getName()).toString();
+		String companyName = 
+				(modelComputer.getModelCompany().getName() == null) 
+				? null : (modelComputer.getModelCompany().getName()).toString();
 		
 		return (new DTOComputer(id, name, introduced, discontinued, companyId, companyName));
 	}
@@ -81,14 +89,18 @@ public class MapperComputer {
         name = dtoComputer.getName();
 
         try {
-            introduced = (dtoComputer.getIntroduced().equals("")) ? null : Timestamp.valueOf(dtoComputer.getIntroduced());
+            introduced = 
+            		(dtoComputer.getIntroduced().equals("")) 
+            		? null : Timestamp.valueOf(dtoComputer.getIntroduced());
         } catch (IllegalArgumentException iae) {
             // System.err.println("Pas de Timestamp introduced");
             throw iae;
         }
 
         try {
-            discontinued = (dtoComputer.getDiscontinued().equals("")) ? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
+            discontinued = 
+            		(dtoComputer.getDiscontinued().equals("")) 
+            		? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
         } catch (IllegalArgumentException iae) {
             // System.err.println("Pas de Timestamp discontinued");
             throw iae;
