@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.excilys.cdb.exception.ConnectionToDataBaseFailedException;
 import com.excilys.cdb.exception.JDBCClassNotFoundException;
 import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
 import com.excilys.cdb.model.ModelCompany;
@@ -34,7 +35,7 @@ public class DAOComputer {
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
-			Class.forName("com.mysql.cj.jdbc.Drivers");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			throw new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
 		}
@@ -42,9 +43,9 @@ public class DAOComputer {
 		// Activation des properties
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream("src/META-INF/config.properties"));
+			properties.load(new FileInputStream("src/META-INF/properties.properties"));
 		} catch (IOException e) {
-			throw new PropertiesFileLoadFailedException("config.properties");
+			throw new PropertiesFileLoadFailedException("properties.properties");
 		}
 
 		// Récupérations des éléments dans properties
@@ -102,8 +103,7 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			// System.err.println("Problème dans la connexion à la base SQL");
-			throw e;
+			throw new ConnectionToDataBaseFailedException();
 		}
 
 		return model;
@@ -147,8 +147,7 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			// System.err.println("Problème dans la connexion à la base SQL");
-			throw e;
+			throw new ConnectionToDataBaseFailedException();
 		}
 
 		return model;
@@ -206,9 +205,9 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			// System.err.println("Problème dans la connexion à la base SQL");
-			throw e;
+			throw new ConnectionToDataBaseFailedException();
 		}
+		
 		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
 		(modelComputer.getModelCompany()).setName(companyNameMissing);
 		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
@@ -263,9 +262,9 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			// System.err.println("Problème dans la connexion à la base SQL");
-			throw e;
+			throw new ConnectionToDataBaseFailedException();
 		}
+		
 		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
 		(modelComputer.getModelCompany()).setName(companyNameMissing);
 		return (statut == 1) ? modelComputer : null; // une exception à la place de null;
@@ -301,8 +300,7 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			// System.err.println("Problème dans la connexion à la base SQL");
-			throw e;
+			throw new ConnectionToDataBaseFailedException();
 		}
 
 		return (statut == 1) ? modelComputerDeleted : null; // une exception à la place de null;
