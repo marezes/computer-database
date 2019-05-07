@@ -1,7 +1,7 @@
 package com.excilys.cdb.persistence;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,7 +34,8 @@ public class DAOCompany {
 		/* Activation des properties */
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream("src/META-INF/properties.properties"));
+			InputStream input = getClass().getResourceAsStream("/properties.properties");
+			properties.load(input);
 		} catch (IOException e) {
 			//System.err.println("Appel de properties n'a pas fonctionné");
 			throw e;

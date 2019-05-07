@@ -43,6 +43,39 @@ public class MapperComputer {
 		return dtoComputerShortList;
 	}
 	
+	public ArrayList<DTOComputer> modelComputerListToDTOComputerList(ArrayList<ModelComputer> modelComputerList) {
+		/* Partie avec une classe de validator qui devrait renvoyer une exception
+		 * si c'est pas bon mais qui va envoyer en attendant null */
+		
+		ArrayList<DTOComputer> dtoComputerList = new ArrayList<DTOComputer>();
+		DTOComputer dtoComputer = null;
+		
+		for (ModelComputer modelComputer : modelComputerList) {
+			String id = String.valueOf(modelComputer.getId());
+			String name = modelComputer.getName();
+			
+			String introduced =  
+					(modelComputer.getIntroduced() == null) 
+					? null : (modelComputer.getIntroduced()).toString();
+			
+			String discontinued = 
+					(modelComputer.getDiscontinued() == null) 
+					? null : (modelComputer.getDiscontinued()).toString();
+			
+			String companyId = 
+					(modelComputer.getModelCompany().getId()) == null 
+					? null : (modelComputer.getModelCompany().getId()).toString();
+			
+			String companyName = 
+					(modelComputer.getModelCompany().getName() == null) 
+					? null : (modelComputer.getModelCompany().getName()).toString();
+			dtoComputer = new DTOComputer(id, name, introduced, discontinued, companyId, companyName);
+			dtoComputerList.add(dtoComputer);
+		}
+		
+		return dtoComputerList;
+	}
+	
 	public DTOComputer modelComputerToDTOComputer(ModelComputer modelComputer) {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */

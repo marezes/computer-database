@@ -1,7 +1,7 @@
 package com.excilys.cdb.persistence;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -31,6 +31,7 @@ public class DAOComputer {
 	private String password;
 
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?";
+	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?";
 	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -40,7 +41,7 @@ public class DAOComputer {
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
-			Class.forName("com.mysql.cj.jdbc.Drivers");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			JDBCClassNotFoundException jdbcException = new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
 			logger.error(jdbcException.getMessage(), e);
@@ -50,10 +51,11 @@ public class DAOComputer {
 		// Activation des properties
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileInputStream("src/META-INF/properties.properties"));
+			InputStream input = getClass().getResourceAsStream("/properties.properties");
+			properties.load(input);
 		} catch (IOException e) {
 			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("properties.properties");
-			logger.error(propertieException.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw propertieException;
 		}
 
@@ -102,6 +104,47 @@ public class DAOComputer {
 						int id = resultat.getInt("id");
 						String name = resultat.getString("name");
 						model.add(new ModelComputerShort(id, name));
+					}
+				} catch (SQLException e) {
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
+				}
+			} catch (SQLException e) {
+				// System.err.println("Création du statement raté.");
+				throw e;
+			}
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+
+		return model;
+	}
+	
+	public ArrayList<ModelComputer> requestCompleteListLimit(int pageNumber, int numberOfElement) throws Exception {
+		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
+
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
+
+				statement.setInt(1, ((pageNumber - 1) * numberOfElement));
+				statement.setInt(2, numberOfElement);
+
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery()) {
+					while (resultat.next()) {
+						int id = resultat.getInt("id");
+						String name = resultat.getString("name");
+						Timestamp introduced = resultat.getTimestamp("introduced");
+						Timestamp discontinued = resultat.getTimestamp("discontinued");
+						Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
+						String companyName = resultat.getString("company.name");
+						model.add(new ModelComputer(id, name, introduced, discontinued,
+								new ModelCompany(companyId, companyName)));
 					}
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
