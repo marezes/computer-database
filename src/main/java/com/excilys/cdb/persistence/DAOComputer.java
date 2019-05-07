@@ -11,6 +11,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.ConnectionToDataBaseFailedException;
 import com.excilys.cdb.exception.JDBCClassNotFoundException;
 import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
@@ -20,6 +23,8 @@ import com.excilys.cdb.model.ModelComputerShort;
 
 public class DAOComputer {
 	private static DAOComputer INSTANCE = null;
+	
+	private Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 
 	private String url;
 	private String user;
@@ -35,9 +40,11 @@ public class DAOComputer {
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
 		/* Chargement du driver JDBC pour MySQL */
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Drivers");
 		} catch (ClassNotFoundException e) {
-			throw new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
+			JDBCClassNotFoundException jdbcException = new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
+			logger.error(jdbcException.getMessage(), e);
+			throw jdbcException;
 		}
 
 		// Activation des properties
@@ -45,7 +52,9 @@ public class DAOComputer {
 		try {
 			properties.load(new FileInputStream("src/META-INF/properties.properties"));
 		} catch (IOException e) {
-			throw new PropertiesFileLoadFailedException("properties.properties");
+			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("properties.properties");
+			logger.error(propertieException.getMessage(), e);
+			throw propertieException;
 		}
 
 		// Récupérations des éléments dans properties
@@ -103,7 +112,10 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			throw new ConnectionToDataBaseFailedException();
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
 		}
 
 		return model;
@@ -147,7 +159,10 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			throw new ConnectionToDataBaseFailedException();
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
 		}
 
 		return model;
@@ -205,7 +220,10 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			throw new ConnectionToDataBaseFailedException();
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
 		}
 		
 		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
@@ -262,7 +280,10 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			throw new ConnectionToDataBaseFailedException();
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
 		}
 		
 		String companyNameMissing = (requestById(modelComputer.getId()).getModelCompany()).getName();
@@ -300,7 +321,10 @@ public class DAOComputer {
 				throw e;
 			}
 		} catch (SQLException e) {
-			throw new ConnectionToDataBaseFailedException();
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
 		}
 
 		return (statut == 1) ? modelComputerDeleted : null; // une exception à la place de null;

@@ -118,6 +118,5 @@ public class Controller {
 
 	public void printErrors(Exception e) {
 		System.err.println(e.getMessage());
-		//e.printStackTrace();
 	}
 }
