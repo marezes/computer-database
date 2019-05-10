@@ -20,7 +20,7 @@ public class DAOCompany {
 	private String user;
 	private String password;
 	
-	private String SELECT = "SELECT * FROM company;";
+	private String SELECT = "SELECT id, name FROM company;";
 
 	private DAOCompany() throws Exception {
 		/* Chargement du driver JDBC pour MySQL */

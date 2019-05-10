@@ -30,13 +30,13 @@ public class DAOComputer {
 	private String user;
 	private String password;
 
-	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?";
-	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?";
-	private String SELECT_BY_ID = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
-	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
-	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?";
-	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID()";
+	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
+	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?;";
+	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
+	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
+	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?;";
+	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID();";
 
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
 		/* Chargement du driver JDBC pour MySQL */
@@ -137,8 +137,8 @@ public class DAOComputer {
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
 					while (resultat.next()) {
-						int id = resultat.getInt("id");
-						String name = resultat.getString("name");
+						int id = resultat.getInt("computer.id");
+						String name = resultat.getString("computer.name");
 						Timestamp introduced = resultat.getTimestamp("introduced");
 						Timestamp discontinued = resultat.getTimestamp("discontinued");
 						Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");

@@ -40,7 +40,7 @@ public class DashboardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<DTOComputer> dtoComputerList = null;
 		try {
-			dtoComputerList = serviceComputer.requestCompleteListLimit("1", "10");
+			//dtoComputerList = serviceComputer.requestCompleteListLimit("1", "10");
 		} catch (Exception e) {
 			System.err.println("Failed to get List of computers");
 		}
