@@ -64,12 +64,11 @@ public class Controller {
 			} catch (Exception e) {
 				printErrors(e);
 			}
-			try {
+			
+			if (resultDtoComputerShort != null) {
 				resultDtoComputerShort.stream()
 					.map(object -> object.toString())
 					.forEach(str -> response.add(str));
-			} catch (Exception e) {
-				// TODO: handle exception
 			}
 			break;
 		case LIST_COMPANY:
