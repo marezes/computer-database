@@ -64,9 +64,13 @@ public class Controller {
 			} catch (Exception e) {
 				printErrors(e);
 			}
-			resultDtoComputerShort.stream()
-				.map(object -> object.toString())
-				.forEach(str -> response.add(str));
+			try {
+				resultDtoComputerShort.stream()
+					.map(object -> object.toString())
+					.forEach(str -> response.add(str));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			break;
 		case LIST_COMPANY:
 			ArrayList<DTOCompany> resultDtoCompany = null;
