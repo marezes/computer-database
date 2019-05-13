@@ -51,10 +51,10 @@ public class DAOComputer {
 		// Activation des properties
 		Properties properties = new Properties();
 		try {
-			InputStream input = getClass().getResourceAsStream("/properties.properties");
+			InputStream input = getClass().getResourceAsStream("/dbConfig.properties");
 			properties.load(input);
 		} catch (IOException e) {
-			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("properties.properties");
+			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("dbConfig.properties");
 			logger.error(e.getMessage(), e);
 			throw propertieException;
 		}
