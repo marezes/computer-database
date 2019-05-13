@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.service.ServiceComputer;
 
 /**
@@ -21,6 +22,7 @@ public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private ServiceComputer serviceComputer;
+	private MapperComputer mapperComputer;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -32,6 +34,11 @@ public class DashboardServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.err.println("Erreur get ServiceComputer without exception");
 		}
+        try {
+			mapperComputer = MapperComputer.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get MapperComputer without exception");
+		}
     }
 
 	/**
@@ -40,14 +47,14 @@ public class DashboardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<DTOComputer> dtoComputerList = null;
 		try {
-			//dtoComputerList = serviceComputer.requestCompleteListLimit("1", "10");
+			dtoComputerList = mapperComputer.modelComputerListToDTOComputerList(serviceComputer.requestCompleteListLimit(1, 10));
 		} catch (Exception e) {
 			System.err.println("Failed to get List of computers");
 		}
 		
 		request.setAttribute("ComputerListObject", dtoComputerList);
 		
-		RequestDispatcher requestDispatcher = request.getRequestDispatcher("views/dashboard.jsp");
+		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 		requestDispatcher.forward(request, response);
 	}
 
