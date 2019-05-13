@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan="true"><!-- Le scan = true permet de recharger les fichiers de configuration lorsqu'ils sont modifiés -->
 
-   <!-- Send debug messages to System.out -->
+	<property resource="logger.properties" />
+	
+	<!-- Send colored messages to System.out -->
+   <appender name="COLORED_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+       <!-- By default, encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+       <encoder>
+           <pattern>%d{HH:mm:ss.SSS} %green([%thread]) %highlight(%-5level) %logger{50} - %msg%n</pattern>
+       </encoder>
+   </appender>
+   
+   <!-- Send messages to System.out -->
    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
        <!-- By default, encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
        <encoder>
-           <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+           <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
        </encoder>
    </appender>
+   
+   <!-- Send error messages to System.err -->
+   <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+       <!-- By default, encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+       <encoder>
+           <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+       </encoder>
+       <target>System.err</target>
+   </appender>
 
-   <!-- Send debug messages to a file at "c:/jcg.log" -->
+   <!-- Send debug messages to a file at "c:/cdb.log" -->
    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-       <file>cdb.log</file>
+       <file>${LOGGER_PATH}/cdb.log</file>
        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
            <Pattern>%d{yyyy-MM-dd_HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
        </encoder>
  
        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-           <FileNamePattern>cdb.%i.log.zip</FileNamePattern>
+           <FileNamePattern>${LOGGER_PATH}/cdb.%i.log.zip</FileNamePattern>
            <MinIndex>1</MinIndex>
            <MaxIndex>10</MaxIndex>
        </rollingPolicy>
@@ -31,9 +50,29 @@
            <appender-ref ref="STDOUT" /> <!--  ligne à enlever si on ne veut plus que le message de log s'affiche sur le terminal -->
            <appender-ref ref="FILE" />
    </logger>
+   
+   <logger name="com.excilys.cdb.persistence" level="TRACE" additivity="false">
+           <appender-ref ref="STDOUT" />
+           <appender-ref ref="FILE" />
+   </logger>
+   
+   <logger name="com.excilys.cdb.persistence" level="DEBUG" additivity="false">
+           <appender-ref ref="STDOUT" />
+           <appender-ref ref="FILE" />
+   </logger>
+   
+   <logger name="com.excilys.cdb.persistence" level="WARN" additivity="false">
+           <appender-ref ref="STDOUT" />
+           <appender-ref ref="FILE" />
+   </logger>
+   
+   <logger name="com.excilys.cdb.persistence" level="ERROR" additivity="false">
+           <appender-ref ref="STDERR" />
+           <appender-ref ref="FILE" />
+   </logger>
 
    <!-- By default, the level of the root level is set to DEBUG -->
-   <root level="INFO">
+   <root level="DEBUG">
        <appender-ref ref="STDOUT" />
        <appender-ref ref="FILE" />
    </root>
