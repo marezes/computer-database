@@ -4,9 +4,27 @@ public class ModelComputerShort {
 	private Integer id;
 	private String name;
 	
-	public ModelComputerShort(Integer id, String name) {
-		this.setId(id);
-		this.setName(name);
+	public static class ModelComputerShortBuilder {
+		private Integer id;
+		private String name;
+		
+		public ModelComputerShortBuilder(String name) {
+			this.name = name;
+		}
+		
+		public ModelComputerShortBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public ModelComputerShort build() {
+			return new ModelComputerShort(this);
+		}
+	}
+	
+	private ModelComputerShort(ModelComputerShortBuilder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
 	}
 	
 	@Override

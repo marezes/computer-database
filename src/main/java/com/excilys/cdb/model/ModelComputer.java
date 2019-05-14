@@ -1,20 +1,56 @@
 package com.excilys.cdb.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class ModelComputer {
 	private Integer id;
 	private String name;
-	private Timestamp introduced;
-	private Timestamp discontinued;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 	private ModelCompany modelCompany;
 	
-	public ModelComputer(Integer id, String name, Timestamp introduced, Timestamp discontinued, ModelCompany modelCompany) {
-		this.setId(id);
-		this.setName(name);
-		this.setIntroduced(introduced);
-		this.setDiscontinued(discontinued);
-		this.modelCompany = modelCompany;
+	public static class ModelComputerBuilder {
+		private Integer id;
+		private String name;
+		private LocalDate introduced;
+		private LocalDate discontinued;
+		private ModelCompany modelCompany;
+		
+		public ModelComputerBuilder(String name) {
+			this.name = name;
+		}
+		
+		public ModelComputerBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public ModelComputerBuilder withIntroduced(LocalDate introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+		
+		public ModelComputerBuilder withDiscontinued(LocalDate discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+		
+		public ModelComputerBuilder withModelCompany(ModelCompany modelCompany) {
+			this.modelCompany = modelCompany;
+			return this;
+		}
+		
+		public ModelComputer build() {
+			return new ModelComputer(this);
+		}
+	}
+	
+	private ModelComputer(ModelComputerBuilder build) {
+		this.id = build.id;
+		this.name = build.name;
+		this.introduced = build.introduced;
+		this.discontinued = build.discontinued;
+		this.modelCompany = build.modelCompany;
 	}
 	
 	@Override
@@ -28,7 +64,7 @@ public class ModelComputer {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((modelCompany == null) ? 0 : modelCompany.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -49,7 +85,10 @@ public class ModelComputer {
 				return false;
 		} else if (!discontinued.equals(other.discontinued))
 			return false;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (introduced == null) {
 			if (other.introduced != null)
@@ -79,11 +118,11 @@ public class ModelComputer {
 		return name;
 	}
 
-	public Timestamp getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
 
-	public Timestamp getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
 
@@ -101,11 +140,11 @@ public class ModelComputer {
 		this.name = name;
 	}
 
-	public void setIntroduced(Timestamp introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public void setDiscontinued(Timestamp discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 

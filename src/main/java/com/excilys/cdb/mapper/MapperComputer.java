@@ -1,6 +1,7 @@
 package com.excilys.cdb.mapper;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import com.excilys.cdb.dto.DTOComputer;
@@ -34,9 +35,11 @@ public class MapperComputer {
 		DTOComputerShort dtoComputerShort = null;
 		
 		for (ModelComputerShort modelComputerShort : modelComputerShortList) {
-			String id = String.valueOf(modelComputerShort.getId());
+			Integer id = modelComputerShort.getId();
 			String name = modelComputerShort.getName();
-			dtoComputerShort = new DTOComputerShort(id, name);
+			dtoComputerShort = new DTOComputerShort.DTOComputerShortBuilder(name)
+					.withId(id)
+					.build();
 			dtoComputerShortList.add(dtoComputerShort);
 		}
 		
@@ -51,25 +54,31 @@ public class MapperComputer {
 		DTOComputer dtoComputer = null;
 		
 		for (ModelComputer modelComputer : modelComputerList) {
-			String id = String.valueOf(modelComputer.getId());
+			Integer id = modelComputer.getId();
 			String name = modelComputer.getName();
 			
-			String introduced =  
+			LocalDate introduced =  
 					(modelComputer.getIntroduced() == null) 
-					? null : (modelComputer.getIntroduced()).toString();
+					? null : (modelComputer.getIntroduced());
 			
-			String discontinued = 
+			LocalDate discontinued = 
 					(modelComputer.getDiscontinued() == null) 
-					? null : (modelComputer.getDiscontinued()).toString();
+					? null : (modelComputer.getDiscontinued());
 			
-			String companyId = 
+			Integer companyId = 
 					(modelComputer.getModelCompany().getId()) == null 
-					? null : (modelComputer.getModelCompany().getId()).toString();
+					? null : (modelComputer.getModelCompany().getId());
 			
 			String companyName = 
 					(modelComputer.getModelCompany().getName() == null) 
 					? null : (modelComputer.getModelCompany().getName()).toString();
-			dtoComputer = new DTOComputer(id, name, introduced, discontinued, companyId, companyName);
+			dtoComputer = new DTOComputer.DTOComputerBuilder(name)
+					.withId(id)
+					.withIntroduced(introduced)
+					.withDiscontinued(discontinued)
+					.withCompanyId(companyId)
+					.withCompanyName(companyName)
+					.build();
 			dtoComputerList.add(dtoComputer);
 		}
 		
@@ -80,74 +89,76 @@ public class MapperComputer {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
 		
-		String id = String.valueOf(modelComputer.getId());
+		Integer id = modelComputer.getId();
 		
 		String name = modelComputer.getName();
 		
-		String introduced =  
+		LocalDate introduced =  
 				(modelComputer.getIntroduced() == null) 
-				? null : (modelComputer.getIntroduced()).toString();
+				? null : (modelComputer.getIntroduced());
 		
-		String discontinued = 
+		LocalDate discontinued = 
 				(modelComputer.getDiscontinued() == null) 
-				? null : (modelComputer.getDiscontinued()).toString();
+				? null : (modelComputer.getDiscontinued());
 		
-		String companyId = 
+		Integer companyId = 
 				(modelComputer.getModelCompany().getId()) == null 
-				? null : (modelComputer.getModelCompany().getId()).toString();
+				? null : (modelComputer.getModelCompany().getId());
 		
 		String companyName = 
 				(modelComputer.getModelCompany().getName() == null) 
-				? null : (modelComputer.getModelCompany().getName()).toString();
+				? null : (modelComputer.getModelCompany().getName());
 		
-		return (new DTOComputer(id, name, introduced, discontinued, companyId, companyName));
+		return (new DTOComputer.DTOComputerBuilder(name)
+				.withId(id)
+				.withIntroduced(introduced)
+				.withDiscontinued(discontinued)
+				.withCompanyId(companyId)
+				.withCompanyName(companyName)
+				.build());
 	}
 
     public ModelComputer dtoComputerToModelComputer(DTOComputer dtoComputer) {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception
 		 * si c'est pas bon mais qui va envoyer en attendant null */
     	
-    	Integer id = null;
-        String name;
-        Timestamp introduced = null;
-        Timestamp discontinued = null;
-        Integer companyId = null;
-        String companyName;
-
-        try {
-        	id = Integer.parseInt(dtoComputer.getId());
-        } catch (NumberFormatException nfe) {
-        	throw nfe;
-        }
-        name = dtoComputer.getName();
-
+    	Integer id = dtoComputer.getId();
+        
+    	String name = dtoComputer.getName();
+        
+    	LocalDate introduced = null;
         try {
             introduced = 
-            		(dtoComputer.getIntroduced().equals("")) 
-            		? null : Timestamp.valueOf(dtoComputer.getIntroduced());
-        } catch (IllegalArgumentException iae) {
-            // System.err.println("Pas de Timestamp introduced");
-            throw iae;
+            		(dtoComputer.getIntroduced() == null) 
+            		? null : dtoComputer.getIntroduced();
+        } catch (DateTimeParseException dtpe) {
+            // System.err.println("Pas de LocalDate introduced");
+            throw dtpe;
         }
 
+        LocalDate discontinued = null;
         try {
             discontinued = 
-            		(dtoComputer.getDiscontinued().equals("")) 
-            		? null : Timestamp.valueOf(dtoComputer.getDiscontinued());
-        } catch (IllegalArgumentException iae) {
-            // System.err.println("Pas de Timestamp discontinued");
-            throw iae;
-        }
-        
-        try {
-            companyId = Integer.parseInt(dtoComputer.getCompanyId());
-        } catch (NumberFormatException nfe) {
-            // System.err.println("Pas un integer pour companyId");
-            throw nfe;
+            		(dtoComputer.getDiscontinued() == null) 
+            		? null : dtoComputer.getDiscontinued();
+        } catch (DateTimeParseException dtpe) {
+            // System.err.println("Pas de LocalDate discontinued");
+            throw dtpe;
         }
 
-        companyName = dtoComputer.getCompanyName();
+        Integer companyId = dtoComputer.getCompanyId();
 
-        return (new ModelComputer(id, name, introduced, discontinued, new ModelCompany(companyId, companyName)));
+        String companyName = dtoComputer.getCompanyName();
+
+        return (new ModelComputer.ModelComputerBuilder(name)
+				.withId(id)
+				.withIntroduced(introduced)
+				.withDiscontinued(discontinued)
+				.withModelCompany(
+						new ModelCompany.ModelCompanyBuilder()
+							.withId(companyId)
+							.withName(companyName)
+							.build())
+				.build());
     }
 }

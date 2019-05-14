@@ -1,7 +1,6 @@
 package com.excilys.cdb.servlet;
 
 import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,25 +8,62 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.mapper.MapperComputer;
+import com.excilys.cdb.model.ModelComputer;
+import com.excilys.cdb.service.ServiceComputer;
+
 /**
  * Servlet implementation class EditComputerServlet
  */
 @WebServlet("/editComputer")
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private ServiceComputer serviceComputer;
+	private MapperComputer mapperComputer;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public EditComputerServlet() {
         super();
-        // TODO Auto-generated constructor stub
+        try {
+			serviceComputer = ServiceComputer.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get ServiceComputer without exception");
+		}
+        try {
+			mapperComputer = MapperComputer.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get MapperComputer without exception");
+		}
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int id = -1;
+		
+		try {
+			id = Integer.parseInt(request.getParameter("id"));
+		} catch (Exception e) {
+			System.err.println("Error cast id");
+		}
+
+		ModelComputer modelComputerDetails = null;
+		DTOComputer dtoComputerDetails = null;
+		try {
+			modelComputerDetails = serviceComputer.requestComputerDetails(id);
+			dtoComputerDetails = mapperComputer.modelComputerToDTOComputer(modelComputerDetails);
+		} catch (Exception e) {
+			System.err.println("Failed to get detail of computers");
+		}
+		
+		request.setAttribute("id", id);
+		request.setAttribute("computerDetails", dtoComputerDetails);
+		
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 		requestDispatcher.forward(request, response);
 	}

@@ -1,12 +1,34 @@
 package com.excilys.cdb.dto;
 
 public class DTOCompany {
-	private String id; 		// un id
+	private Integer id; 		// un id
 	private String name; 	// Nom de l'entreprise
 	
-	public DTOCompany(String id, String name) {
-		this.id = id;
-		this.name = name;
+	public static class DTOCompanyBuilder {
+		private Integer id;
+		private String name;
+		
+		public DTOCompanyBuilder() {
+		}
+		
+		public DTOCompanyBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public DTOCompanyBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public DTOCompany build() {
+			return new DTOCompany(this);
+		}
+	}
+	
+	private DTOCompany(DTOCompanyBuilder build) {
+		this.id = build.id;
+		this.name = build.name;
 	}
 	
 	@Override
@@ -51,13 +73,13 @@ public class DTOCompany {
 		return name;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	// Setters
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

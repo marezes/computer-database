@@ -46,6 +46,8 @@ public class DashboardServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<DTOComputer> dtoComputerList = null;
+		String test = request.getParameter("10");
+		System.out.println(test);
 		try {
 			dtoComputerList = mapperComputer.modelComputerListToDTOComputerList(serviceComputer.requestCompleteListLimit(1, 10));
 		} catch (Exception e) {

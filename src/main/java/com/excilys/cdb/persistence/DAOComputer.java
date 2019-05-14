@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -32,7 +33,7 @@ public class DAOComputer {
 
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
 	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?;";
-	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
+	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?;";
@@ -103,7 +104,9 @@ public class DAOComputer {
 					while (resultat.next()) {
 						int id = resultat.getInt("id");
 						String name = resultat.getString("name");
-						model.add(new ModelComputerShort(id, name));
+						model.add(new ModelComputerShort.ModelComputerShortBuilder(name)
+								.withId(id)
+								.build());
 					}
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
@@ -139,12 +142,22 @@ public class DAOComputer {
 					while (resultat.next()) {
 						int id = resultat.getInt("computer.id");
 						String name = resultat.getString("computer.name");
-						Timestamp introduced = resultat.getTimestamp("introduced");
-						Timestamp discontinued = resultat.getTimestamp("discontinued");
+						LocalDate introduced = (resultat.getTimestamp("introduced") == null 
+								? null : ((resultat.getTimestamp("introduced")).toLocalDateTime()).toLocalDate());
+						LocalDate discontinued = (resultat.getTimestamp("discontinued") == null 
+								? null : ((resultat.getTimestamp("discontinued")).toLocalDateTime()).toLocalDate());
 						Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
 						String companyName = resultat.getString("company.name");
-						model.add(new ModelComputer(id, name, introduced, discontinued,
-								new ModelCompany(companyId, companyName)));
+						model.add(new ModelComputer.ModelComputerBuilder(name)
+								.withId(id)
+								.withIntroduced(introduced)
+								.withDiscontinued(discontinued)
+								.withModelCompany(
+										new ModelCompany.ModelCompanyBuilder()
+											.withId(companyId)
+											.withName(companyName)
+											.build())
+								.build());
 					}
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
@@ -186,15 +199,26 @@ public class DAOComputer {
 
 					resultat.next();
 					String name = resultat.getString("name");
-					Timestamp introduced = resultat.getTimestamp("introduced");
-					Timestamp discontinued = resultat.getTimestamp("discontinued");
+					LocalDate introduced = (resultat.getTimestamp("introduced") == null 
+							? null : ((resultat.getTimestamp("introduced")).toLocalDateTime()).toLocalDate());
+					LocalDate discontinued = (resultat.getTimestamp("discontinued") == null 
+							? null : ((resultat.getTimestamp("discontinued")).toLocalDateTime()).toLocalDate());
 					Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
 					String companyName = resultat.getString("company.name");
-					model = new ModelComputer(id, name, introduced, discontinued,
-							new ModelCompany(companyId, companyName));
+					model = (new ModelComputer.ModelComputerBuilder(name)
+							.withId(id)
+							.withIntroduced(introduced)
+							.withDiscontinued(discontinued)
+							.withModelCompany(
+									new ModelCompany.ModelCompanyBuilder()
+										.withId(companyId)
+										.withName(companyName)
+										.build())
+							.build());
 
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
+					e.printStackTrace();
 					throw e;
 				}
 			} catch (SQLException e) {
@@ -230,12 +254,12 @@ public class DAOComputer {
 				if (modelComputer.getIntroduced() == null) {
 					statement.setNull(2, java.sql.Types.TIMESTAMP);
 				} else {
-					statement.setTimestamp(2, modelComputer.getIntroduced());
+					statement.setTimestamp(2, Timestamp.valueOf((modelComputer.getIntroduced()).atStartOfDay()));
 				}
 				if (modelComputer.getDiscontinued() == null) {
 					statement.setNull(3, java.sql.Types.TIMESTAMP);
 				} else {
-					statement.setTimestamp(3, modelComputer.getDiscontinued());
+					statement.setTimestamp(3, Timestamp.valueOf((modelComputer.getDiscontinued()).atStartOfDay()));
 				}
 				if (modelComputer.getModelCompany().getId() == null) {
 					statement.setNull(4, java.sql.Types.INTEGER);
@@ -294,13 +318,13 @@ public class DAOComputer {
 				if (modelComputer.getIntroduced() == null) {
 					statement.setNull(2, java.sql.Types.TIMESTAMP);
 				} else {
-					statement.setTimestamp(2, modelComputer.getIntroduced());
+					statement.setTimestamp(2, Timestamp.valueOf((modelComputer.getIntroduced()).atStartOfDay()));
 				}
 				
 				if (modelComputer.getDiscontinued() == null) {
 					statement.setNull(3, java.sql.Types.TIMESTAMP);
 				} else {
-					statement.setTimestamp(3, modelComputer.getDiscontinued());
+					statement.setTimestamp(3, Timestamp.valueOf((modelComputer.getDiscontinued()).atStartOfDay()));
 				}
 				
 				if (modelComputer.getModelCompany().getId() == null) {

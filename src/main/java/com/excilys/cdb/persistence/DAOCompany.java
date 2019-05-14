@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
 import com.excilys.cdb.model.ModelCompany;
 
 public class DAOCompany {
@@ -34,11 +35,12 @@ public class DAOCompany {
 		/* Activation des properties */
 		Properties properties = new Properties();
 		try {
-			InputStream input = getClass().getResourceAsStream("/properties.properties");
+			InputStream input = getClass().getResourceAsStream("/dbConfig.properties");
 			properties.load(input);
 		} catch (IOException e) {
-			//System.err.println("Appel de properties n'a pas fonctionné");
-			throw e;
+			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("dbConfig.properties");
+			//logger.error(e.getMessage(), e);
+			throw propertieException;
 		}
 
 		/* Récupérations des éléments dans properties */
@@ -77,7 +79,10 @@ public class DAOCompany {
 					while (resultat.next()) {
 						int id = resultat.getInt("id");
 						String name = resultat.getString("name");
-						model.add(new ModelCompany(id, name));
+						model.add(new ModelCompany.ModelCompanyBuilder()
+								.withId(id)
+								.withName(name)
+								.build());
 					}
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");

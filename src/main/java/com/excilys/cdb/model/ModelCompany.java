@@ -4,9 +4,31 @@ public class ModelCompany {
 	private Integer id;
 	private String name;
 	
-	public ModelCompany(Integer id, String name) {
-		this.setId(id);
-		this.setName(name);
+	public static class ModelCompanyBuilder {
+		private Integer id;
+		private String name;
+		
+		public ModelCompanyBuilder() {
+		}
+		
+		public ModelCompanyBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public ModelCompanyBuilder withName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public ModelCompany build() {
+			return new ModelCompany(this);
+		}
+	}
+	
+	private ModelCompany(ModelCompanyBuilder build) {
+		this.id = build.id;
+		this.name = build.name;
 	}
 	
 	@Override

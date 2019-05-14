@@ -1,17 +1,30 @@
 package com.excilys.cdb.dto;
 
 public class DTOComputerShort {
-	private String id; // un id
+	private Integer id; // un id
 	private String name; // Nom de l'entreprise
 	
-	public DTOComputerShort() {
-		this.setId(null);
-		this.setName(null);
+	public static class DTOComputerShortBuilder {
+		private Integer id;
+		private String name;
+		
+		public DTOComputerShortBuilder(String name) {
+			this.name = name;
+		}
+		
+		public DTOComputerShortBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public DTOComputerShort build() {
+			return new DTOComputerShort(this);
+		}
 	}
 	
-	public DTOComputerShort(String id, String name) {
-		this.setId(id);
-		this.setName(name);
+	private DTOComputerShort(DTOComputerShortBuilder build) {
+		this.id = build.id;
+		this.name = build.name;
 	}
 	
 	@Override
@@ -56,13 +69,13 @@ public class DTOComputerShort {
 		return name;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	// Setters
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

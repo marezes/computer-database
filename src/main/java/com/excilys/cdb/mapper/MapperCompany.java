@@ -30,9 +30,12 @@ public class MapperCompany {
 		DTOCompany dtoCompany = null;
 		
 		for (ModelCompany modelCompany : modelCompanyList) {
-			String id = String.valueOf(modelCompany.getId());
+			int id = modelCompany.getId();
 			String name = modelCompany.getName();
-			dtoCompany = new DTOCompany(id, name);
+			dtoCompany = new DTOCompany.DTOCompanyBuilder()
+					.withId(id)
+					.withName(name)
+					.build();
 			dtoCompanyList.add(dtoCompany);
 		}
 		

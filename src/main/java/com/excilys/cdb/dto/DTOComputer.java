@@ -1,20 +1,64 @@
 package com.excilys.cdb.dto;
 
+import java.time.LocalDate;
+
 public class DTOComputer {
-	private String id; // un id
+	private Integer id; // un id
 	private String name; // Nom de l'ordinateur
-	private String introduced; // date introduced
-	private String discontinued; // date discontinued
-	private String companyId; // l'id d'une entreprise
+	private LocalDate introduced; // date introduced
+	private LocalDate discontinued; // date discontinued
+	private Integer companyId; // l'id d'une entreprise
 	private String companyName; // le nom de l'entreprise
 	
-	public DTOComputer(String id, String name, String introduced, String discontinued, String companyId, String companyName) {
-		this.id = id;
-		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
-		this.companyId = companyId;
-		this.companyName = companyName;
+	public static class DTOComputerBuilder {
+		private Integer id;
+		private String name;
+		private LocalDate introduced;
+		private LocalDate discontinued;
+		private Integer companyId;
+		private String companyName;
+		
+		public DTOComputerBuilder(String name) {
+			this.name = name;
+		}
+		
+		public DTOComputerBuilder withId(Integer id) {
+			this.id = id;
+			return this;
+		}
+		
+		public DTOComputerBuilder withIntroduced(LocalDate introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+		
+		public DTOComputerBuilder withDiscontinued(LocalDate discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+		
+		public DTOComputerBuilder withCompanyId(Integer companyId) {
+			this.companyId = companyId;
+			return this;
+		}
+		
+		public DTOComputerBuilder withCompanyName(String companyName) {
+			this.companyName = companyName;
+			return this;
+		}
+		
+		public DTOComputer build() {
+			return new DTOComputer(this);
+		}
+	}
+	
+	private DTOComputer(DTOComputerBuilder build) {
+		this.id = build.id;
+		this.name = build.name;
+		this.introduced = build.introduced;
+		this.discontinued = build.discontinued;
+		this.companyId = build.companyId;
+		this.companyName = build.companyName;
 	}
 
 	@Override
@@ -83,7 +127,7 @@ public class DTOComputer {
 
 	// Getters
 	
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -91,15 +135,15 @@ public class DTOComputer {
 		return name;
 	}
 
-	public String getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
 
-	public String getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
 
-	public String getCompanyId() {
+	public Integer getCompanyId() {
 		return companyId;
 	}
 
@@ -109,7 +153,7 @@ public class DTOComputer {
 
 	// Setters
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -117,15 +161,15 @@ public class DTOComputer {
 		this.name = name;
 	}
 
-	public void setIntroduced(String introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public void setDiscontinued(String discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 
-	public void setCompanyId(String companyId) {
+	public void setCompanyId(Integer companyId) {
 		this.companyId = companyId;
 	}
 
