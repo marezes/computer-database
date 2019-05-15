@@ -21,6 +21,7 @@ import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
 import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
+import com.excilys.cdb.model.ModelPage;
 
 public class DAOComputer {
 	private static DAOComputer INSTANCE = null;
@@ -176,6 +177,57 @@ public class DAOComputer {
 
 		return model;
 	}
+	
+	public ModelPage requestListPage(ModelPage modelPage) throws Exception {
+		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
+
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
+
+				statement.setInt(1, ((modelPage.getPageNumber() - 1) * modelPage.getNumberOfElemetsToPrint()));
+				statement.setInt(2, modelPage.getNumberOfElemetsToPrint());
+
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery()) {
+					while (resultat.next()) {
+						int id = resultat.getInt("computer.id");
+						String name = resultat.getString("computer.name");
+						LocalDate introduced = (resultat.getTimestamp("introduced") == null 
+								? null : ((resultat.getTimestamp("introduced")).toLocalDateTime()).toLocalDate());
+						LocalDate discontinued = (resultat.getTimestamp("discontinued") == null 
+								? null : ((resultat.getTimestamp("discontinued")).toLocalDateTime()).toLocalDate());
+						Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
+						String companyName = resultat.getString("company.name");
+						model.add(new ModelComputer.ModelComputerBuilder(name)
+								.withId(id)
+								.withIntroduced(introduced)
+								.withDiscontinued(discontinued)
+								.withModelCompany(
+										new ModelCompany.ModelCompanyBuilder()
+											.withId(companyId)
+											.withName(companyName)
+											.build())
+								.build());
+					}
+				} catch (SQLException e) {
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
+				}
+			} catch (SQLException e) {
+				// System.err.println("Création du statement raté.");
+				throw e;
+			}
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+
+		return modelPage;
+	}
 
 	/**
 	 * Méthode qui récupère le détail d'une machine.
@@ -218,7 +270,6 @@ public class DAOComputer {
 
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
-					e.printStackTrace();
 					throw e;
 				}
 			} catch (SQLException e) {
