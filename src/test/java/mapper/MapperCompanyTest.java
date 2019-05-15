@@ -15,7 +15,10 @@ public class MapperCompanyTest {
 	@Test
 	public void testModelCompanyListToDTOCompanyList() {
 		ArrayList<ModelCompany> modelCompanyList = new ArrayList<ModelCompany>();
-		modelCompanyList.add(new ModelCompany(1, "Bidon"));
+		modelCompanyList.add(new ModelCompany.ModelCompanyBuilder()
+				.withId(1)
+				.withName("Bidon")
+				.build());
 		ArrayList<DTOCompany> dtoCompanyList = MapperCompany.getInstance().modelCompanyListToDTOCompanyList(modelCompanyList);
 		
 		assertEquals("1", dtoCompanyList.get(0).getId());
