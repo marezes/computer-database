@@ -48,7 +48,7 @@
 	                            <div class="form-group">
 	                                <label for="companyId">Company</label>
 	                                <select class="form-control" id="companyId" >
-	                                    <option value="0">--</option>
+	                                    <option value="0" selected>--</option>
 	                                </select>
 	                            </div>            
 	                        </fieldset>

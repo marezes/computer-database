@@ -58,6 +58,52 @@ $(function() {
 
 }( jQuery ));
 
+//Function toggleNumberOfElementPrinted
+(function ( $ ) {
+	$.fn.toggleNumberOfElementPrinted = function(id) {
+		var idElement = '';
+		if (id == 'tenElements') {
+			idElement = '#' + id;
+			$(idElement).prop("disabled", true);
+			$('#fiftyElements').prop("disabled", false);
+			$('#hundredElements').prop("disabled", false);
+		} else {
+			if (id == 'fiftyElements') {
+				idElement = '#' + id;
+				$(idElement).prop("disabled", true);
+				$('#tenElements').prop("disabled", false);
+				$('#hundredElements').prop("disabled", false);
+			} else {
+				if (id == 'hundredElements') {
+					idElement = '#' + id;
+					$(idElement).prop("disabled", true);
+					$('#tenElements').prop("disabled", false);
+					$('#fiftyElements').prop("disabled", false);
+				}
+			}
+		}
+		
+		var data = "numberElementPerPages=" + $(idElement).val();
+	        $.ajax({
+	           type: "GET",
+	           url: "dashboard",
+	           data: data, 
+	           success: function(result) {
+	        	   if(typeof(result) !=='undefined'){
+	        		   $('#results').html($($.parseHTML(result)).find("#results").html());
+	        		   $(idElement).html($($.parseHTML(result)).find(idElement).html());
+	        		   $(".editMode").hide();
+	        		   console.log(result);
+	        	   }
+	           },
+	           error: function(error) {
+	        	   console.log('error');
+	        	   console.log(error);
+	           }
+	       });
+	}
+
+}( jQuery ));
 
 // Function delete selected: Asks for confirmation to delete selected computers, then submits it to the deleteForm
 (function ( $ ) {
