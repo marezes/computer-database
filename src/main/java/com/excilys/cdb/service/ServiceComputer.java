@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
+import com.excilys.cdb.model.ModelPage;
 import com.excilys.cdb.persistence.DAOComputer;
 
 public class ServiceComputer {
@@ -42,6 +43,10 @@ public class ServiceComputer {
 	
 	public ArrayList<ModelComputer> requestCompleteListLimit(int pageNumber, int numberOfElement) throws Exception {
 		return daoComputer.requestCompleteListLimit(pageNumber, numberOfElement);
+	}
+	
+	public ModelPage requestListPage(ModelPage modelPage) throws Exception {
+		return daoComputer.requestListPage(modelPage);
 	}
 	
 	/**

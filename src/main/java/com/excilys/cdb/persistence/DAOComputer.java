@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DAOComputer {
 	private String password;
 
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
+	private String SELECT_COUNT_COMPUTER = "SELECT COUNT(id) FROM computer";
 	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?;";
 	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
@@ -225,7 +227,44 @@ public class DAOComputer {
 			logger.error(e.getStackTrace().toString());
 			throw connectionException;
 		}
+		
+		modelPage.setModelComputerList(model);
+		
+		requestTotalNumberOfComputer(modelPage);
+		
+		modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElemetsToPrint())
+				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElemetsToPrint()) != 0) ? 1 : 0));
 
+		return modelPage;
+	}
+	
+	public ModelPage requestTotalNumberOfComputer(ModelPage modelPage) throws Exception {
+
+		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+			
+			/* Création de l'objet gérant les requêtes */
+			try (Statement statement = connexion.createStatement()) {
+				
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery(SELECT_COUNT_COMPUTER)) {
+					resultat.next();
+					modelPage.setNumberTotalOfComputer(resultat.getInt("computer.id"));
+				} catch (SQLException e) {
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
+				}
+				
+			} catch (SQLException e) {
+				// System.err.println("Création du statement raté.");
+				throw e;
+			}
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+		
 		return modelPage;
 	}
 
