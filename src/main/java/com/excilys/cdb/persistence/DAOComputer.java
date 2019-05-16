@@ -180,7 +180,7 @@ public class DAOComputer {
 		return model;
 	}
 	
-	public ModelPage requestListPage(ModelPage modelPage) throws Exception {
+	public ModelPage requestListPage(int pageNumber, int numberOfElement) throws Exception {
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -188,8 +188,8 @@ public class DAOComputer {
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
 
-				statement.setInt(1, ((modelPage.getPageNumber() - 1) * modelPage.getNumberOfElemetsToPrint()));
-				statement.setInt(2, modelPage.getNumberOfElemetsToPrint());
+				statement.setInt(1, ((pageNumber - 1) * numberOfElement));
+				statement.setInt(2, numberOfElement);
 
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
@@ -227,28 +227,25 @@ public class DAOComputer {
 			logger.error(e.getStackTrace().toString());
 			throw connectionException;
 		}
-		
-		modelPage.setModelComputerList(model);
-		
-		requestTotalNumberOfComputer(modelPage);
-		
-		modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElemetsToPrint())
-				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElemetsToPrint()) != 0) ? 1 : 0));
 
-		return modelPage;
+		return (new ModelPage.ModelPageBuilder()
+				.withPageNumber(pageNumber)
+				.withNumberOfElementsToPrint(numberOfElement)
+				.withModelComputerList(model)
+				.build());
 	}
 	
-	public ModelPage requestTotalNumberOfComputer(ModelPage modelPage) throws Exception {
+	public int requestTotalNumberOfComputers() throws Exception {
+		int totalNumberOfComputers = -1;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
-			
 			/* Création de l'objet gérant les requêtes */
 			try (Statement statement = connexion.createStatement()) {
 				
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery(SELECT_COUNT_COMPUTER)) {
 					resultat.next();
-					modelPage.setNumberTotalOfComputer(resultat.getInt("computer.id"));
+					totalNumberOfComputers = resultat.getInt(1);
 				} catch (SQLException e) {
 					// System.err.println("Récupération de la requête raté.");
 					throw e;
@@ -265,7 +262,7 @@ public class DAOComputer {
 			throw connectionException;
 		}
 		
-		return modelPage;
+		return totalNumberOfComputers;
 	}
 
 	/**

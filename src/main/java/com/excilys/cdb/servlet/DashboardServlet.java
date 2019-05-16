@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.cdb.dto.DTOPage;
-import com.excilys.cdb.mapper.MapperComputer;
+import com.excilys.cdb.mapper.MapperPage;
+import com.excilys.cdb.model.ModelPage;
 import com.excilys.cdb.service.ServiceComputer;
 
 /**
@@ -20,7 +21,7 @@ public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private ServiceComputer serviceComputer;
-	private MapperComputer mapperComputer;
+	private MapperPage mapperPage;
 	private DTOPage dtoPage;
        
     /**
@@ -34,16 +35,13 @@ public class DashboardServlet extends HttpServlet {
 			System.err.println("Erreur get ServiceComputer without exception");
 		}
         try {
-			mapperComputer = MapperComputer.getInstance();
+			mapperPage = MapperPage.getInstance();
 		} catch (Exception e) {
-			System.err.println("Erreur get MapperComputer without exception");
+			System.err.println("Erreur get MapperPage without exception");
 		}
         dtoPage = new DTOPage.DTOPageBuilder()
         		.withPageNumber(1)
-        		.withNumberTotalPage(null)
-        		.withNumberOfElemetsToPrint(10)
-        		.withNumberTotalOfComputer(null)
-        		.withModelComputerList(null)
+        		.withNumberOfElementsToPrint(10)
         		.build();
     }
 
@@ -51,24 +49,51 @@ public class DashboardServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Integer pageNumberRequested = null;
+		try {
+			if (request.getParameter("page") != null) {
+				pageNumberRequested = Integer.parseInt(request.getParameter("page"));
+			} else {
+				pageNumberRequested = 1;
+			}
+		} catch (Exception e) {
+			System.err.println("Problème parsing PageNumberRequested");
+		}
+		
+		Integer numberOfElementsToPrint = null;
 		try {
 			if (request.getParameter("numberElementPerPages") != null) {
-				dtoPage.setNumberOfElemetsToPrint(Integer.parseInt(request.getParameter("numberElementPerPages")));
+				numberOfElementsToPrint = Integer.parseInt(request.getParameter("numberElementPerPages"));
+			} else {
+				numberOfElementsToPrint = dtoPage.getNumberOfElementsToPrint();
 			}
 		} catch(Exception e) {
 			System.err.println("Problème parsing numberElementPerPages");
 		}
 		
+		ModelPage modelPage = null;
 		try {
-			dtoPage.setModelComputerList(
-					mapperComputer.modelComputerListToDTOComputerList(
-							serviceComputer.requestCompleteListLimit(
-									1, dtoPage.getNumberOfElemetsToPrint())));
+			modelPage = serviceComputer.requestListPage(pageNumberRequested, numberOfElementsToPrint);
 		} catch (Exception e) {
 			System.err.println("Failed to get List of computers");
 		}
 		
-		request.setAttribute("ComputerListObject", dtoPage.getModelComputerList());
+		try {
+			modelPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputers());
+		} catch (Exception e) {
+			System.err.println("Failed to get number total of computer");
+		}
+
+		modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElementsToPrint())
+				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
+		
+		dtoPage = mapperPage.modelPageToDTOPage(modelPage);
+		
+		request.setAttribute("computerListObject", dtoPage.getDtoComputerList());
+		request.setAttribute("numberOfElementsToPrint", dtoPage.getNumberOfElementsToPrint());
+		request.setAttribute("totalNumberOfComputer", dtoPage.getNumberTotalOfComputer());
+		request.setAttribute("pageNumber", dtoPage.getPageNumber());
+		request.setAttribute("totalNumberOfPages", dtoPage.getNumberTotalPage());
 		
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 		requestDispatcher.forward(request, response);

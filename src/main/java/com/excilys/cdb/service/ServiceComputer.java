@@ -2,7 +2,6 @@ package com.excilys.cdb.service;
 
 import java.util.ArrayList;
 
-import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 import com.excilys.cdb.model.ModelPage;
@@ -13,7 +12,6 @@ public class ServiceComputer {
 	private DAOComputer daoComputer;
 	
 	private ServiceComputer() throws Exception {
-		MapperComputer.getInstance();
 		daoComputer = DAOComputer.getInstance();
 	}
 	
@@ -45,8 +43,12 @@ public class ServiceComputer {
 		return daoComputer.requestCompleteListLimit(pageNumber, numberOfElement);
 	}
 	
-	public ModelPage requestListPage(ModelPage modelPage) throws Exception {
-		return daoComputer.requestListPage(modelPage);
+	public ModelPage requestListPage(int pageNumber, int numberOfElement) throws Exception {
+		return daoComputer.requestListPage(pageNumber, numberOfElement);
+	}
+	
+	public int requestTotalNumberOfComputers() throws Exception {
+		return daoComputer.requestTotalNumberOfComputers();
 	}
 	
 	/**

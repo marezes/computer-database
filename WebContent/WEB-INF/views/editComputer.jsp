@@ -9,6 +9,7 @@
 		<title>Computer Database</title>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="utf-8">
 		
 		<!-- Bootstrap -->
 		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -31,7 +32,7 @@
 	                    <h1>Edit Computer</h1>
 	
 	                    <form action="editComputer" method="POST">
-	                        <input type="hidden" value="${ id }" id="id"/> <!-- TODO: Change this value with the computer id -->
+	                        <input type="hidden" value="${ id }" id="id"/>
 	                        <fieldset>
 	                            <div class="form-group">
 	                                <label for="computerName">Computer name</label>
@@ -48,7 +49,10 @@
 	                            <div class="form-group">
 	                                <label for="companyId">Company</label>
 	                                <select class="form-control" id="companyId" >
-	                                    <option value="0" selected>--</option>
+	                                    <option value="null" <c:if test="${ computerDetails.companyId == null }">selected</c:if>>--</option>
+	                                    <c:forEach items="${ companyListObject }" var="v">
+	                                    	<option value="${ v.id }" <c:if test="${ computerDetails.companyId == v.id }">selected</c:if>>${ v.name }</option>
+	                                    </c:forEach>
 	                                </select>
 	                            </div>            
 	                        </fieldset>
@@ -62,5 +66,9 @@
 	            </div>
 	        </div>
 	    </section>
+	
+		<script src="${ pageContext.request.contextPath }/js/jquery.min.js"></script>
+		<script src="${ pageContext.request.contextPath }/js/bootstrap.min.js"></script>
+		
 	</body>
 </html>

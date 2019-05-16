@@ -1,6 +1,8 @@
 package com.excilys.cdb.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,9 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
+import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.model.ModelComputer;
+import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
 
 /**
@@ -20,6 +25,7 @@ import com.excilys.cdb.service.ServiceComputer;
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	private ServiceCompany serviceCompany;
 	private ServiceComputer serviceComputer;
 	private MapperComputer mapperComputer;
        
@@ -28,6 +34,11 @@ public class EditComputerServlet extends HttpServlet {
      */
     public EditComputerServlet() {
         super();
+        try {
+			serviceCompany = ServiceCompany.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get ServiceCompany without exception");
+		}
         try {
 			serviceComputer = ServiceComputer.getInstance();
 		} catch (Exception e) {
@@ -61,8 +72,16 @@ public class EditComputerServlet extends HttpServlet {
 			System.err.println("Failed to get detail of computers");
 		}
 		
+		ArrayList<DTOCompany> dtoCompanyList = null;
+		try {
+			dtoCompanyList = MapperCompany.getInstance().modelCompanyListToDTOCompanyList(serviceCompany.requestList());
+		} catch (Exception e) {
+			System.err.println("Failed to get List of computers");
+		}
+		
 		request.setAttribute("id", id);
 		request.setAttribute("computerDetails", dtoComputerDetails);
+		request.setAttribute("companyListObject", dtoCompanyList);
 		
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 		requestDispatcher.forward(request, response);

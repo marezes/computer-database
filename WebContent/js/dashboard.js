@@ -92,6 +92,7 @@ $(function() {
 	        	   if(typeof(result) !=='undefined'){
 	        		   $('#results').html($($.parseHTML(result)).find("#results").html());
 	        		   $(idElement).html($($.parseHTML(result)).find(idElement).html());
+	        		   $('.pagination').html($($.parseHTML(result)).find('.pagination').html());
 	        		   $(".editMode").hide();
 	        		   console.log(result);
 	        	   }
