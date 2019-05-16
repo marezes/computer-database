@@ -20,6 +20,11 @@ public class DTOComputer {
 		
 		public DTOComputerBuilder(String name) {
 			this.name = name;
+			this.companyId = null;
+			this.introduced = null;
+			this.discontinued = null;
+			this.companyId = null;
+			this.companyName = null;
 		}
 		
 		public DTOComputerBuilder withId(Integer id) {

@@ -10,6 +10,7 @@ public class ModelComputerShort {
 		
 		public ModelComputerShortBuilder(String name) {
 			this.name = name;
+			this.id = null;
 		}
 		
 		public ModelComputerShortBuilder withId(Integer id) {

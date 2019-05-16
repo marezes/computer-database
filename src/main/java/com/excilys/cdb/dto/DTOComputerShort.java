@@ -10,6 +10,7 @@ public class DTOComputerShort {
 		
 		public DTOComputerShortBuilder(String name) {
 			this.name = name;
+			this.id = null;
 		}
 		
 		public DTOComputerShortBuilder withId(Integer id) {

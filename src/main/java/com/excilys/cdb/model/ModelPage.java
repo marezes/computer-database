@@ -5,18 +5,23 @@ import java.util.ArrayList;
 public class ModelPage {
 	private Integer pageNumber;
 	private Integer numberTotalPage;
-	private Integer numberOfElemetsToPrint;
+	private Integer numberOfElementsToPrint;
 	private Integer numberTotalOfComputer;
 	private ArrayList<ModelComputer> modelComputerList;
 	
 	public static class ModelPageBuilder {
 		private Integer pageNumber;
 		private Integer numberTotalPage;
-		private Integer numberOfElemetsToPrint;
+		private Integer numberOfElementsToPrint;
 		private Integer numberTotalOfComputer;
 		private ArrayList<ModelComputer> modelComputerList;
 		
 		public ModelPageBuilder() {
+			this.pageNumber = null;
+			this.numberTotalPage = null;
+			this.numberOfElementsToPrint = null;
+			this.numberTotalOfComputer = null;
+			this.modelComputerList = null;
 		}
 		
 		public ModelPageBuilder withPageNumber(Integer pageNumber) {
@@ -29,8 +34,8 @@ public class ModelPage {
 			return this;
 		}
 		
-		public ModelPageBuilder withNumberOfElemetsToPrint(Integer numberOfElemetsToPrint) {
-			this.numberTotalOfComputer = numberOfElemetsToPrint;
+		public ModelPageBuilder withNumberOfElementsToPrint(Integer numberOfElementsToPrint) {
+			this.numberOfElementsToPrint = numberOfElementsToPrint;
 			return this;
 		}
 		
@@ -52,7 +57,7 @@ public class ModelPage {
 	private ModelPage(ModelPageBuilder build) {
 		this.pageNumber = build.pageNumber;
 		this.numberTotalPage = build.numberTotalPage;
-		this.numberOfElemetsToPrint = build.numberOfElemetsToPrint;
+		this.numberOfElementsToPrint = build.numberOfElementsToPrint;
 		this.numberTotalOfComputer = build.numberTotalOfComputer;
 		this.modelComputerList = build.modelComputerList;
 	}
@@ -60,7 +65,7 @@ public class ModelPage {
 	@Override
 	public String toString() {
 		return "ModelPage [pageNumber=" + pageNumber + ", numberTotalPage=" + numberTotalPage
-				+ ", numberOfElemetsToPrint=" + numberOfElemetsToPrint + ", numberTotalOfComputer="
+				+ ", numberOfElemetsToPrint=" + numberOfElementsToPrint + ", numberTotalOfComputer="
 				+ numberTotalOfComputer + ", modelComputerList=" + modelComputerList.toString() + "]";
 	}
 
@@ -69,7 +74,7 @@ public class ModelPage {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((modelComputerList == null) ? 0 : modelComputerList.hashCode());
-		result = prime * result + ((numberOfElemetsToPrint == null) ? 0 : numberOfElemetsToPrint.hashCode());
+		result = prime * result + ((numberOfElementsToPrint == null) ? 0 : numberOfElementsToPrint.hashCode());
 		result = prime * result + ((numberTotalOfComputer == null) ? 0 : numberTotalOfComputer.hashCode());
 		result = prime * result + ((numberTotalPage == null) ? 0 : numberTotalPage.hashCode());
 		result = prime * result + ((pageNumber == null) ? 0 : pageNumber.hashCode());
@@ -90,10 +95,10 @@ public class ModelPage {
 				return false;
 		} else if (!modelComputerList.equals(other.modelComputerList))
 			return false;
-		if (numberOfElemetsToPrint == null) {
-			if (other.numberOfElemetsToPrint != null)
+		if (numberOfElementsToPrint == null) {
+			if (other.numberOfElementsToPrint != null)
 				return false;
-		} else if (!numberOfElemetsToPrint.equals(other.numberOfElemetsToPrint))
+		} else if (!numberOfElementsToPrint.equals(other.numberOfElementsToPrint))
 			return false;
 		if (numberTotalOfComputer == null) {
 			if (other.numberTotalOfComputer != null)
@@ -123,8 +128,8 @@ public class ModelPage {
 		return numberTotalPage;
 	}
 
-	public Integer getNumberOfElemetsToPrint() {
-		return numberOfElemetsToPrint;
+	public Integer getNumberOfElementsToPrint() {
+		return numberOfElementsToPrint;
 	}
 
 	public Integer getNumberTotalOfComputer() {
@@ -145,8 +150,8 @@ public class ModelPage {
 		this.numberTotalPage = numberTotalPage;
 	}
 
-	public void setNumberOfElemetsToPrint(Integer numberOfElemetsToPrint) {
-		this.numberOfElemetsToPrint = numberOfElemetsToPrint;
+	public void setNumberOfElementsToPrint(Integer numberOfElementsToPrint) {
+		this.numberOfElementsToPrint = numberOfElementsToPrint;
 	}
 
 	public void setNumberTotalOfComputer(Integer numberTotalOfComputer) {

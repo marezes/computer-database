@@ -9,6 +9,8 @@ public class ModelCompany {
 		private String name;
 		
 		public ModelCompanyBuilder() {
+			this.id = null;
+			this.name = null;
 		}
 		
 		public ModelCompanyBuilder withId(Integer id) {

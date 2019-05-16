@@ -1,7 +1,7 @@
 package com.excilys.cdb.dto;
 
 public class DTOCompany {
-	private Integer id; 		// un id
+	private Integer id; 	// un id
 	private String name; 	// Nom de l'entreprise
 	
 	public static class DTOCompanyBuilder {
@@ -9,6 +9,8 @@ public class DTOCompany {
 		private String name;
 		
 		public DTOCompanyBuilder() {
+			this.id = null;
+			this.name = null;
 		}
 		
 		public DTOCompanyBuilder withId(Integer id) {

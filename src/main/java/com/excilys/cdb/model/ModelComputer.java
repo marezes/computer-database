@@ -18,6 +18,10 @@ public class ModelComputer {
 		
 		public ModelComputerBuilder(String name) {
 			this.name = name;
+			this.id = null;
+			this.introduced = null;
+			this.discontinued = null;
+			this.modelCompany = null;
 		}
 		
 		public ModelComputerBuilder withId(Integer id) {

@@ -5,18 +5,23 @@ import java.util.ArrayList;
 public class DTOPage {
 	private Integer pageNumber;
 	private Integer numberTotalPage;
-	private Integer NumberOfElemetsToPrint;
+	private Integer NumberOfElementsToPrint;
 	private Integer numberTotalOfComputer;
-	private ArrayList<DTOComputer> modelComputerList;
+	private ArrayList<DTOComputer> dtoComputerList;
 	
 	public static class DTOPageBuilder {
 		private Integer pageNumber;
 		private Integer numberTotalPage;
-		private Integer numberOfElemetsToPrint;
+		private Integer numberOfElementsToPrint;
 		private Integer numberTotalOfComputer;
-		private ArrayList<DTOComputer> modelComputerList;
+		private ArrayList<DTOComputer> dtoComputerList;
 		
 		public DTOPageBuilder() {
+			this.pageNumber = null;
+			this.numberTotalPage = null;
+			this.numberOfElementsToPrint = null;
+			this.numberTotalOfComputer = null;
+			this.dtoComputerList = null;
 		}
 		
 		public DTOPageBuilder withPageNumber(Integer pageNumber) {
@@ -29,8 +34,8 @@ public class DTOPage {
 			return this;
 		}
 		
-		public DTOPageBuilder withNumberOfElemetsToPrint(Integer numberOfElemetsToPrint) {
-			this.numberOfElemetsToPrint = numberOfElemetsToPrint;
+		public DTOPageBuilder withNumberOfElementsToPrint(Integer numberOfElementsToPrint) {
+			this.numberOfElementsToPrint = numberOfElementsToPrint;
 			return this;
 		}
 		
@@ -39,8 +44,8 @@ public class DTOPage {
 			return this;
 		}
 		
-		public DTOPageBuilder withModelComputerList(ArrayList<DTOComputer> modelComputerList) {
-			this.modelComputerList = modelComputerList;
+		public DTOPageBuilder withDtoComputerList(ArrayList<DTOComputer> dtoComputerList) {
+			this.dtoComputerList = dtoComputerList;
 			return this;
 		}
 		
@@ -52,24 +57,24 @@ public class DTOPage {
 	private DTOPage(DTOPageBuilder build) {
 		this.pageNumber = build.pageNumber;
 		this.numberTotalPage = build.numberTotalPage;
-		this.NumberOfElemetsToPrint = build.numberOfElemetsToPrint;
+		this.NumberOfElementsToPrint = build.numberOfElementsToPrint;
 		this.numberTotalOfComputer = build.numberTotalOfComputer;
-		this.modelComputerList = build.modelComputerList;
+		this.dtoComputerList = build.dtoComputerList;
 	}
 
 	@Override
 	public String toString() {
 		return "DTOPage [pageNumber=" + pageNumber + ", numberTotalPage=" + numberTotalPage
-				+ ", NumberOfElemetsToPrint=" + NumberOfElemetsToPrint + ", numberTotalOfComputer="
-				+ numberTotalOfComputer + ", modelComputerList=" + modelComputerList.toString() + "]";
+				+ ", NumberOfElemetsToPrint=" + NumberOfElementsToPrint + ", numberTotalOfComputer="
+				+ numberTotalOfComputer + ", modelComputerList=" + dtoComputerList.toString() + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((NumberOfElemetsToPrint == null) ? 0 : NumberOfElemetsToPrint.hashCode());
-		result = prime * result + ((modelComputerList == null) ? 0 : modelComputerList.hashCode());
+		result = prime * result + ((NumberOfElementsToPrint == null) ? 0 : NumberOfElementsToPrint.hashCode());
+		result = prime * result + ((dtoComputerList == null) ? 0 : dtoComputerList.hashCode());
 		result = prime * result + ((numberTotalOfComputer == null) ? 0 : numberTotalOfComputer.hashCode());
 		result = prime * result + ((numberTotalPage == null) ? 0 : numberTotalPage.hashCode());
 		result = prime * result + ((pageNumber == null) ? 0 : pageNumber.hashCode());
@@ -85,15 +90,15 @@ public class DTOPage {
 		if (getClass() != obj.getClass())
 			return false;
 		DTOPage other = (DTOPage) obj;
-		if (NumberOfElemetsToPrint == null) {
-			if (other.NumberOfElemetsToPrint != null)
+		if (NumberOfElementsToPrint == null) {
+			if (other.NumberOfElementsToPrint != null)
 				return false;
-		} else if (!NumberOfElemetsToPrint.equals(other.NumberOfElemetsToPrint))
+		} else if (!NumberOfElementsToPrint.equals(other.NumberOfElementsToPrint))
 			return false;
-		if (modelComputerList == null) {
-			if (other.modelComputerList != null)
+		if (dtoComputerList == null) {
+			if (other.dtoComputerList != null)
 				return false;
-		} else if (!modelComputerList.equals(other.modelComputerList))
+		} else if (!dtoComputerList.equals(other.dtoComputerList))
 			return false;
 		if (numberTotalOfComputer == null) {
 			if (other.numberTotalOfComputer != null)
@@ -123,16 +128,16 @@ public class DTOPage {
 		return numberTotalPage;
 	}
 
-	public Integer getNumberOfElemetsToPrint() {
-		return NumberOfElemetsToPrint;
+	public Integer getNumberOfElementsToPrint() {
+		return NumberOfElementsToPrint;
 	}
 
 	public Integer getNumberTotalOfComputer() {
 		return numberTotalOfComputer;
 	}
 
-	public ArrayList<DTOComputer> getModelComputerList() {
-		return modelComputerList;
+	public ArrayList<DTOComputer> getDtoComputerList() {
+		return dtoComputerList;
 	}
 	
 	// Setters
@@ -145,16 +150,16 @@ public class DTOPage {
 		this.numberTotalPage = numberTotalPage;
 	}
 
-	public void setNumberOfElemetsToPrint(Integer numberOfElemetsToPrint) {
-		NumberOfElemetsToPrint = numberOfElemetsToPrint;
+	public void setNumberOfElementsToPrint(Integer numberOfElementsToPrint) {
+		NumberOfElementsToPrint = numberOfElementsToPrint;
 	}
 
 	public void setNumberTotalOfComputer(Integer numberTotalOfComputer) {
 		this.numberTotalOfComputer = numberTotalOfComputer;
 	}
 
-	public void setModelComputerList(ArrayList<DTOComputer> modelComputerList) {
-		this.modelComputerList = modelComputerList;
+	public void setDtoComputerList(ArrayList<DTOComputer> dtoComputerList) {
+		this.dtoComputerList = dtoComputerList;
 	}
 
 }
