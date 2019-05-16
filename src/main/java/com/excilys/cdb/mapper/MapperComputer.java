@@ -51,7 +51,6 @@ public class MapperComputer {
 		 * si c'est pas bon mais qui va envoyer en attendant null */
 		
 		ArrayList<DTOComputer> dtoComputerList = new ArrayList<DTOComputer>();
-		DTOComputer dtoComputer = null;
 		
 		for (ModelComputer modelComputer : modelComputerList) {
 			Integer id = modelComputer.getId();
@@ -72,14 +71,14 @@ public class MapperComputer {
 			String companyName = 
 					(modelComputer.getModelCompany().getName() == null) 
 					? null : (modelComputer.getModelCompany().getName()).toString();
-			dtoComputer = new DTOComputer.DTOComputerBuilder(name)
+			
+			dtoComputerList.add(new DTOComputer.DTOComputerBuilder(name)
 					.withId(id)
 					.withIntroduced(introduced)
 					.withDiscontinued(discontinued)
 					.withCompanyId(companyId)
 					.withCompanyName(companyName)
-					.build();
-			dtoComputerList.add(dtoComputer);
+					.build());
 		}
 		
 		return dtoComputerList;
