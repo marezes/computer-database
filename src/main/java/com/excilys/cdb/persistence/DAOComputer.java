@@ -272,7 +272,7 @@ public class DAOComputer {
 	 * @return Un objet de type ModelComputer
 	 * @throws Exception
 	 */
-	public ModelComputer requestById(int id) throws Exception {
+	public ModelComputer requestById(int id) {
 		ModelComputer model = null;
 
 		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
@@ -452,7 +452,7 @@ public class DAOComputer {
 	 * @return Un booléen true si la requête a réussi, et false sinon
 	 * @throws Exception
 	 */
-	public ModelComputer requestDelete(int id) throws Exception {
+	public ModelComputer requestDelete(int id) throws RuntimeException {
 		int statut = -1;
 		
 		ModelComputer modelComputerDeleted = requestById(id);

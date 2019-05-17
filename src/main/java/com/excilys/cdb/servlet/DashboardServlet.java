@@ -1,6 +1,8 @@
 package com.excilys.cdb.servlet;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,31 +21,31 @@ import com.excilys.cdb.service.ServiceComputer;
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private ServiceComputer serviceComputer;
 	private MapperPage mapperPage;
 	private DTOPage dtoPage;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DashboardServlet() {
-        super();
-        try {
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public DashboardServlet() {
+		super();
+		try {
 			serviceComputer = ServiceComputer.getInstance();
 		} catch (Exception e) {
 			System.err.println("Erreur get ServiceComputer without exception");
 		}
-        try {
+		try {
 			mapperPage = MapperPage.getInstance();
 		} catch (Exception e) {
 			System.err.println("Erreur get MapperPage without exception");
 		}
-        dtoPage = new DTOPage.DTOPageBuilder()
-        		.withPageNumber(1)
-        		.withNumberOfElementsToPrint(10)
-        		.build();
-    }
+		dtoPage = new DTOPage.DTOPageBuilder()
+				.withPageNumber(1)
+				.withNumberOfElementsToPrint(10)
+				.build();
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,7 +61,7 @@ public class DashboardServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.err.println("Problème parsing PageNumberRequested");
 		}
-		
+
 		Integer numberOfElementsToPrint = null;
 		try {
 			if (request.getParameter("numberElementPerPages") != null) {
@@ -70,14 +72,14 @@ public class DashboardServlet extends HttpServlet {
 		} catch(Exception e) {
 			System.err.println("Problème parsing numberElementPerPages");
 		}
-		
+
 		ModelPage modelPage = null;
 		try {
 			modelPage = serviceComputer.requestListPage(pageNumberRequested, numberOfElementsToPrint);
 		} catch (Exception e) {
 			System.err.println("Failed to get List of computers");
 		}
-		
+
 		try {
 			modelPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputers());
 		} catch (Exception e) {
@@ -86,15 +88,15 @@ public class DashboardServlet extends HttpServlet {
 
 		modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElementsToPrint())
 				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
-		
+
 		dtoPage = mapperPage.modelPageToDTOPage(modelPage);
-		
+
 		request.setAttribute("computerListObject", dtoPage.getDtoComputerList());
 		request.setAttribute("numberOfElementsToPrint", dtoPage.getNumberOfElementsToPrint());
 		request.setAttribute("totalNumberOfComputer", dtoPage.getNumberTotalOfComputer());
 		request.setAttribute("pageNumber", dtoPage.getPageNumber());
 		request.setAttribute("totalNumberOfPages", dtoPage.getNumberTotalPage());
-		
+
 		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 		requestDispatcher.forward(request, response);
 	}
@@ -103,8 +105,15 @@ public class DashboardServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		try {
+			Arrays.asList(request.getParameter("selection").split(",")).stream()
+			.map(id -> Integer.parseInt(id))
+			.forEach(id -> serviceComputer.requestDelete(id));
+		} catch (NumberFormatException e) {
+			System.err.println("Cast échoué");
+		}
+
+		response.sendRedirect("dashboard");
 	}
 
 }

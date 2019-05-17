@@ -2,7 +2,6 @@ package com.excilys.cdb.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +13,7 @@ import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.mapper.MapperCompany;
 import com.excilys.cdb.mapper.MapperComputer;
+import com.excilys.cdb.mapper.MapperDTO;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
@@ -27,7 +27,9 @@ public class EditComputerServlet extends HttpServlet {
 	
 	private ServiceCompany serviceCompany;
 	private ServiceComputer serviceComputer;
+	private MapperCompany mapperCompany;
 	private MapperComputer mapperComputer;
+	private MapperDTO mapperDTO;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -45,9 +47,19 @@ public class EditComputerServlet extends HttpServlet {
 			System.err.println("Erreur get ServiceComputer without exception");
 		}
         try {
+			mapperCompany = MapperCompany.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get MapperCompany without exception");
+		}
+        try {
 			mapperComputer = MapperComputer.getInstance();
 		} catch (Exception e) {
 			System.err.println("Erreur get MapperComputer without exception");
+		}
+        try {
+			mapperDTO = MapperDTO.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get MapperDTO without exception");
 		}
     }
 
@@ -74,7 +86,7 @@ public class EditComputerServlet extends HttpServlet {
 		
 		ArrayList<DTOCompany> dtoCompanyList = null;
 		try {
-			dtoCompanyList = MapperCompany.getInstance().modelCompanyListToDTOCompanyList(serviceCompany.requestList());
+			dtoCompanyList = mapperCompany.modelCompanyListToDTOCompanyList(serviceCompany.requestList());
 		} catch (Exception e) {
 			System.err.println("Failed to get List of computers");
 		}
@@ -91,8 +103,14 @@ public class EditComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		DTOComputer dtoComputerToEdit = mapperDTO.dataToDTOComputer(request);
+		/* Partie validateur à ajouter */
+		try {
+			serviceComputer.requestUpdate(mapperComputer.dtoComputerToModelComputer(dtoComputerToEdit));
+		} catch (Exception e) {
+			System.err.println("Update or mapping to model failed");
+		}
+		response.sendRedirect("dashboard");
 	}
 
 }

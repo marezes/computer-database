@@ -68,7 +68,7 @@ public class ServiceComputer {
 		return daoComputer.requestUpdate(modelComputer);
 	}
 	
-	public ModelComputer requestDelete(int id) throws Exception {
+	public ModelComputer requestDelete(int id) {
 		return daoComputer.requestDelete(id);
 	}
 }

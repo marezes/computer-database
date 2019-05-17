@@ -1,6 +1,6 @@
 package com.excilys.cdb.exception;
 
-public class ConnectionToDataBaseFailedException extends Exception {
+public class ConnectionToDataBaseFailedException extends RuntimeException {
 	/**
 	 * 
 	 */

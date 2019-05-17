@@ -32,23 +32,23 @@
 	                    <h1>Edit Computer</h1>
 	
 	                    <form action="editComputer" method="POST">
-	                        <input type="hidden" value="${ id }" id="id"/>
+	                        <input type="hidden" value="${ id }" id="id" name="id"/>
 	                        <fieldset>
 	                            <div class="form-group">
 	                                <label for="computerName">Computer name</label>
-	                                <input type="text" class="form-control" id="computerName" placeholder="Computer name" value="${ computerDetails.name }">
+	                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${ computerDetails.name }">
 	                            </div>
 	                            <div class="form-group">
 	                                <label for="introduced">Introduced date</label>
-	                                <input type="date" class="form-control" id="introduced" placeholder="Introduced date" value="${ computerDetails.introduced }">
+	                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date" value="${ computerDetails.introduced }">
 	                            </div>
 	                            <div class="form-group">
 	                                <label for="discontinued">Discontinued date</label>
-	                                <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date" value="${ computerDetails.discontinued }">
+	                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" value="${ computerDetails.discontinued }">
 	                            </div>
 	                            <div class="form-group">
 	                                <label for="companyId">Company</label>
-	                                <select class="form-control" id="companyId" >
+	                                <select class="form-control" id="companyId" name="companyId">
 	                                    <option value="null" <c:if test="${ computerDetails.companyId == null }">selected</c:if>>--</option>
 	                                    <c:forEach items="${ companyListObject }" var="v">
 	                                    	<option value="${ v.id }" <c:if test="${ computerDetails.companyId == v.id }">selected</c:if>>${ v.name }</option>
