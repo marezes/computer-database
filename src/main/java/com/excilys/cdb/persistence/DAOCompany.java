@@ -1,52 +1,48 @@
 package com.excilys.cdb.persistence;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
 import com.excilys.cdb.model.ModelCompany;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOCompany {
 	
 	private static DAOCompany INSTANCE = null;
 	
-	private String url;
-	private String user;
-	private String password;
+	private final HikariDataSource dataSource;
 	
 	private String SELECT = "SELECT id, name FROM company;";
 
 	private DAOCompany() throws Exception {
-		/* Chargement du driver JDBC pour MySQL */
+		ResourceBundle bundle;
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			// System.err.println("Erreur dans le chargement du Driver JDBC");
-			throw e;
+			bundle = ResourceBundle.getBundle("hikariConfig");
+		} catch (MissingResourceException ex) {
+			bundle = ResourceBundle.getBundle("dbconfig_travis");
 		}
-
-		/* Activation des properties */
-		Properties properties = new Properties();
+		
+		String driver = bundle.getString("driverClassName");
 		try {
-			InputStream input = getClass().getResourceAsStream("/dbConfig.properties");
-			properties.load(input);
-		} catch (IOException e) {
-			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("dbConfig.properties");
-			//logger.error(e.getMessage(), e);
-			throw propertieException;
+			Class.forName(driver);
+		} catch (ClassNotFoundException cause) {
+			throw cause;
 		}
-
-		/* Récupérations des éléments dans properties */
-		url = properties.getProperty("URL");
-		user = properties.getProperty("USER");
-		password = properties.getProperty("PASSWORD");
+		
+		HikariConfig config = new HikariConfig();
+		
+		config.setDriverClassName(driver);
+		config.setJdbcUrl(bundle.getString("url"));
+		config.setUsername(bundle.getString("user"));
+		config.setPassword(bundle.getString("password"));
+		
+		dataSource = new HikariDataSource(config);
 	}
 
 	/**
@@ -69,7 +65,7 @@ public class DAOCompany {
 	public ArrayList<ModelCompany> requestList() throws SQLException {
 		ArrayList<ModelCompany> model = new ArrayList<ModelCompany>();
 		
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 			
 			/* Création de l'objet gérant les requêtes */
 			try (Statement statement = connexion.createStatement()) {

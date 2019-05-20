@@ -33,7 +33,7 @@ public class MapperDTO {
 		Integer companyId = null;
 		
 		try {
-			id = Integer.parseInt(request.getParameter("id"));
+			id = (request.getParameter("id") == null) ? null : Integer.parseInt(request.getParameter("id"));
 		} catch (Exception e) {
 			throw e;
 		}
@@ -51,7 +51,7 @@ public class MapperDTO {
 		}
 		
 		try {
-			companyId = Integer.parseInt(request.getParameter("companyId"));
+			companyId = (request.getParameter("companyId") == null) ? null : Integer.parseInt(request.getParameter("companyId"));
 		} catch (Exception e) {
 			throw e;
 		}

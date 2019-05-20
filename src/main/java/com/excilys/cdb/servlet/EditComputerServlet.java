@@ -88,7 +88,7 @@ public class EditComputerServlet extends HttpServlet {
 		try {
 			dtoCompanyList = mapperCompany.modelCompanyListToDTOCompanyList(serviceCompany.requestList());
 		} catch (Exception e) {
-			System.err.println("Failed to get List of computers");
+			System.err.println("Failed to get List of company");
 		}
 		
 		request.setAttribute("id", id);

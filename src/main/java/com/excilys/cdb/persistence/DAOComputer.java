@@ -1,9 +1,6 @@
 package com.excilys.cdb.persistence;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +8,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Properties;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +21,15 @@ import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 import com.excilys.cdb.model.ModelPage;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOComputer {
 	private static DAOComputer INSTANCE = null;
 	
 	private Logger logger = LoggerFactory.getLogger(DAOComputer.class);
-
-	private String url;
-	private String user;
-	private String password;
+	
+	private final HikariDataSource dataSource;
 
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
 	private String SELECT_COUNT_COMPUTER = "SELECT COUNT(id) FROM computer";
@@ -42,31 +40,29 @@ public class DAOComputer {
 	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?;";
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID();";
 
-	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException {
-		/* Chargement du driver JDBC pour MySQL */
+	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException, ClassNotFoundException {
+		ResourceBundle bundle;
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			JDBCClassNotFoundException jdbcException = new JDBCClassNotFoundException("com.mysql.cj.jdbc.Driver");
-			logger.error(jdbcException.getMessage(), e);
-			throw jdbcException;
+			bundle = ResourceBundle.getBundle("hikariConfig");
+		} catch (MissingResourceException ex) {
+			bundle = ResourceBundle.getBundle("dbconfig_travis");
 		}
-
-		// Activation des properties
-		Properties properties = new Properties();
+		
+		String driver = bundle.getString("driverClassName");
 		try {
-			InputStream input = getClass().getResourceAsStream("/dbConfig.properties");
-			properties.load(input);
-		} catch (IOException e) {
-			PropertiesFileLoadFailedException propertieException = new PropertiesFileLoadFailedException("dbConfig.properties");
-			logger.error(e.getMessage(), e);
-			throw propertieException;
+			Class.forName(driver);
+		} catch (ClassNotFoundException cause) {
+			throw cause;
 		}
-
-		// Récupérations des éléments dans properties
-		url = properties.getProperty("URL");
-		user = properties.getProperty("USER");
-		password = properties.getProperty("PASSWORD");
+		
+		HikariConfig config = new HikariConfig();
+		
+		config.setDriverClassName(driver);
+		config.setJdbcUrl(bundle.getString("url"));
+		config.setUsername(bundle.getString("user"));
+		config.setPassword(bundle.getString("password"));
+		
+		dataSource = new HikariDataSource(config);
 	}
 
 	/**
@@ -94,7 +90,7 @@ public class DAOComputer {
 	public ArrayList<ModelComputerShort> requestListLimit(int pageNumber, int numberOfElement) throws Exception {
 		ArrayList<ModelComputerShort> model = new ArrayList<ModelComputerShort>();
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_LIST_LIMIT)) {
@@ -132,7 +128,7 @@ public class DAOComputer {
 	public ArrayList<ModelComputer> requestCompleteListLimit(int pageNumber, int numberOfElement) throws Exception {
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
@@ -183,7 +179,7 @@ public class DAOComputer {
 	public ModelPage requestListPage(int pageNumber, int numberOfElement) throws Exception {
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
@@ -238,7 +234,7 @@ public class DAOComputer {
 	public int requestTotalNumberOfComputers() throws Exception {
 		int totalNumberOfComputers = -1;
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 			/* Création de l'objet gérant les requêtes */
 			try (Statement statement = connexion.createStatement()) {
 				
@@ -275,7 +271,7 @@ public class DAOComputer {
 	public ModelComputer requestById(int id) {
 		ModelComputer model = null;
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(SELECT_BY_ID)) {
@@ -332,7 +328,7 @@ public class DAOComputer {
 	public ModelComputer requestCreate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(INSERT_COMPUTER)) {
@@ -395,7 +391,7 @@ public class DAOComputer {
 	public ModelComputer requestUpdate(ModelComputer modelComputer) throws Exception {
 		int statut = -1;
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(UPDATE_COMPUTER)) {
@@ -461,7 +457,7 @@ public class DAOComputer {
 			return null; // il faut une exception
 		}
 
-		try (Connection connexion = DriverManager.getConnection(url, user, password)) {
+		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
 			try (PreparedStatement statement = connexion.prepareStatement(DELETE_COMPUTER)) {
