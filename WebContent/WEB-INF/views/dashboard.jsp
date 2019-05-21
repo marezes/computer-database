@@ -26,7 +26,7 @@
 	
 		<section id="main">
 			<div class="container">
-				<h1 id="homeTitle">${ totalNumberOfComputer } Computers found</h1>
+				<h1 id="homeTitle">${ totalNumberOfComputer } Computers found <c:if test="${ search != null }">for "${ search }"</c:if></h1>
 				<div id="actions" class="form-horizontal">
 					<div class="pull-left">
 						<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -63,12 +63,12 @@
 										class="fa fa-trash-o fa-lg"></i>
 								</a>
 							</span></th>
-							<th>Computer name</th>
-							<th>Introduced date</th>
+							<th>Computer name <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
+							<th>Introduced date <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
 							<!-- Table header for Discontinued Date --> 
-							<th>Discontinued date</th>
+							<th>Discontinued date <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
 							<!-- Table header for Company -->
-							<th>Company</th>
+							<th>Company <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
 	
 						</tr>
 					</thead>
@@ -102,7 +102,7 @@
 					
 					<c:forEach var="i" begin="1" end="${ totalNumberOfPages }">
 						<c:if test="${ i == 1 or i == totalNumberOfPages or i == pageNumber or (i <= (pageNumber + 2) and i >= (pageNumber - 2))}">
-							<li><a href="?page=${ i }" <c:if test="${ i == pageNumber }">class="noclick"</c:if>>${ i }</a></li>
+							<li><a href="?page=${ i }<c:if test="${ search != null }">&search=${ search }</c:if>" <c:if test="${ i == pageNumber }">class="noclick"</c:if>>${ i }</a></li>
 							<c:if test="${ i < (pageNumber - 2) or (i == (pageNumber + 2) and i != totalNumberOfPages and (i + 1) != totalNumberOfPages) }">
 								<li><a href="" class="noclick">...</a></li>
 							</c:if>

@@ -73,20 +73,41 @@ public class DashboardServlet extends HttpServlet {
 			System.err.println("Problème parsing numberElementPerPages");
 		}
 		
-		try {
-			modelPage = serviceComputer.requestListPage(pageNumberRequested, numberOfElementsToPrint);
-		} catch (Exception e) {
-			System.err.println("Failed to get List of computers");
-		}
+		
+		if (request.getParameter("search") != null) {
+			try {
+				modelPage = serviceComputer.requestListPageSearched(pageNumberRequested, numberOfElementsToPrint, request.getParameter("search"));
+			} catch (Exception e) {
+				System.err.println("Failed to get List of computers searched");
+			}
+	
+			try {
+				modelPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputersFound(request.getParameter("search")));
+			} catch (Exception e) {
+				System.err.println("Failed to get number total of computer found with search");
+				e.printStackTrace();
+			}
 
-		try {
-			modelPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputers());
-		} catch (Exception e) {
-			System.err.println("Failed to get number total of computer");
-		}
+			modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElementsToPrint())
+					+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
 
-		modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElementsToPrint())
-				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
+			request.setAttribute("search", request.getParameter("search"));
+		} else {
+			try {
+				modelPage = serviceComputer.requestListPage(pageNumberRequested, numberOfElementsToPrint);
+			} catch (Exception e) {
+				System.err.println("Failed to get List of computers");
+			}
+	
+			try {
+				modelPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputers());
+			} catch (Exception e) {
+				System.err.println("Failed to get number total of computer");
+			}
+
+			modelPage.setNumberTotalPage((modelPage.getNumberTotalOfComputer() / modelPage.getNumberOfElementsToPrint())
+					+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
+		}
 
 		dtoPage = mapperPage.modelPageToDTOPage(modelPage);
 		

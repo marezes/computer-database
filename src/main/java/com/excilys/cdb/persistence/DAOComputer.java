@@ -34,6 +34,17 @@ public class DAOComputer {
 	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
 	private String SELECT_COUNT_COMPUTER = "SELECT COUNT(id) FROM computer";
 	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?;";
+	private String SELECT_COMPUTER_SEARCH = 
+			"SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name "
+			+ "FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0 "
+			+ "LIMIT ?, ?;";
+	private String SELECT_COUNT_COMPUTER_SEARCHED = 
+			"SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name "
+			+ "FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0;";
 	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
@@ -64,6 +75,7 @@ public class DAOComputer {
 		
 		dataSource = new HikariDataSource(config);
 	}
+	
 
 	/**
 	 * Méthode qui renvoie l'objet singleton DAOComputer.
@@ -77,6 +89,7 @@ public class DAOComputer {
 		}
 		return INSTANCE;
 	}
+	
 
 	/**
 	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans la
@@ -259,6 +272,99 @@ public class DAOComputer {
 		}
 		
 		return totalNumberOfComputers;
+	}
+	
+	public ModelPage requestListPageSearched(int pageNumber, int numberOfElement, String nameSearched) throws Exception {
+		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
+
+		try (Connection connexion = dataSource.getConnection()) {
+
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_SEARCH)) {
+
+				statement.setString(1, nameSearched);
+				statement.setString(2, nameSearched);
+				statement.setInt(3, ((pageNumber - 1) * numberOfElement));
+				statement.setInt(4, numberOfElement);
+				
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery()) {
+					while (resultat.next()) {
+						int id = resultat.getInt("computer.id");
+						String name = resultat.getString("computer.name");
+						LocalDate introduced = (resultat.getTimestamp("introduced") == null 
+								? null : ((resultat.getTimestamp("introduced")).toLocalDateTime()).toLocalDate());
+						LocalDate discontinued = (resultat.getTimestamp("discontinued") == null 
+								? null : ((resultat.getTimestamp("discontinued")).toLocalDateTime()).toLocalDate());
+						Integer companyId = resultat.getInt("company_id") == 0 ? null : resultat.getInt("company_id");
+						String companyName = resultat.getString("company.name");
+						model.add(new ModelComputer.ModelComputerBuilder(name)
+								.withId(id)
+								.withIntroduced(introduced)
+								.withDiscontinued(discontinued)
+								.withModelCompany(
+										new ModelCompany.ModelCompanyBuilder()
+											.withId(companyId)
+											.withName(companyName)
+											.build())
+								.build());
+					}
+				} catch (SQLException e) {
+					// System.err.println("Récupération de la requête raté.");
+					throw e;
+				}
+			} catch (SQLException e) {
+				// System.err.println("Création du statement raté.");
+				throw e;
+			}
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+
+		return (new ModelPage.ModelPageBuilder()
+				.withPageNumber(pageNumber)
+				.withNumberOfElementsToPrint(numberOfElement)
+				.withModelComputerList(model)
+				.build());
+	}
+	
+	public int requestTotalNumberOfComputersFound(String nameSearched) {
+		int totalNumberOfComputersFound = 0;
+
+		try (Connection connexion = dataSource.getConnection()) {
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COUNT_COMPUTER_SEARCHED)) {
+
+				statement.setString(1, nameSearched);
+				statement.setString(2, nameSearched);
+				
+				/* Exécution d'une requête de lecture */
+				try (ResultSet resultat = statement.executeQuery()) {
+					while (resultat.next()) {
+						totalNumberOfComputersFound++;
+					}
+				} catch (SQLException e) {
+					// System.err.println("Récupération de la requête raté.");
+					e.printStackTrace();
+					throw e;
+				}
+				
+			} catch (SQLException e) {
+				// System.err.println("Création du statement raté.");
+				e.printStackTrace();
+				throw e;
+			}
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+		
+		return totalNumberOfComputersFound;
 	}
 
 	/**

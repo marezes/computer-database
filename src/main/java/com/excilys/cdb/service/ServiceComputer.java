@@ -47,6 +47,14 @@ public class ServiceComputer {
 		return daoComputer.requestListPage(pageNumber, numberOfElement);
 	}
 	
+	public ModelPage requestListPageSearched(int pageNumber, int numberOfElement, String nameSearched) throws Exception {
+		return daoComputer.requestListPageSearched(pageNumber, numberOfElement, nameSearched);
+	}
+	
+	public int requestTotalNumberOfComputersFound(String nameSearched) throws Exception {
+		return daoComputer.requestTotalNumberOfComputersFound(nameSearched);
+	}
+	
 	public int requestTotalNumberOfComputers() throws Exception {
 		return daoComputer.requestTotalNumberOfComputers();
 	}
