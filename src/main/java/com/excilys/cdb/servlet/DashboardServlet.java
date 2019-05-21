@@ -53,28 +53,26 @@ public class DashboardServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Integer pageNumberRequested = null;
+		Integer numberOfElementsToPrint = null;
+		ModelPage modelPage = null;
+		
 		try {
-			if (request.getParameter("page") != null) {
-				pageNumberRequested = Integer.parseInt(request.getParameter("page"));
-			} else {
-				pageNumberRequested = 1;
-			}
+			pageNumberRequested = (request.getParameter("page") == null) ? 1 : Integer.parseInt(request.getParameter("page"));
 		} catch (Exception e) {
 			System.err.println("Problème parsing PageNumberRequested");
 		}
-
-		Integer numberOfElementsToPrint = null;
+		pageNumberRequested = (pageNumberRequested <= 0) ? 1 : 
+			(pageNumberRequested >= Integer.MAX_VALUE) ? 
+					((dtoPage.getNumberTotalPage() != null) ? 1 : dtoPage.getNumberTotalPage())
+					: pageNumberRequested;
 		try {
-			if (request.getParameter("numberElementPerPages") != null) {
-				numberOfElementsToPrint = Integer.parseInt(request.getParameter("numberElementPerPages"));
-			} else {
-				numberOfElementsToPrint = dtoPage.getNumberOfElementsToPrint();
-			}
+			numberOfElementsToPrint = (request.getParameter("numberElementPerPages") != null) 
+					? Integer.parseInt(request.getParameter("numberElementPerPages")) 
+							: dtoPage.getNumberOfElementsToPrint();
 		} catch(Exception e) {
 			System.err.println("Problème parsing numberElementPerPages");
 		}
-
-		ModelPage modelPage = null;
+		
 		try {
 			modelPage = serviceComputer.requestListPage(pageNumberRequested, numberOfElementsToPrint);
 		} catch (Exception e) {
@@ -91,15 +89,20 @@ public class DashboardServlet extends HttpServlet {
 				+ (((modelPage.getNumberTotalOfComputer() % modelPage.getNumberOfElementsToPrint()) != 0) ? 1 : 0));
 
 		dtoPage = mapperPage.modelPageToDTOPage(modelPage);
-
+		
+		
 		request.setAttribute("computerListObject", dtoPage.getDtoComputerList());
 		request.setAttribute("numberOfElementsToPrint", dtoPage.getNumberOfElementsToPrint());
 		request.setAttribute("totalNumberOfComputer", dtoPage.getNumberTotalOfComputer());
 		request.setAttribute("pageNumber", dtoPage.getPageNumber());
 		request.setAttribute("totalNumberOfPages", dtoPage.getNumberTotalPage());
 
-		RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
-		requestDispatcher.forward(request, response);
+		try{
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
+			requestDispatcher.forward(request, response);
+		} catch (Exception e) {
+			System.err.println("Dispatcher failed");
+		}
 	}
 
 	/**

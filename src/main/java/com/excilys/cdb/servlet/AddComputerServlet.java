@@ -17,6 +17,7 @@ import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.MapperDTO;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
+import com.excilys.cdb.validator.Validator;
 
 /**
  * Servlet implementation class AddComputerServlet
@@ -30,6 +31,7 @@ public class AddComputerServlet extends HttpServlet {
 	private MapperCompany mapperCompany;
 	private MapperComputer mapperComputer;
 	private MapperDTO mapperDTO;
+	private Validator validator;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -61,6 +63,11 @@ public class AddComputerServlet extends HttpServlet {
 		} catch (Exception e) {
 			System.err.println("Erreur get MapperDTO without exception");
 		}
+        try {
+			validator = Validator.getInstance();
+		} catch (Exception e) {
+			System.err.println("Erreur get Validator without exception");
+		}
     }
 
 	/**
@@ -85,13 +92,14 @@ public class AddComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DTOComputer dtoComputerToEdit = mapperDTO.dataToDTOComputer(request);
-		/* Partie validateur à ajouter */
+		DTOComputer dtoComputerToCreate = mapperDTO.dataToDTOComputer(request);
 		
-		try {
-			serviceComputer.requestCreate(mapperComputer.dtoComputerToModelComputer(dtoComputerToEdit));
-		} catch (Exception e) {
-			System.err.println("Update or mapping to model failed");
+		if (validator.dtoComputerValidation(dtoComputerToCreate)) {
+			try {
+				serviceComputer.requestCreate(mapperComputer.dtoComputerToModelComputer(dtoComputerToCreate));
+			} catch (Exception e) {
+				System.err.println("Update or mapping to model failed");
+			}
 		}
 		
 		response.sendRedirect("dashboard");
