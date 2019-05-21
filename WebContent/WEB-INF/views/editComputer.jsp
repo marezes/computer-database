@@ -30,6 +30,9 @@
 	                        id: ${ id }
 	                    </div>
 	                    <h1>Edit Computer</h1>
+						<div class="alert alert-danger" id="errorContainer">
+							<div id="errorMessage"></div>
+						</div>
 	
 	                    <form action="editComputer" method="POST">
 	                        <input type="hidden" value="${ id }" id="id" name="id"/>
@@ -49,7 +52,7 @@
 	                            <div class="form-group">
 	                                <label for="companyId">Company</label>
 	                                <select class="form-control" id="companyId" name="companyId">
-	                                    <option value="null" <c:if test="${ computerDetails.companyId == null }">selected</c:if>>--</option>
+	                                    <option value="" <c:if test="${ computerDetails.companyId == null }">selected</c:if>>--</option>
 	                                    <c:forEach items="${ companyListObject }" var="v">
 	                                    	<option value="${ v.id }" <c:if test="${ computerDetails.companyId == v.id }">selected</c:if>>${ v.name }</option>
 	                                    </c:forEach>
@@ -57,7 +60,7 @@
 	                            </div>            
 	                        </fieldset>
 	                        <div class="actions pull-right">
-	                            <input type="submit" value="Edit" class="btn btn-primary">
+	                            <input type="submit" id="submit" value="Edit" class="btn btn-primary">
 	                            or
 	                            <a href="dashboard" class="btn btn-default">Cancel</a>
 	                        </div>
@@ -69,6 +72,7 @@
 	
 		<script src="${ pageContext.request.contextPath }/js/jquery.min.js"></script>
 		<script src="${ pageContext.request.contextPath }/js/bootstrap.min.js"></script>
+		<script src="${ pageContext.request.contextPath }/js/validation.js"></script>
 		
 	</body>
 </html>

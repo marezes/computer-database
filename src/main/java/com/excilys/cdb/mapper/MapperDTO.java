@@ -39,19 +39,19 @@ public class MapperDTO {
 		}
 
 		try {
-			introduced = LocalDate.parse(request.getParameter("introduced"));
+			introduced = (request.getParameter("introduced")).equals("") ? null : LocalDate.parse(request.getParameter("introduced"));
 		} catch (Exception e) {
 			throw e;
 		}
 		
 		try {
-			discontinued = LocalDate.parse(request.getParameter("discontinued"));
+			discontinued = (request.getParameter("discontinued")).equals("") ? null : LocalDate.parse(request.getParameter("discontinued"));
 		} catch (Exception e) {
 			throw e;
 		}
 		
 		try {
-			companyId = (request.getParameter("companyId") == null) ? null : Integer.parseInt(request.getParameter("companyId"));
+			companyId = (request.getParameter("companyId")).equals("") ? null : Integer.parseInt(request.getParameter("companyId"));
 		} catch (Exception e) {
 			throw e;
 		}

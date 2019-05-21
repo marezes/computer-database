@@ -27,6 +27,10 @@
 	            <div class="row">
 	                <div class="col-xs-8 col-xs-offset-2 box">
 	                    <h1>Add Computer</h1>
+						<div class="alert alert-danger" id="errorContainer">
+							<div id="errorMessage"></div>
+						</div>
+							
 	                    <form action="addComputer" method="POST">
 	                        <fieldset>
 	                            <div class="form-group">
@@ -44,7 +48,7 @@
 	                            <div class="form-group">
 	                                <label for="companyId">Company</label>
 	                                <select class="form-control" id="companyId" name="companyId">
-	                                    <option value="null" selected>--</option>
+	                                    <option value="" selected>--</option>
 	                                    <c:forEach items="${ companyListObject }" var="v">
 	                                    	<option value="${ v.id }">${ v.name }</option>
 	                                    </c:forEach>
@@ -52,7 +56,7 @@
 	                            </div> 
 	                        </fieldset>
 	                        <div class="actions pull-right">
-	                            <input type="submit" value="Add" class="btn btn-primary">
+	                            <input type="submit" id="submit" value="Add" class="btn btn-primary">
 	                            or
 	                            <a href="dashboard" class="btn btn-default">Cancel</a>
 	                        </div>
@@ -61,5 +65,10 @@
 	            </div>
 	        </div>
 	    </section>
+	
+		<script src="${ pageContext.request.contextPath }/js/jquery.min.js"></script>
+		<script src="${ pageContext.request.contextPath }/js/bootstrap.min.js"></script>
+		<script src="${ pageContext.request.contextPath }/js/validation.js"></script>
+		
 	</body>
 </html>

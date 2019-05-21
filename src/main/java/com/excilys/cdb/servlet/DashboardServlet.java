@@ -35,6 +35,7 @@ public class DashboardServlet extends HttpServlet {
 			serviceComputer = ServiceComputer.getInstance();
 		} catch (Exception e) {
 			System.err.println("Erreur get ServiceComputer without exception");
+			e.printStackTrace();
 		}
 		try {
 			mapperPage = MapperPage.getInstance();
