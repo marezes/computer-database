@@ -43,12 +43,12 @@ public class ServiceComputer {
 		return daoComputer.requestCompleteListLimit(pageNumber, numberOfElement);
 	}
 	
-	public ModelPage requestListPage(int pageNumber, int numberOfElement) throws Exception {
-		return daoComputer.requestListPage(pageNumber, numberOfElement);
+	public ArrayList<ModelComputer> requestListPage(ModelPage modelPage) throws Exception {
+		return daoComputer.requestListPage(modelPage);
 	}
 	
-	public ModelPage requestListPageSearched(int pageNumber, int numberOfElement, String nameSearched) throws Exception {
-		return daoComputer.requestListPageSearched(pageNumber, numberOfElement, nameSearched);
+	public ArrayList<ModelComputer> requestListPageSearched(ModelPage modelPage) throws Exception {
+		return daoComputer.requestListPageSearched(modelPage);
 	}
 	
 	public int requestTotalNumberOfComputersFound(String nameSearched) throws Exception {

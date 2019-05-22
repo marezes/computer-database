@@ -24,7 +24,6 @@ $(function() {
 
 });
 
-
 // Function setCheckboxValues
 (function ( $ ) {
 
@@ -61,55 +60,57 @@ $(function() {
 //Function toggleNumberOfElementPrinted
 (function ( $ ) {
 	$.fn.toggleNumberOfElementPrinted = function(id) {
-		var idElement = '';
-		if (id == 'tenElements') {
-			idElement = '#' + id;
-			$(idElement).prop("disabled", true);
-			$('#fiftyElements').prop("disabled", false);
-			$('#hundredElements').prop("disabled", false);
-		} else {
-			if (id == 'fiftyElements') {
-				idElement = '#' + id;
-				$(idElement).prop("disabled", true);
-				$('#tenElements').prop("disabled", false);
-				$('#hundredElements').prop("disabled", false);
-			} else {
-				if (id == 'hundredElements') {
-					idElement = '#' + id;
-					$(idElement).prop("disabled", true);
-					$('#tenElements').prop("disabled", false);
-					$('#fiftyElements').prop("disabled", false);
-				}
-			}
-		}
+		var idElement = '#' + id;
+		$('[name=buttonNumberElementToPrint]').prop("disabled", false)
+		$(idElement).prop("disabled", true);
 		
 		var data = "numberElementPerPages=" + $(idElement).val();
-	        $.ajax({
-	           type: "GET",
-	           url: "dashboard",
-	           data: data, 
-	           success: function(result) {
-	        	   if(typeof(result) !=='undefined'){
-	        		   $('#results').html($($.parseHTML(result)).find("#results").html());
-	        		   $(idElement).html($($.parseHTML(result)).find(idElement).html());
-	        		   $('.pagination').html($($.parseHTML(result)).find('.pagination').html());
-	        		   $(".editMode").hide();
-	        		   console.log(result);
-	        	   }
-	           },
-	           error: function(error) {
-	        	   console.log('error');
-	        	   console.log(error);
-	           }
-	       });
+		if (getUrlParameter('search') !== undefined) {
+			data += ("&search=" + getUrlParameter('search'));
+		}
+		
+        $.ajax({
+           type: "GET",
+           url: "dashboard",
+           data: data, 
+           success: function(result) {
+        	   if(typeof(result) !=='undefined'){
+        		   $('#results').html($($.parseHTML(result)).find("#results").html());
+        		   $(idElement).html($($.parseHTML(result)).find(idElement).html());
+        		   $('.pagination').html($($.parseHTML(result)).find('.pagination').html());
+        		   $(".editMode").hide();
+        		   console.log(result);
+        	   }
+           },
+           error: function(error) {
+        	   console.log('error');
+        	   console.log(error);
+           }
+       });
 	}
 
 }( jQuery ));
 
+// Function that get the value of the url parameter put in argument (function found in stackoverflow)
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+
 // Function delete selected: Asks for confirmation to delete selected computers, then submits it to the deleteForm
 (function ( $ ) {
     $.fn.deleteSelected = function() {
-        if (confirm("Are you sure you want to delete the selected computers?")) { 
+        if (confirm("Are you sure you want to delete the selected computers ?")) { 
             $('#deleteForm input[name=selection]').setCheckboxValues('selection','cb');
             $('#deleteForm').submit();
         }

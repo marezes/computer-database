@@ -1,27 +1,31 @@
 package com.excilys.cdb.dto;
 
-import java.util.ArrayList;
-
 public class DTOPage {
 	private Integer pageNumber;
 	private Integer numberTotalPage;
 	private Integer NumberOfElementsToPrint;
 	private Integer numberTotalOfComputer;
-	private ArrayList<DTOComputer> dtoComputerList;
+	private String wordSearched;
+	private String orderBy;
+	private boolean isAsc;
 	
 	public static class DTOPageBuilder {
 		private Integer pageNumber;
 		private Integer numberTotalPage;
 		private Integer numberOfElementsToPrint;
 		private Integer numberTotalOfComputer;
-		private ArrayList<DTOComputer> dtoComputerList;
+		private String wordSearched;
+		private String orderBy;
+		private boolean isAsc;
 		
 		public DTOPageBuilder() {
 			this.pageNumber = null;
 			this.numberTotalPage = null;
 			this.numberOfElementsToPrint = null;
 			this.numberTotalOfComputer = null;
-			this.dtoComputerList = null;
+			this.wordSearched = null;
+			this.orderBy = null;
+			this.isAsc = true;
 		}
 		
 		public DTOPageBuilder withPageNumber(Integer pageNumber) {
@@ -44,8 +48,18 @@ public class DTOPage {
 			return this;
 		}
 		
-		public DTOPageBuilder withDtoComputerList(ArrayList<DTOComputer> dtoComputerList) {
-			this.dtoComputerList = dtoComputerList;
+		public DTOPageBuilder withWordSearched(String wordSearched) {
+			this.wordSearched = wordSearched;
+			return this;
+		}
+		
+		public DTOPageBuilder withOrderBy(String orderBy) {
+			this.orderBy = orderBy;
+			return this;
+		}
+		
+		public DTOPageBuilder withisAsc(boolean isAsc) {
+			this.isAsc = isAsc;
 			return this;
 		}
 		
@@ -59,14 +73,17 @@ public class DTOPage {
 		this.numberTotalPage = build.numberTotalPage;
 		this.NumberOfElementsToPrint = build.numberOfElementsToPrint;
 		this.numberTotalOfComputer = build.numberTotalOfComputer;
-		this.dtoComputerList = build.dtoComputerList;
+		this.wordSearched = build.wordSearched;
+		this.orderBy = build.orderBy;
+		this.isAsc = build.isAsc;
 	}
 
 	@Override
 	public String toString() {
 		return "DTOPage [pageNumber=" + pageNumber + ", numberTotalPage=" + numberTotalPage
-				+ ", NumberOfElemetsToPrint=" + NumberOfElementsToPrint + ", numberTotalOfComputer="
-				+ numberTotalOfComputer + ", modelComputerList=" + dtoComputerList.toString() + "]";
+				+ ", NumberOfElementsToPrint=" + NumberOfElementsToPrint + ", numberTotalOfComputer="
+				+ numberTotalOfComputer + ", wordSearched=" + wordSearched + ", orderBy=" + orderBy + ", isAsc=" + isAsc
+				+ "]";
 	}
 
 	@Override
@@ -74,10 +91,12 @@ public class DTOPage {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((NumberOfElementsToPrint == null) ? 0 : NumberOfElementsToPrint.hashCode());
-		result = prime * result + ((dtoComputerList == null) ? 0 : dtoComputerList.hashCode());
+		result = prime * result + (isAsc ? 1231 : 1237);
 		result = prime * result + ((numberTotalOfComputer == null) ? 0 : numberTotalOfComputer.hashCode());
 		result = prime * result + ((numberTotalPage == null) ? 0 : numberTotalPage.hashCode());
+		result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
 		result = prime * result + ((pageNumber == null) ? 0 : pageNumber.hashCode());
+		result = prime * result + ((wordSearched == null) ? 0 : wordSearched.hashCode());
 		return result;
 	}
 
@@ -95,10 +114,7 @@ public class DTOPage {
 				return false;
 		} else if (!NumberOfElementsToPrint.equals(other.NumberOfElementsToPrint))
 			return false;
-		if (dtoComputerList == null) {
-			if (other.dtoComputerList != null)
-				return false;
-		} else if (!dtoComputerList.equals(other.dtoComputerList))
+		if (isAsc != other.isAsc)
 			return false;
 		if (numberTotalOfComputer == null) {
 			if (other.numberTotalOfComputer != null)
@@ -110,10 +126,20 @@ public class DTOPage {
 				return false;
 		} else if (!numberTotalPage.equals(other.numberTotalPage))
 			return false;
+		if (orderBy == null) {
+			if (other.orderBy != null)
+				return false;
+		} else if (!orderBy.equals(other.orderBy))
+			return false;
 		if (pageNumber == null) {
 			if (other.pageNumber != null)
 				return false;
 		} else if (!pageNumber.equals(other.pageNumber))
+			return false;
+		if (wordSearched == null) {
+			if (other.wordSearched != null)
+				return false;
+		} else if (!wordSearched.equals(other.wordSearched))
 			return false;
 		return true;
 	}
@@ -136,8 +162,16 @@ public class DTOPage {
 		return numberTotalOfComputer;
 	}
 
-	public ArrayList<DTOComputer> getDtoComputerList() {
-		return dtoComputerList;
+	public String getWordSearched() {
+		return wordSearched;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public boolean isAsc() {
+		return isAsc;
 	}
 	
 	// Setters
@@ -158,8 +192,15 @@ public class DTOPage {
 		this.numberTotalOfComputer = numberTotalOfComputer;
 	}
 
-	public void setDtoComputerList(ArrayList<DTOComputer> dtoComputerList) {
-		this.dtoComputerList = dtoComputerList;
+	public void setWordSearched(String wordSearched) {
+		this.wordSearched = wordSearched;
 	}
 
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public void setisAsc(boolean isAsc) {
+		this.isAsc = isAsc;
+	}
 }

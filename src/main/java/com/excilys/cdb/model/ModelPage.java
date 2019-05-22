@@ -1,27 +1,31 @@
 package com.excilys.cdb.model;
 
-import java.util.ArrayList;
-
 public class ModelPage {
 	private Integer pageNumber;
 	private Integer numberTotalPage;
 	private Integer numberOfElementsToPrint;
 	private Integer numberTotalOfComputer;
-	private ArrayList<ModelComputer> modelComputerList;
+	private String wordSearched;
+	private String orderBy;
+	private boolean isAsc;
 	
 	public static class ModelPageBuilder {
 		private Integer pageNumber;
 		private Integer numberTotalPage;
 		private Integer numberOfElementsToPrint;
 		private Integer numberTotalOfComputer;
-		private ArrayList<ModelComputer> modelComputerList;
+		private String wordSearched;
+		private String orderBy;
+		private boolean isAsc;
 		
 		public ModelPageBuilder() {
 			this.pageNumber = null;
 			this.numberTotalPage = null;
 			this.numberOfElementsToPrint = null;
 			this.numberTotalOfComputer = null;
-			this.modelComputerList = null;
+			this.wordSearched = null;
+			this.orderBy = null;
+			this.isAsc = true;
 		}
 		
 		public ModelPageBuilder withPageNumber(Integer pageNumber) {
@@ -44,8 +48,18 @@ public class ModelPage {
 			return this;
 		}
 		
-		public ModelPageBuilder withModelComputerList(ArrayList<ModelComputer> modelComputerList) {
-			this.modelComputerList = modelComputerList;
+		public ModelPageBuilder withWordSearched(String wordSearched) {
+			this.wordSearched = wordSearched;
+			return this;
+		}
+		
+		public ModelPageBuilder withOrderBy(String orderBy) {
+			this.orderBy = orderBy;
+			return this;
+		}
+		
+		public ModelPageBuilder withisAsc(boolean isAsc) {
+			this.isAsc = isAsc;
 			return this;
 		}
 		
@@ -59,25 +73,30 @@ public class ModelPage {
 		this.numberTotalPage = build.numberTotalPage;
 		this.numberOfElementsToPrint = build.numberOfElementsToPrint;
 		this.numberTotalOfComputer = build.numberTotalOfComputer;
-		this.modelComputerList = build.modelComputerList;
+		this.wordSearched = build.wordSearched;
+		this.orderBy = build.orderBy;
+		this.isAsc = build.isAsc;
 	}
 
 	@Override
 	public String toString() {
 		return "ModelPage [pageNumber=" + pageNumber + ", numberTotalPage=" + numberTotalPage
-				+ ", numberOfElemetsToPrint=" + numberOfElementsToPrint + ", numberTotalOfComputer="
-				+ numberTotalOfComputer + ", modelComputerList=" + modelComputerList.toString() + "]";
+				+ ", numberOfElementsToPrint=" + numberOfElementsToPrint + ", numberTotalOfComputer="
+				+ numberTotalOfComputer + ", wordSearched=" + wordSearched + ", orderBy=" + orderBy + ", isAsc=" + isAsc
+				+ "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((modelComputerList == null) ? 0 : modelComputerList.hashCode());
+		result = prime * result + (isAsc ? 1231 : 1237);
 		result = prime * result + ((numberOfElementsToPrint == null) ? 0 : numberOfElementsToPrint.hashCode());
 		result = prime * result + ((numberTotalOfComputer == null) ? 0 : numberTotalOfComputer.hashCode());
 		result = prime * result + ((numberTotalPage == null) ? 0 : numberTotalPage.hashCode());
+		result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
 		result = prime * result + ((pageNumber == null) ? 0 : pageNumber.hashCode());
+		result = prime * result + ((wordSearched == null) ? 0 : wordSearched.hashCode());
 		return result;
 	}
 
@@ -90,10 +109,7 @@ public class ModelPage {
 		if (getClass() != obj.getClass())
 			return false;
 		ModelPage other = (ModelPage) obj;
-		if (modelComputerList == null) {
-			if (other.modelComputerList != null)
-				return false;
-		} else if (!modelComputerList.equals(other.modelComputerList))
+		if (isAsc != other.isAsc)
 			return false;
 		if (numberOfElementsToPrint == null) {
 			if (other.numberOfElementsToPrint != null)
@@ -110,10 +126,20 @@ public class ModelPage {
 				return false;
 		} else if (!numberTotalPage.equals(other.numberTotalPage))
 			return false;
+		if (orderBy == null) {
+			if (other.orderBy != null)
+				return false;
+		} else if (!orderBy.equals(other.orderBy))
+			return false;
 		if (pageNumber == null) {
 			if (other.pageNumber != null)
 				return false;
 		} else if (!pageNumber.equals(other.pageNumber))
+			return false;
+		if (wordSearched == null) {
+			if (other.wordSearched != null)
+				return false;
+		} else if (!wordSearched.equals(other.wordSearched))
 			return false;
 		return true;
 	}
@@ -136,8 +162,16 @@ public class ModelPage {
 		return numberTotalOfComputer;
 	}
 
-	public ArrayList<ModelComputer> getModelComputerList() {
-		return modelComputerList;
+	public String getWordSearched() {
+		return wordSearched;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public boolean isAsc() {
+		return isAsc;
 	}
 	
 	// Setters
@@ -158,8 +192,15 @@ public class ModelPage {
 		this.numberTotalOfComputer = numberTotalOfComputer;
 	}
 
-	public void setModelComputerList(ArrayList<ModelComputer> modelComputerList) {
-		this.modelComputerList = modelComputerList;
+	public void setWordSearched(String wordSearched) {
+		this.wordSearched = wordSearched;
 	}
 
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public void setisAsc(boolean isAsc) {
+		this.isAsc = isAsc;
+	}
 }

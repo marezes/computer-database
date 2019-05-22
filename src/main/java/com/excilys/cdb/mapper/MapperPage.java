@@ -1,8 +1,5 @@
 package com.excilys.cdb.mapper;
 
-import java.util.ArrayList;
-
-import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.dto.DTOPage;
 import com.excilys.cdb.model.ModelPage;
 
@@ -32,32 +29,46 @@ public class MapperPage {
 		
 		Integer numberTotalOfComputer = modelPage.getNumberTotalOfComputer();
 		
-		ArrayList<DTOComputer> dtoComputerList = null;
+		String wordSearched = modelPage.getWordSearched();
 		
-		try {
-			dtoComputerList = MapperComputer.getInstance().modelComputerListToDTOComputerList(modelPage.getModelComputerList());
-		} catch (Exception e) {
-			throw e;
-		}
+		String orderBy = modelPage.getOrderBy();
+		
+		boolean isAsc = modelPage.isAsc();
 		
 		return (new DTOPage.DTOPageBuilder()
 				.withPageNumber(pageNumber)
 				.withNumberTotalPage(numberTotalPage)
 				.withNumberOfElementsToPrint(numberOfElemetsToPrint)
 				.withNumberTotalOfComputer(numberTotalOfComputer)
-				.withDtoComputerList(dtoComputerList)
+				.withWordSearched(wordSearched)
+				.withOrderBy(orderBy)
+				.withisAsc(isAsc)
 				.build());
 	}
 	
     public ModelPage dtoPageToModelPage(DTOPage dtoPage) {
-    	
 		Integer pageNumber = dtoPage.getPageNumber();
+		
+		Integer numberTotalPage = dtoPage.getNumberTotalPage();
 		
 		Integer numberOfElemetsToPrint = dtoPage.getNumberOfElementsToPrint();
 		
+		Integer numberTotalOfComputer = dtoPage.getNumberTotalOfComputer();
+		
+		String wordSearched = dtoPage.getWordSearched();
+		
+		String orderBy = dtoPage.getOrderBy();
+		
+		boolean isAsc = dtoPage.isAsc();
+		
 		return (new ModelPage.ModelPageBuilder()
 				.withPageNumber(pageNumber)
+				.withNumberTotalPage(numberTotalPage)
 				.withNumberOfElementsToPrint(numberOfElemetsToPrint)
+				.withNumberTotalOfComputer(numberTotalOfComputer)
+				.withWordSearched(wordSearched)
+				.withOrderBy(orderBy)
+				.withisAsc(isAsc)
 				.build());
     }
 }

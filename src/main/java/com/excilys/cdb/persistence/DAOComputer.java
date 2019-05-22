@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -31,25 +32,22 @@ public class DAOComputer {
 	
 	private final HikariDataSource dataSource;
 
-	private String SELECT_COMPUTER_LIST_LIMIT = "SELECT id, name FROM computer LIMIT ?, ?;";
+	private String SELECT_COMPUTER_LIST_LIMIT = 
+			"SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name "
+			+ "FROM computer "
+			+ "LEFT JOIN company ON computer.company_id = company.id "
+			+ "ORDER BY ";
+	private String SELECT_COMPUTER_SEARCH_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0 ORDER BY ";
 	private String SELECT_COUNT_COMPUTER = "SELECT COUNT(id) FROM computer";
 	private String SELECT_COMPLETE_COMPUTER_LIST_LIMIT = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id LIMIT ?, ?;";
-	private String SELECT_COMPUTER_SEARCH = 
-			"SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name "
-			+ "FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0 "
-			+ "LIMIT ?, ?;";
-	private String SELECT_COUNT_COMPUTER_SEARCHED = 
-			"SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name "
-			+ "FROM computer "
-			+ "LEFT JOIN company ON computer.company_id = company.id "
-			+ "WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0;";
+	private String SELECT_COUNT_COMPUTER_SEARCHED = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE INSTR(computer.name, ?) > 0 OR INSTR(company.name, ?) > 0;";
 	private String SELECT_BY_ID = "SELECT computer.id, computer.name, introduced, discontinued, company_id, company.name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
 	private String INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 	private String UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 	private String DELETE_COMPUTER = "DELETE FROM computer WHERE id = ?;";
+	private String DELETE_COMPUTERS_WITH_TRANSACTION = "DELETE FROM computer WHERE campany_id = ?;";
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID();";
+	private HashMap<String, String> antiInjector;
 
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException, ClassNotFoundException {
 		ResourceBundle bundle;
@@ -74,6 +72,12 @@ public class DAOComputer {
 		config.setPassword(bundle.getString("password"));
 		
 		dataSource = new HikariDataSource(config);
+		
+		this.antiInjector = new HashMap<String, String>();
+		this.antiInjector.put("computerName", "computer.name");
+		this.antiInjector.put("introduced", "introduced");
+		this.antiInjector.put("discontinued", "discontinued");
+		this.antiInjector.put("companyName", "company.name");
 	}
 	
 
@@ -189,16 +193,18 @@ public class DAOComputer {
 		return model;
 	}
 	
-	public ModelPage requestListPage(int pageNumber, int numberOfElement) throws Exception {
+	public ArrayList<ModelComputer> requestListPage(ModelPage modelPage) throws Exception {
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
-
+		
+		String SELECT_COMPUTER_LIST_LIMIT_ORDER_BY = SELECT_COMPUTER_LIST_LIMIT + (getOrderBy(modelPage.getOrderBy()) + " IS NULL, " + getOrderBy(modelPage.getOrderBy()) + " " + (modelPage.isAsc() ? "ASC" : "DESC") + " LIMIT ?, ?;");
+		
 		try (Connection connexion = dataSource.getConnection()) {
-
+			
 			/* Création de l'objet gérant les requêtes */
-			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPLETE_COMPUTER_LIST_LIMIT)) {
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_LIST_LIMIT_ORDER_BY)) {
 
-				statement.setInt(1, ((pageNumber - 1) * numberOfElement));
-				statement.setInt(2, numberOfElement);
+				statement.setInt(1, ((modelPage.getPageNumber() - 1) * modelPage.getNumberOfElementsToPrint()));
+				statement.setInt(2, modelPage.getNumberOfElementsToPrint());
 
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
@@ -237,11 +243,11 @@ public class DAOComputer {
 			throw connectionException;
 		}
 
-		return (new ModelPage.ModelPageBuilder()
-				.withPageNumber(pageNumber)
-				.withNumberOfElementsToPrint(numberOfElement)
-				.withModelComputerList(model)
-				.build());
+		return model;
+	}
+	
+	private String getOrderBy(String columnName) {
+		return ((antiInjector.get(columnName) == null) ? "computer.id" : antiInjector.get(columnName));
 	}
 	
 	public int requestTotalNumberOfComputers() throws Exception {
@@ -274,18 +280,20 @@ public class DAOComputer {
 		return totalNumberOfComputers;
 	}
 	
-	public ModelPage requestListPageSearched(int pageNumber, int numberOfElement, String nameSearched) throws Exception {
+	public ArrayList<ModelComputer> requestListPageSearched(ModelPage modelPage) throws Exception {
 		ArrayList<ModelComputer> model = new ArrayList<ModelComputer>();
-
+		
+		String SELECT_COMPUTER_SEARCH_LIST_LIMIT_ORDER_BY = SELECT_COMPUTER_SEARCH_LIST_LIMIT + (getOrderBy(modelPage.getOrderBy()) + " IS NULL, " + getOrderBy(modelPage.getOrderBy()) + " " + (modelPage.isAsc() ? "ASC" : "DESC") + " LIMIT ?, ?;");
+		System.out.println(SELECT_COMPUTER_SEARCH_LIST_LIMIT_ORDER_BY);
 		try (Connection connexion = dataSource.getConnection()) {
 
 			/* Création de l'objet gérant les requêtes */
-			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_SEARCH)) {
+			try (PreparedStatement statement = connexion.prepareStatement(SELECT_COMPUTER_SEARCH_LIST_LIMIT_ORDER_BY)) {
 
-				statement.setString(1, nameSearched);
-				statement.setString(2, nameSearched);
-				statement.setInt(3, ((pageNumber - 1) * numberOfElement));
-				statement.setInt(4, numberOfElement);
+				statement.setString(1, modelPage.getWordSearched());
+				statement.setString(2, modelPage.getWordSearched());
+				statement.setInt(3, ((modelPage.getPageNumber() - 1) * modelPage.getNumberOfElementsToPrint()));
+				statement.setInt(4, modelPage.getNumberOfElementsToPrint());
 				
 				/* Exécution d'une requête de lecture */
 				try (ResultSet resultat = statement.executeQuery()) {
@@ -324,11 +332,7 @@ public class DAOComputer {
 			throw connectionException;
 		}
 
-		return (new ModelPage.ModelPageBuilder()
-				.withPageNumber(pageNumber)
-				.withNumberOfElementsToPrint(numberOfElement)
-				.withModelComputerList(model)
-				.build());
+		return model;
 	}
 	
 	public int requestTotalNumberOfComputersFound(String nameSearched) {
@@ -584,5 +588,43 @@ public class DAOComputer {
 		}
 
 		return (statut == 1) ? modelComputerDeleted : null; // une exception à la place de null;
+	}
+	
+	public boolean requestDeleteWithTransaction(int companyId) throws RuntimeException {
+		int statut = -1;
+
+		try (Connection connexion = dataSource.getConnection()) {
+			
+			/* set auto commit to false */
+            connexion.setAutoCommit(false);
+			
+			/* Création de l'objet gérant les requêtes */
+			try (PreparedStatement statement = connexion.prepareStatement(DELETE_COMPUTERS_WITH_TRANSACTION)) {
+
+				statement.setInt(1, companyId);
+
+				/* Exécution d'une requête d'écriture */
+				statut = statement.executeUpdate();
+				
+				/* Exécution du commit */
+				connexion.commit();
+				
+			} catch (SQLException e) {
+				// System.err.println("Delete raté."+e.getStackTrace());
+				connexion.rollback();
+				throw e;
+			}
+			
+			/* set auto commit to true */
+            connexion.setAutoCommit(false);
+            
+		} catch (SQLException e) {
+			ConnectionToDataBaseFailedException connectionException = new ConnectionToDataBaseFailedException();
+			logger.error(connectionException.getMessage());
+			logger.error(e.getStackTrace().toString());
+			throw connectionException;
+		}
+
+		return (statut == 1) ? true : false; // une exception à la place de null;
 	}
 }

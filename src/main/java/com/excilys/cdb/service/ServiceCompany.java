@@ -36,4 +36,12 @@ public class ServiceCompany {
 	public ArrayList<ModelCompany> requestList() throws Exception {
 		return daoCompany.requestList();
 	}
+	
+	public boolean requestDelete(int companyId) throws Exception {
+		return daoCompany.requestDelete(companyId);
+	}
+	
+	public ModelCompany requestById(int companyId) throws Exception {
+		return daoCompany.requestById(companyId);
+	}
 }

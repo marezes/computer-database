@@ -63,12 +63,12 @@
 										class="fa fa-trash-o fa-lg"></i>
 								</a>
 							</span></th>
-							<th>Computer name <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
-							<th>Introduced date <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
+							<th>Computer name <a href="?orderby=computerNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=computerNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
+							<th>Introduced date <a href="?orderby=introducedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=introducedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 							<!-- Table header for Discontinued Date --> 
-							<th>Discontinued date <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
+							<th>Discontinued date <a href="?orderby=discontinuedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=discontinuedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 							<!-- Table header for Company -->
-							<th>Company <button type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></button><button type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></button></th>
+							<th>Company <a href="?orderby=companyNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=companyNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 	
 						</tr>
 					</thead>
@@ -116,11 +116,11 @@
 				</ul>
 	
 				<div class="btn-group btn-group-sm pull-right" role="group">
-					<button type="button" class="btn btn-default" id="tenElements" value="10" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
+					<button type="button" class="btn btn-default" name="buttonNumberElementToPrint" id="tenElements" value="10" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
 						<c:if test="${ numberOfElementsToPrint == '10' }">disabled</c:if>>10</button>
-					<button type="button" class="btn btn-default" id="fiftyElements" value="50" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
+					<button type="button" class="btn btn-default" name="buttonNumberElementToPrint" id="fiftyElements" value="50" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
 						<c:if test="${ numberOfElementsToPrint == '50' }">disabled</c:if>>50</button>
-					<button type="button" class="btn btn-default" id="hundredElements" value="100" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
+					<button type="button" class="btn btn-default" name="buttonNumberElementToPrint" id="hundredElements" value="100" onClick="$.fn.toggleNumberOfElementPrinted(id);" 
 						<c:if test="${ numberOfElementsToPrint == '100' }">disabled</c:if>>100</button>
 				</div>
 			</div>
