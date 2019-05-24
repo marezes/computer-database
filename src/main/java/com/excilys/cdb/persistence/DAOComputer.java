@@ -9,12 +9,10 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.dbConfig.Hikari;
 import com.excilys.cdb.exception.ConnectionToDataBaseFailedException;
 import com.excilys.cdb.exception.JDBCClassNotFoundException;
 import com.excilys.cdb.exception.PropertiesFileLoadFailedException;
@@ -22,7 +20,6 @@ import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 import com.excilys.cdb.model.ModelPage;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOComputer {
@@ -50,28 +47,7 @@ public class DAOComputer {
 	private HashMap<String, String> antiInjector;
 
 	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException, ClassNotFoundException {
-		ResourceBundle bundle;
-		try {
-			bundle = ResourceBundle.getBundle("hikariConfig");
-		} catch (MissingResourceException ex) {
-			bundle = ResourceBundle.getBundle("dbconfig_travis");
-		}
-		
-		String driver = bundle.getString("driverClassName");
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException cause) {
-			throw cause;
-		}
-		
-		HikariConfig config = new HikariConfig();
-		
-		config.setDriverClassName(driver);
-		config.setJdbcUrl(bundle.getString("url"));
-		config.setUsername(bundle.getString("user"));
-		config.setPassword(bundle.getString("password"));
-		
-		dataSource = new HikariDataSource(config);
+		dataSource = Hikari.getInstance().getDataSource();
 		
 		this.antiInjector = new HashMap<String, String>();
 		this.antiInjector.put("computerName", "computer.name");

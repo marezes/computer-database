@@ -6,11 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
+import com.excilys.cdb.dbConfig.Hikari;
 import com.excilys.cdb.model.ModelCompany;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOCompany {
@@ -24,28 +21,7 @@ public class DAOCompany {
 	private String DELETE_COMPANY = "DELETE FROM company WHERE id = ?;";
 
 	private DAOCompany() throws Exception {
-		ResourceBundle bundle;
-		try {
-			bundle = ResourceBundle.getBundle("hikariConfig");
-		} catch (MissingResourceException ex) {
-			bundle = ResourceBundle.getBundle("dbconfig_travis");
-		}
-		
-		String driver = bundle.getString("driverClassName");
-		try {
-			Class.forName(driver);
-		} catch (ClassNotFoundException cause) {
-			throw cause;
-		}
-		
-		HikariConfig config = new HikariConfig();
-		
-		config.setDriverClassName(driver);
-		config.setJdbcUrl(bundle.getString("url"));
-		config.setUsername(bundle.getString("user"));
-		config.setPassword(bundle.getString("password"));
-		
-		dataSource = new HikariDataSource(config);
+		dataSource = Hikari.getInstance().getDataSource();
 	}
 
 	/**
