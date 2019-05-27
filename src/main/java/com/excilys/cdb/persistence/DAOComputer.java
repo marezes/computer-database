@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.dbConfig.Hikari;
 import com.excilys.cdb.exception.ConnectionToDataBaseFailedException;
@@ -22,8 +23,8 @@ import com.excilys.cdb.model.ModelComputerShort;
 import com.excilys.cdb.model.ModelPage;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Repository
 public class DAOComputer {
-	private static DAOComputer INSTANCE = null;
 	
 	private Logger logger = LoggerFactory.getLogger(DAOComputer.class);
 	
@@ -46,8 +47,8 @@ public class DAOComputer {
 	private String SELECT_LAST_ID_ELEMENT_INSERTED = "SELECT LAST_INSERT_ID();";
 	private HashMap<String, String> antiInjector;
 
-	private DAOComputer() throws JDBCClassNotFoundException, PropertiesFileLoadFailedException, ClassNotFoundException {
-		dataSource = Hikari.getInstance().getDataSource();
+	public DAOComputer(Hikari hikari) throws JDBCClassNotFoundException, PropertiesFileLoadFailedException, ClassNotFoundException {
+		dataSource = hikari.getDataSource();
 		
 		this.antiInjector = new HashMap<String, String>();
 		this.antiInjector.put("computerName", "computer.name");
@@ -55,21 +56,6 @@ public class DAOComputer {
 		this.antiInjector.put("discontinued", "discontinued");
 		this.antiInjector.put("companyName", "company.name");
 	}
-	
-
-	/**
-	 * Méthode qui renvoie l'objet singleton DAOComputer.
-	 * 
-	 * @return Un objet de type DAOComputer
-	 * @throws Exception
-	 */
-	public static DAOComputer getInstance() throws Exception {
-		if (INSTANCE == null) {
-			INSTANCE = new DAOComputer();
-		}
-		return INSTANCE;
-	}
-	
 
 	/**
 	 * Méthode qui renvoie la liste des machines (sans détails) présentes dans la

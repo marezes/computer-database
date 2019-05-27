@@ -16,6 +16,7 @@ import com.excilys.cdb.dto.DTOPage;
 import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.MapperPage;
 import com.excilys.cdb.service.ServiceComputer;
+import com.excilys.cdb.springConfig.SpringContext;
 
 /**
  * Servlet implementation class DashboardServlet
@@ -34,22 +35,12 @@ public class DashboardServlet extends HttpServlet {
 	 */
 	public DashboardServlet() {
 		super();
-		try {
-			serviceComputer = ServiceComputer.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get ServiceComputer without exception");
-			e.printStackTrace();
-		}
-		try {
-			mapperComputer = MapperComputer.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get MapperComputer without exception");
-		}
-		try {
-			mapperPage = MapperPage.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get MapperPage without exception");
-		}
+		
+		SpringContext springContext = SpringContext.getInstance();
+		
+		serviceComputer = springContext.getServiceComputer();
+		mapperComputer = springContext.getMapperComputer();
+		mapperPage = springContext.getMapperPage();
 		dtoPage = new DTOPage.DTOPageBuilder()
 				.withPageNumber(1)
 				.withNumberOfElementsToPrint(10)

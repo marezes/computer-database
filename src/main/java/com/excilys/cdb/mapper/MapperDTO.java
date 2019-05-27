@@ -4,25 +4,14 @@ import java.time.LocalDate;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.DTOComputer;
 
+@Component
 public class MapperDTO {
-
-	private static MapperDTO INSTANCE = null;
-	
-    private MapperDTO() {
+    public MapperDTO() {
     }
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton MapperDTOComputer.
-	 * @return Un objet de type MapperDTOComputer
-	 */
-	public static MapperDTO getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new MapperDTO();
-		}
-		return INSTANCE;
-	}
 	
 	public DTOComputer dataToDTOComputer(HttpServletRequest request) {
 		DTOComputer dtoComputerCreated = null;

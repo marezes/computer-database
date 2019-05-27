@@ -2,24 +2,14 @@ package com.excilys.cdb.mapper;
 
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.DTOCompany;
 import com.excilys.cdb.model.ModelCompany;
 
+@Component
 public class MapperCompany {
-	private static MapperCompany INSTANCE = null;
-	
-	private MapperCompany() {
-	}
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton MapperCompany.
-	 * @return Un objet de type MapperCompany
-	 */
-	public static MapperCompany getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new MapperCompany();
-		}
-		return INSTANCE;
+	public MapperCompany() {
 	}
 	
 	public ArrayList<DTOCompany> modelCompanyListToDTOCompanyList(ArrayList<ModelCompany> modelCompanyList) {

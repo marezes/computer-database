@@ -3,25 +3,14 @@ package com.excilys.cdb.validator;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.DTOComputer;
 
+@Component
 public class Validator {
-	
-	private static Validator INSTANCE = null;
 
-	private Validator() {
-	}
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton Validator.
-	 * @return Un objet de type Validator
-	 * @throws Exception 
-	 */
-	public static Validator getInstance() throws Exception {
-		if (INSTANCE == null) {
-			INSTANCE = new Validator();
-		}
-		return INSTANCE;
+	public Validator() {
 	}
 	
 	public boolean dtoComputerValidation(DTOComputer dtoComputerToValidate) {

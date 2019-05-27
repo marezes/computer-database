@@ -2,29 +2,19 @@ package com.excilys.cdb.service;
 
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Service;
+
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 import com.excilys.cdb.model.ModelPage;
 import com.excilys.cdb.persistence.DAOComputer;
 
+@Service
 public class ServiceComputer {
-	private static ServiceComputer INSTANCE = null;
 	private DAOComputer daoComputer;
 	
-	private ServiceComputer() throws Exception {
-		daoComputer = DAOComputer.getInstance();
-	}
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton ServiceComputer.
-	 * @return Un objet de type ServiceComputer
-	 * @throws Exception 
-	 */
-	public static ServiceComputer getInstance() throws Exception {
-		if (INSTANCE == null) {
-			INSTANCE = new ServiceComputer();
-		}
-		return INSTANCE;
+	public ServiceComputer(DAOComputer daoComputer) {
+		this.daoComputer = daoComputer;
 	}
 	
 	/**

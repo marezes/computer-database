@@ -1,24 +1,14 @@
 package com.excilys.cdb.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.DTOPage;
 import com.excilys.cdb.model.ModelPage;
 
+@Component
 public class MapperPage {
-	private static MapperPage INSTANCE = null;
-	
-    private MapperPage() {
+    public MapperPage() {
     }
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton MapperPage.
-	 * @return Un objet de type MapperPage
-	 */
-	public static MapperPage getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new MapperPage();
-		}
-		return INSTANCE;
-	}
 	
 	public DTOPage modelPageToDTOPage(ModelPage modelPage) {
 		Integer pageNumber = modelPage.getPageNumber();

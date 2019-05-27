@@ -17,6 +17,7 @@ import com.excilys.cdb.mapper.MapperComputer;
 import com.excilys.cdb.mapper.MapperDTO;
 import com.excilys.cdb.service.ServiceCompany;
 import com.excilys.cdb.service.ServiceComputer;
+import com.excilys.cdb.springConfig.SpringContext;
 import com.excilys.cdb.validator.Validator;
 
 /**
@@ -38,36 +39,15 @@ public class AddComputerServlet extends HttpServlet {
      */
     public AddComputerServlet() {
         super();
-        try {
-			serviceCompany = ServiceCompany.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get ServiceCompany without exception");
-		}
-        try {
-			serviceComputer = ServiceComputer.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get ServiceComputer without exception");
-		}
-        try {
-			mapperCompany = MapperCompany.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get MapperCompany without exception");
-		}
-        try {
-			mapperComputer = MapperComputer.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get MapperComputer without exception");
-		}
-        try {
-			mapperDTO = MapperDTO.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get MapperDTO without exception");
-		}
-        try {
-			validator = Validator.getInstance();
-		} catch (Exception e) {
-			System.err.println("Erreur get Validator without exception");
-		}
+		
+		SpringContext springContext = SpringContext.getInstance();
+		
+		serviceCompany = springContext.getServiceCompany();
+		serviceComputer = springContext.getServiceComputer();
+		mapperCompany = springContext.getMapperCompany();
+		mapperComputer = springContext.getMapperComputer();
+		mapperDTO = springContext.getMapperDTO();
+		validator = springContext.getValidator();
     }
 
 	/**

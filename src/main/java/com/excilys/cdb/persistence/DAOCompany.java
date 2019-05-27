@@ -6,13 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import org.springframework.stereotype.Repository;
+
 import com.excilys.cdb.dbConfig.Hikari;
 import com.excilys.cdb.model.ModelCompany;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Repository
 public class DAOCompany {
-	
-	private static DAOCompany INSTANCE = null;
 	
 	private final HikariDataSource dataSource;
 	
@@ -20,20 +22,8 @@ public class DAOCompany {
 	private String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
 	private String DELETE_COMPANY = "DELETE FROM company WHERE id = ?;";
 
-	private DAOCompany() throws Exception {
-		dataSource = Hikari.getInstance().getDataSource();
-	}
-
-	/**
-	 * Méthode qui renvoie l'objet singleton DAOCompany.
-	 * @return Un objet de type DAOCompany
-	 * @throws Exception 
-	 */
-	public static DAOCompany getInstance() throws Exception {
-		if (INSTANCE == null) {
-			INSTANCE = new DAOCompany();
-		}
-		return INSTANCE;
+	public DAOCompany(Hikari hikari) throws Exception {
+		dataSource = hikari.getDataSource();
 	}
 
 	/**

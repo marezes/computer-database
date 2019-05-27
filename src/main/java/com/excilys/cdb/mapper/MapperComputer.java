@@ -4,28 +4,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.DTOComputer;
 import com.excilys.cdb.dto.DTOComputerShort;
 import com.excilys.cdb.model.ModelCompany;
 import com.excilys.cdb.model.ModelComputer;
 import com.excilys.cdb.model.ModelComputerShort;
 
+@Component
 public class MapperComputer {
-	private static MapperComputer INSTANCE = null;
-	
-    private MapperComputer() {
+    public MapperComputer() {
     }
-	
-	/**
-	 * Méthode qui renvoie l'objet singleton MapperComputer.
-	 * @return Un objet de type MapperComputer
-	 */
-	public static MapperComputer getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new MapperComputer();
-		}
-		return INSTANCE;
-	}
 	
 	public ArrayList<DTOComputerShort> modelComputerShortListToDTOComputerShortList(ArrayList<ModelComputerShort> modelComputerShortList) {
 		/* Partie avec une classe de validator qui devrait renvoyer une exception

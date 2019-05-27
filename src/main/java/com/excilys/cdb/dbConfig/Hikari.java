@@ -3,16 +3,16 @@ package com.excilys.cdb.dbConfig;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.springframework.stereotype.Component;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Component
 public class Hikari {
-	
-	private static Hikari INSTANCE;
-	
 	private HikariDataSource dataSource;
 	
-	private Hikari() throws ClassNotFoundException {
+	public Hikari() throws ClassNotFoundException {
 		ResourceBundle bundle;
 		try {
 			bundle = ResourceBundle.getBundle("hikariConfig");
@@ -35,13 +35,6 @@ public class Hikari {
 		config.setPassword(bundle.getString("password"));
 		
 		this.dataSource = new HikariDataSource(config);
-	}
-	
-	public static Hikari getInstance() throws ClassNotFoundException {
-		if (INSTANCE == null) {
-			INSTANCE = new Hikari();
-		}
-		return INSTANCE;
 	}
 	
 	public HikariDataSource getDataSource() {
