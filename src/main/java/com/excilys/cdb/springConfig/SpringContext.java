@@ -16,7 +16,7 @@ public class SpringContext {
 	
 	AnnotationConfigApplicationContext ctx;
 	
-	public SpringContext() {
+	private SpringContext() {
 		ctx = new AnnotationConfigApplicationContext();
         ctx.register(SpringConfig.class);
         try {
