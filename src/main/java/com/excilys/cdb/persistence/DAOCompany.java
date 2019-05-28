@@ -1,16 +1,15 @@
 package com.excilys.cdb.persistence;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.dbConfig.Hikari;
+import com.excilys.cdb.mapper.MapperSQLCompany;
 import com.excilys.cdb.model.ModelCompany;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -18,13 +17,15 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DAOCompany {
 	
 	private final HikariDataSource dataSource;
+	private MapperSQLCompany mapperSQLCompany;
 	
 	private String SELECT = "SELECT id, name FROM company;";
-	private String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = ?;";
-	private String DELETE_COMPANY = "DELETE FROM company WHERE id = ?;";
+	private String SELECT_BY_ID = "SELECT id, name FROM company WHERE id = :companyId;";
+	private String DELETE_COMPANY = "DELETE FROM company WHERE id = :companyId;";
 
-	public DAOCompany(Hikari hikari) throws Exception {
+	public DAOCompany(Hikari hikari, MapperSQLCompany mapperSQLCompany) throws Exception {
 		dataSource = hikari.getDataSource();
+		this.mapperSQLCompany = mapperSQLCompany;
 	}
 
 	/**
@@ -37,79 +38,34 @@ public class DAOCompany {
 		
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		
-		RowMapper<ModelCompany> rowMapper = new RowMapper<ModelCompany>() {
-			public ModelCompany mapRow(ResultSet resultat, int rowNumber) throws SQLException {
-				int id = resultat.getInt("id");
-				String name = resultat.getString("name");
-				
-				ModelCompany modelCompany = new ModelCompany.ModelCompanyBuilder()
-						.withId(id)
-						.withName(name)
-						.build();
-				return modelCompany;
-			}
-		};
-		
-		modelCompanyList = (ArrayList<ModelCompany>) jdbcTemplate.query(SELECT, rowMapper);
+		modelCompanyList = (ArrayList<ModelCompany>) jdbcTemplate.query(SELECT, mapperSQLCompany);
 
 		return modelCompanyList;
 	}
 	
-	public boolean requestDelete(int id) throws RuntimeException, Exception {
+	public boolean requestDelete(int companyId) throws RuntimeException, Exception {
 		int statut = -1;
 
-		try (Connection connexion = dataSource.getConnection()) {
+		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		
+		MapSqlParameterSource paramSetter = new MapSqlParameterSource();
+        paramSetter.addValue("companyId", companyId);
+        
+        statut = jdbcTemplate.update(DELETE_COMPANY, paramSetter);
 
-			/* Création de l'objet gérant les requêtes */
-			try (PreparedStatement statement = connexion.prepareStatement(DELETE_COMPANY)) {
-
-				statement.setInt(1, id);
-
-				/* Exécution d'une requête d'écriture */
-				statut = statement.executeUpdate();
-			} catch (SQLException e) {
-				// System.err.println("Delete raté."+e.getStackTrace());
-				throw e;
-			}
-		} catch (SQLException e) {
-			throw e;
-		}
-
-		return (statut == 1) ? true : false; // une exception à la place de null;
+		return (statut == 1) ? true : false;
 	}
 	
 	public ModelCompany requestById(int companyId) throws Exception {
-		ModelCompany model = null;
+		ModelCompany modelCompany = null;
 
-		try (Connection connexion = dataSource.getConnection()) {
+		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		
+		MapSqlParameterSource paramSetter = new MapSqlParameterSource();
+        paramSetter.addValue("companyId", companyId);
 
-			/* Création de l'objet gérant les requêtes */
-			try (PreparedStatement statement = connexion.prepareStatement(SELECT_BY_ID)) {
+        modelCompany = jdbcTemplate.queryForObject(SELECT_BY_ID, paramSetter, mapperSQLCompany);
 
-				statement.setInt(1, companyId);
-
-				/* Exécution d'une requête de lecture */
-				try (ResultSet resultat = statement.executeQuery()) {
-
-					resultat.next();
-					String name = resultat.getString("name");
-					model = (new ModelCompany.ModelCompanyBuilder()
-							.withId(companyId)
-							.withName(name)
-							.build());
-
-				} catch (SQLException e) {
-					// System.err.println("Récupération de la requête raté.");
-					throw e;
-				}
-			} catch (SQLException e) {
-				// System.err.println("Création du prepared statement raté.");
-				throw e;
-			}
-		} catch (SQLException e) {
-			throw e;
-		}
-
-		return model;
+		return modelCompany;
 	}
 }
