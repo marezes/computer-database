@@ -22,7 +22,7 @@ public class SpringContext {
         try {
         	ctx.refresh();
         } catch (Exception e) {
-			e.printStackTrace();
+			new Exception("Refresh register failed");
 		}
 	}
 
