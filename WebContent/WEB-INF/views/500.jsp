@@ -1,3 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" errorPage="error.jsp"%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,9 +21,9 @@
 	</header>
 
 	<section id="main">
-		<div class="container">
+		<div class="container">	
 			<div class="alert alert-danger">
-				Error 403: Access denied!
+				Error 500: An error has occured!
 				<br/>
 				<!-- stacktrace -->
 			</div>
