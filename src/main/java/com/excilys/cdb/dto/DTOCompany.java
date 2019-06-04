@@ -1,11 +1,20 @@
 package com.excilys.cdb.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.springframework.lang.Nullable;
+
 public class DTOCompany {
 	private Integer id; 	// un id
 	private String name; 	// Nom de l'entreprise
 	
 	public static class DTOCompanyBuilder {
+		@Nullable
+		@Min(1)
 		private Integer id;
+		@Nullable
+		@Size(min=1)
 		private String name;
 		
 		public DTOCompanyBuilder() {

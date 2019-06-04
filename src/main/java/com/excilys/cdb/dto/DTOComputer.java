@@ -2,12 +2,29 @@ package com.excilys.cdb.dto;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
+
 public class DTOComputer {
+	@Nullable
+	@Min(1)
 	private Integer id; // un id
+	@NotNull
+	@Size(min=1)
 	private String name; // Nom de l'ordinateur
+	@DateTimeFormat(pattern= "yyyy-mm-dd")
 	private LocalDate introduced; // date introduced
+	@DateTimeFormat(pattern= "yyyy-mm-dd")
 	private LocalDate discontinued; // date discontinued
+	@Nullable
+	@Min(1)
 	private Integer companyId; // l'id d'une entreprise
+	@Nullable
+	@Size(min=1)
 	private String companyName; // le nom de l'entreprise
 	
 	public static class DTOComputerBuilder {

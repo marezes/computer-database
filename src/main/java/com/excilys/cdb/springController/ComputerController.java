@@ -7,8 +7,11 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.excilys.cdb.dto.DTOCompany;
@@ -24,6 +27,7 @@ import com.excilys.cdb.service.ServiceComputer;
 import com.excilys.cdb.validator.Validator;
 
 @Controller
+@SessionAttributes("dtoPage")
 public class ComputerController {
 
 	private ServiceCompany serviceCompany;
@@ -33,7 +37,6 @@ public class ComputerController {
 	private MapperDTO mapperDTO;
 	private MapperPage mapperPage;
 	private Validator validator;
-	private DTOPage dtoPage;
 
 	public ComputerController(ServiceCompany serviceCompany, ServiceComputer serviceComputer, 
 			MapperCompany mapperCompany, MapperComputer mapperComputer, 
@@ -46,10 +49,14 @@ public class ComputerController {
 		this.mapperDTO = mapperDTO;
 		this.mapperPage = mapperPage;
 		this.validator = validator;
-		this.dtoPage = new DTOPage.DTOPageBuilder()
+	}
+	
+	@ModelAttribute("dtoPage")
+	public DTOPage createDtoPage() {
+		return (new DTOPage.DTOPageBuilder()
 				.withPageNumber(1)
 				.withNumberOfElementsToPrint(10)
-				.build();
+				.build());
 	}
 	
 	@GetMapping(value = {"/", "/dashboard"})
@@ -58,7 +65,8 @@ public class ComputerController {
 			@RequestParam(value = "page", required=false) String pageNumber, 
 			@RequestParam(value = "numberElementPerPages", required=false) String numberElementPerPages, 
 			@RequestParam(value = "search", required=false) String search, 
-			@RequestParam(value = "orderby", required=false) String orderby) {
+			@RequestParam(value = "orderby", required=false) String orderby, 
+			@ModelAttribute("dtoPage") DTOPage dtoPage) {
 		
 		Integer pageNumberRequested = null;
 		Integer numberOfElementsToPrint = null;
@@ -264,6 +272,12 @@ public class ComputerController {
 				System.err.println("Update or mapping to model failed");
 			}
 		}
+		return new RedirectView("dashboard");
+	}
+	
+	@GetMapping(value = "/closeSession")
+	public RedirectView closeSession(SessionStatus sessionStatus) {
+		sessionStatus.setComplete();
 		return new RedirectView("dashboard");
 	}
 }

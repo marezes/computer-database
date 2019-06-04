@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
 <configuration scan="true"><!-- Le scan = true permet de recharger les fichiers de configuration lorsqu'ils sont modifiés -->
 
 	<property resource="logger.properties" />
