@@ -78,9 +78,11 @@ public class Controller {
 			} catch (Exception e) {
 				printErrors(e);
 			}
-			resultDtoCompany.stream()
-				.map(object -> object.toString())
-				.forEach(str -> response.add(str));
+			if (resultDtoCompany != null) {
+				resultDtoCompany.stream()
+					.map(object -> object.toString())
+					.forEach(str -> response.add(str));
+			}
 			break;
 		case SHOW_COMPUTER_DETAILS:
 			/* Partie validateur à ajouter */
@@ -96,7 +98,9 @@ public class Controller {
 			} catch (Exception e) {
 				printErrors(e);
 			}
-			response.add(dtoComputer.toString());
+			if (dtoComputer != null) {
+				response.add(dtoComputer.toString());
+			}
 			break;
 		case CREATE_COMPUTER:
 			/* Partie validateur à ajouter */
