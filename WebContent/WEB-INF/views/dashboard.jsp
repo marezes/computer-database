@@ -2,11 +2,12 @@
 	pageEncoding="UTF-8" errorPage="error.jsp"%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Computer Database</title>
+		<title><spring:message code="app.header.title"/></title>
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta charset="utf-8">
@@ -19,28 +20,39 @@
 	<body>
 		<header class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
-				<a class="navbar-brand" href="closeSession"> Application - Computer
-					Database </a>
+				<a class="navbar-brand" href="closeSession"><spring:message code="app.title"/></a>
+				
+				<div class="dropdown navbar-right">
+					<button class="btn btn-danger navbar-btn dropdown-toggle" type="button" data-toggle="dropdown">
+						<spring:message code="app.lang.title"/> <span class="caret"></span>
+					</button>
+		            <ul class="dropdown-menu">
+						<li><a href="?lang=fr_FR"><spring:message code="app.lang.french"/></a></li>
+						<li><a href="?lang=en_EN"><spring:message code="app.lang.english"/></a></li>
+						<li><a href="?lang=pt_PT"><spring:message code="app.lang.portuguese"/></a></li>
+					</ul>
+				</div>
 			</div>
 		</header>
 	
 		<section id="main">
 			<div class="container">
-				<h1 id="homeTitle">${ totalNumberOfComputer } Computers found <c:if test="${ search != null }">for "${ search }"</c:if></h1>
+				<h1 id="homeTitle">${ totalNumberOfComputer } <spring:message code="app.numberComputer"/> 
+					<c:if test="${ search != null }"><spring:message code="app.for"/> "${ search }"</c:if></h1>
 				<div id="actions" class="form-horizontal">
 					<div class="pull-left">
 						<form id="searchForm" action="#" method="GET" class="form-inline">
 	
 							<input type="search" id="searchbox" name="search"
-								class="form-control" placeholder="Search name" /> <input
-								type="submit" id="searchsubmit" value="Filter by name"
+								class="form-control" placeholder="<spring:message code="app.entry.search"/>" /> <input
+								type="submit" id="searchsubmit" value="<spring:message code="app.button.filter"/>"
 								class="btn btn-primary" />
 						</form>
 					</div>
 					<div class="pull-right">
-						<a class="btn btn-success" id="addComputer" href="addComputer">Add
-							Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-							onclick="$.fn.toggleEditMode();">Edit</a>
+						<a class="btn btn-success" id="addComputer" href="addComputer">
+							<spring:message code="app.button.addComputer"/></a> <a class="btn btn-default" id="editComputer" href="#"
+							onclick="$.fn.toggleEditMode();"><spring:message code="app.button.edit"/></a>
 					</div>
 				</div>
 			</div>
@@ -63,12 +75,12 @@
 										class="fa fa-trash-o fa-lg"></i>
 								</a>
 							</span></th>
-							<th>Computer name <a href="?orderby=computerNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=computerNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
-							<th>Introduced date <a href="?orderby=introducedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=introducedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
+							<th><spring:message code="app.list.computerName"/> <a href="?orderby=computerNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=computerNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
+							<th><spring:message code="app.list.introduced"/> <a href="?orderby=introducedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=introducedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 							<!-- Table header for Discontinued Date --> 
-							<th>Discontinued date <a href="?orderby=discontinuedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=discontinuedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
+							<th><spring:message code="app.list.discontinued"/> <a href="?orderby=discontinuedASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=discontinuedDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 							<!-- Table header for Company -->
-							<th>Company <a href="?orderby=companyNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=companyNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
+							<th><spring:message code="app.list.companyName"/> <a href="?orderby=companyNameASC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-up btn-primary btn-sm"></a><a href="?orderby=companyNameDESC<c:if test="${ search != null }">&search=${ search }</c:if>" type="button" class="btn glyphicon glyphicon-chevron-down btn-primary btn-sm"></a></th>
 	
 						</tr>
 					</thead>
