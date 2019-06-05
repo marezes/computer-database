@@ -25,4 +25,5 @@ nbproject/*
 *~
 *.swp
 *.lock
+*.zip
 /target/
