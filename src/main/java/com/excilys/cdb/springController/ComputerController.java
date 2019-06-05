@@ -60,7 +60,7 @@ public class ComputerController {
 	}
 	
 	@GetMapping(value = {"/", "/dashboard"})
-	protected String dashboardGet(
+	public String dashboardGet(
 			Model model, 
 			@RequestParam(value = "page", required=false) String pageNumber, 
 			@RequestParam(value = "numberElementPerPages", required=false) String numberElementPerPages, 
@@ -150,7 +150,6 @@ public class ComputerController {
 				dtoPage.setNumberTotalOfComputer(serviceComputer.requestTotalNumberOfComputersFound(search));
 			} catch (Exception e) {
 				System.err.println("Failed to get number total of computer found with search");
-				e.printStackTrace();
 			}
 
 			dtoPage.setNumberTotalPage((dtoPage.getNumberTotalOfComputer() / dtoPage.getNumberOfElementsToPrint())
@@ -186,7 +185,7 @@ public class ComputerController {
 	}
 	
 	@PostMapping(value = {"/", "/dashboard"})
-	protected RedirectView dashboardPost(@RequestParam(value = "selection", required=true) String selection) {
+	public RedirectView dashboardPost(@RequestParam(value = "selection", required=true) String selection) {
 		try {
 			Arrays.asList(selection.split(",")).stream()
 			.map(id -> Integer.parseInt(id))
@@ -200,7 +199,7 @@ public class ComputerController {
 	}
 	
 	@GetMapping(value = "/addComputer")
-	protected String addComputerGet(Model model) {
+	public String addComputerGet(Model model) {
 		
 		ArrayList<DTOCompany> dtoCompanyList = null;
 		try {
@@ -215,7 +214,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(value = "/addComputer")
-	protected RedirectView addComputerPost(@RequestParam Map<String,String> allParams) {
+	public RedirectView addComputerPost(@RequestParam Map<String,String> allParams) {
 		DTOComputer dtoComputerToCreate = mapperDTO.dataToDTOComputer(allParams);
 		
 		if (validator.dtoComputerValidation(dtoComputerToCreate)) {
@@ -230,7 +229,7 @@ public class ComputerController {
 	}
 	
 	@GetMapping(value = "/editComputer")
-	protected String editComputerGet(Model model, @RequestParam(value = "id", required=true) String idComputer) {
+	public String editComputerGet(Model model, @RequestParam(value = "id", required=true) String idComputer) {
 		int id = -1;
 		
 		try {
@@ -263,7 +262,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(value = "/editComputer")
-	protected RedirectView editComputerPost(@RequestParam Map<String,String> allParams) {
+	public RedirectView editComputerPost(@RequestParam Map<String,String> allParams) {
 		DTOComputer dtoComputerToEdit = mapperDTO.dataToDTOComputer(allParams);
 		if (validator.dtoComputerValidation(dtoComputerToEdit)) {
 			try {
