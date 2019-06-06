@@ -40,7 +40,6 @@ public class DTOComputer {
 			this.companyId = null;
 			this.introduced = null;
 			this.discontinued = null;
-			this.companyId = null;
 			this.companyName = null;
 		}
 		

@@ -121,7 +121,6 @@ public class MapperComputer {
             		(dtoComputer.getIntroduced() == null) 
             		? null : dtoComputer.getIntroduced();
         } catch (DateTimeParseException dtpe) {
-            // System.err.println("Pas de LocalDate introduced");
             throw dtpe;
         }
 
@@ -131,7 +130,6 @@ public class MapperComputer {
             		(dtoComputer.getDiscontinued() == null) 
             		? null : dtoComputer.getDiscontinued();
         } catch (DateTimeParseException dtpe) {
-            // System.err.println("Pas de LocalDate discontinued");
             throw dtpe;
         }
 

@@ -152,18 +152,29 @@ public class Controller {
 			discontinued = null;
 			companyId = -1;
 			try {
-				introduced = args[3].equals("vider") ? null :
-					(args[3].equals("")
-							? modelComputerAlreadyInDataBase.getIntroduced()
-									: Timestamp.valueOf(args[3]));
-				discontinued = args[4].equals("vider") ? null :
-					(args[4].equals("")
-							? modelComputerAlreadyInDataBase.getDiscontinued()
-									: Timestamp.valueOf(args[4]));
-				companyId = args[5].equals("vider") ? null :
-					(args[5].equals("")
+				if (!args[3].equals("vider")) {
+					introduced = args[3].equals("")
+								? modelComputerAlreadyInDataBase.getIntroduced()
+										: Timestamp.valueOf(args[3]);
+				} else {
+					introduced = null;
+				}
+				
+				if (!args[4].equals("vider")) {
+					discontinued = args[4].equals("")
+								? modelComputerAlreadyInDataBase.getDiscontinued()
+										: Timestamp.valueOf(args[4]);
+				} else {
+					discontinued = null;
+				}
+				
+				if (!args[5].equals("vider")) {
+					companyId = args[5].equals("")
 							? modelComputerAlreadyInDataBase.getModelCompany().getId()
-									: Integer.parseInt(args[5]));
+									: Integer.parseInt(args[5]);
+				} else {
+					companyId = null;
+				}
 			} catch (Exception e) {
 				// TODO: Normalement catché dans le validateur
 			}
@@ -199,6 +210,6 @@ public class Controller {
 	}
 
 	public void printErrors(Exception e) {
-		System.err.println(e.getMessage());
+		// System.err.println(e.getMessage()); // à renplacer par un logger
 	}
 }
